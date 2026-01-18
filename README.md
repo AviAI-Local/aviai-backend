@@ -20,6 +20,11 @@ source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 python -c "import nltk; nltk.download('punkt_tab')"
 ```
 
+```bash
+brew install espeak
+uv pip install kokoro
+```
+
 #### Install and Setup Ollama
 
 ```bash

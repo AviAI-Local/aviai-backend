@@ -1,7 +1,7 @@
 import warnings
 import numpy as np
 import torch
-import torchaudio as ta
+# import torchaudio as ta
 import nltk
 from kokoro import KPipeline
 
@@ -138,5 +138,5 @@ class TextToSpeechService:
         # torchaudio expects shape (channels, time)
         audio_tensor = torch.from_numpy(audio_int16).unsqueeze(0)
 
-        ta.save(output_path, audio_tensor, sr)
-        print(f"Sample saved → {output_path}")
+        # ta.save(output_path, audio_tensor, sr)
+        # print(f"Sample saved → {output_path}")

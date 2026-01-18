@@ -31,13 +31,40 @@ class LLMService:
         Args:
             response (str): raw LLM response
         """
-        content = response.content if hasattr(response, "content") else str(response)
-        content = re.sub(r"\s*\([^)]*\)\s*", " ", content).strip()
-        cleaned = re.sub(r"```(?:json)?", "", content).replace("```", "").strip()
+        default_response = LLMResponse(
+            response="I'm sorry, I didn't quite understand that. Could you please repeat?",
+            avatar_instructions="neutral"
+        )
 
-        data = json.loads(cleaned)
-        llm_response = LLMResponse(**data)
-        return llm_response
+        try:
+            # 1. Extract content safely
+            content = response.content if hasattr(response, "content") else str(response)
+
+            # 2. Remove parenthetical asides (e.g. (laughs), (pause))
+            content = re.sub(r"\s*\([^)]*\)\s*", " ", content).strip()
+
+            # 3. Remove markdown code fences
+            cleaned = re.sub(r"```(?:json)?", "", content).replace("```", "").strip()
+
+            # 4. Attempt JSON parsing
+            data = json.loads(cleaned)
+
+            # 5. Validate required keys (important!)
+            if not isinstance(data, dict):
+                raise ValueError("Parsed JSON is not an object")
+
+            if "response" not in data:
+                raise KeyError("Missing 'response' field")
+
+            # 6. Fill optional fields safely
+            data.setdefault("avatar_instructions", "neutral")
+
+            return LLMResponse(**data)
+
+        except Exception as e:
+            # Optional: log for debugging
+            # logger.warning("LLM response parsing failed: %s", e)
+            return default_response
 
 
     def get_response(self, text: str) -> LLMResponse:
