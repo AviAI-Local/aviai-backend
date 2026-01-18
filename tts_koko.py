@@ -79,7 +79,7 @@ class TextToSpeechService:
         audio_prompt_path: str | None = None,
         exaggeration: float = 0.5,
         cfg_weight: float = 0.5,
-        silence_sec: float = 0.25,
+        silence_sec: float = 0.15,
         voice: str = "af_bella",
     ) -> tuple[int, np.ndarray]:
         """
