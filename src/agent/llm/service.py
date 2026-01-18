@@ -33,7 +33,8 @@ class LLMService:
         """
         default_response = LLMResponse(
             response="I'm sorry, I didn't quite understand that. Could you please repeat?",
-            avatar_instructions="neutral"
+            avatar_instructions="neutral",
+            voice_instructions="neutral"
         )
 
         try:
