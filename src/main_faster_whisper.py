@@ -1,3 +1,11 @@
+import warnings
+
+warnings.filterwarnings(
+    "ignore",
+    category=RuntimeWarning,
+    message=r".*(invalid value|divide by zero|overflow) encountered in matmul.*",
+)
+
 import threading
 import time
 import numpy as np
@@ -13,11 +21,20 @@ from agent.io.stt.whisper_stt import WhisperSTT
 from agent.io.audio.recorder import record_audio
 from agent.io.audio.player import play_audio
 from agent.llm.service import LLMService
-from agent.io.tts.tts_koko import TextToSpeechService
+# from agent.io.tts.tts_koko import TextToSpeechService
+from agent.io.tts.tts_pocket import TextToSpeechService
 from agent.io.stt.faster_whisper import FasterWhisperSTT
 # from agent.io.tts.emotion import analyze_emotion
 
 console = Console()
+
+import warnings
+
+warnings.filterwarnings(
+    "ignore",
+    message=".*invalid value encountered in matmul.*",
+    category=RuntimeWarning,
+)
 
 def main():
     stt = FasterWhisperSTT(model_size="small", silence_db=-45, end_silence_sec=1.2)
@@ -39,20 +56,6 @@ def main():
 
     while True:
         console.input("🎤 Press Enter to start recording, Enter again to stop")
-
-        # q = Queue()
-        # stop = threading.Event()
-        # th = threading.Thread(target=record_audio, args=(stop, q))
-        # th.start()
-
-        # input()
-        # stop.set()
-        # th.join()
-
-        # audio_np = np.frombuffer(b"".join(q.queue), dtype=np.int16).astype(np.float32) / 32768.0
-        # with console.status("Transcribing...", spinner="dots"):
-        #     text = stt.transcribe(audio_np)
-        # console.print(f"[yellow]You:[/yellow] {text}")
 
         while True:
             # console.print("Listening for speech... (press Ctrl+C to stop)")
@@ -78,12 +81,13 @@ def main():
             console.print(f"[dim]LLM time: {llm_time:.2f}s | TTS time: {tts_time:.2f}s[/dim]")
             console.print(f"[cyan]Assistant:[/cyan] {content}")
             console.print(f"Facial expression: {response.avatar_instructions}")
-            # console.print(f"sample_rate={sample_rate}, audio_shape={getattr(audio_array,'shape',None)}, dtype={getattr(audio_array,'dtype',None)}")
 
             stt.mute()
-            try: 
-                play_audio(sample_rate, audio_array)
+            try:
+                play_audio(sample_rate, audio_array)  # must block
             finally:
+                # time.sleep(0.15)      # small cooldown
+                # stt.flush_audio_queue()
                 stt.unmute()
 
 if __name__ == "__main__":

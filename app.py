@@ -13,8 +13,8 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_core.chat_history import InMemoryChatMessageHistory
 from langchain_ollama import OllamaLLM
-from tts_koko import TextToSpeechService
-from prompt import STATIC_PROMPT
+from src.tts_koko import TextToSpeechService
+from src.prompt import STATIC_PROMPT
 # from langchain_openai import ChatOpenAI
 
 console = Console()
@@ -64,6 +64,24 @@ chain_with_history = RunnableWithMessageHistory(
     input_messages_key="input",
     history_messages_key="history",
 )
+def process_audio_np(audio_np: np.ndarray) -> tuple[int, np.ndarray]:
+    """
+    Wrapper entry point for server usage.
+    """
+    text = transcribe(audio_np)
+    if not text:
+        return None, None
+
+    response = get_llm_response(text)
+
+    sample_rate, audio_array = tts.long_form_synthesize(
+        response,
+        audio_prompt_path=args.voice,
+        exaggeration=analyze_emotion(response),
+        cfg_weight=args.cfg_weight,
+    )
+
+    return sample_rate, audio_array
 
 def record_audio(stop_event, data_queue):
     """
