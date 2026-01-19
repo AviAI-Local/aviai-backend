@@ -62,8 +62,7 @@ llm_service = LLMService(chat, session_id="default_session")
 INPUT_SR = 16000
 OUTPUT_SR = 24000
 BYTES_PER_SAMPLE = 2
-PROCESS_SECONDS = 5
-MIN_BYTES = INPUT_SR * BYTES_PER_SAMPLE * PROCESS_SECONDS
+#MIN_BYTES = INPUT_SR * BYTES_PER_SAMPLE * PROCESS_SECONDS
 
 def faster_whisper_transcribe(stt: FasterWhisperSTT, audio_np: np.ndarray) -> str:
     segments, _ = stt.model.transcribe(
@@ -90,86 +89,72 @@ async def voice_endpoint(websocket: WebSocket):
         while True:
             msg = await websocket.receive()
 
-# ---------------- ACK ----------------
+            # ---------- CONTROL MESSAGES ----------
             if "text" in msg and msg["text"]:
-                try:
-                    payload = json.loads(msg["text"])
-                    if payload.get("type") == "audio_playback_complete":
-                       ack_received = True
-                       is_speaking = False
+                payload = json.loads(msg["text"])
 
-                       console.print(
-                          "[green]ACK received from client (audio playback complete)[/green]"
-                   )
+                if payload["type"] == "audio_playback_complete":
+                    is_speaking = False
+                    await websocket.send_json({
+                        "type": "status",
+                        "state": "listening"
+                    })
+                    continue
 
-                       await websocket.send_json({
-                   "type": "status",
-                   "state": "listening"
-                   })
-                       continue
-                except Exception as e:
-                   console.print(f"[red]ACK parse error: {e}[/red]")
+                if payload["type"] == "end_of_utterance":
+                    if not buffer:
+                        continue
 
+                    audio_np = (
+                        np.frombuffer(buffer, dtype=np.int16)
+                        .astype(np.float32) / 32768.0
+                    )
+                    buffer.clear()
 
-            # ---------------- AUDIO ----------------
+                    text = await asyncio.to_thread(
+                        faster_whisper_transcribe,
+                        stt,
+                        audio_np
+                    )
+
+                    if not text:
+                        continue
+
+                    console.print(f"[yellow]You:[/yellow] {text}")
+
+                    response = await asyncio.to_thread(
+                        llm_service.get_response,
+                        text
+                    )
+
+                    content = response.response
+                    console.print(f"[cyan]Assistant:[/cyan] {content}")
+
+                    sr, audio_out = await asyncio.to_thread(
+                        tts.long_form_synthesize,
+                        content,
+                        None,
+                        0.5,
+                        0.5
+                    )
+
+                    pcm_bytes = (audio_out * 32767).astype(np.int16).tobytes()
+
+                    is_speaking = True
+                    await websocket.send_bytes(pcm_bytes)
+                    await websocket.send_json({
+                        "type": "status",
+                        "state": "speaking"
+                    })
+                    continue
+
+            # ---------- AUDIO ----------
+            if is_speaking:
+                continue
+
             data = msg.get("bytes")
-            if not data or is_speaking:
-                continue
-
-            buffer.extend(data)
-
-            if len(buffer) < MIN_BYTES:
-                continue
-
-            # PCM → float32
-            audio_np = (
-    np.frombuffer(buffer, dtype=np.int16)
-    .astype(np.float32) / 32768.0
-)
-
-
-            buffer = bytearray()
-
-            # ---------------- STT ----------------
-            text = await asyncio.to_thread(
-                   faster_whisper_transcribe,
-                   stt,
-                   audio_np
-            )
-
-            if not text or len(text.strip()) < 2:
-                continue
-
-            console.print(f"[yellow]You:[/yellow] {text}")
-
-            # ---------------- LLM ----------------
-            response = await asyncio.to_thread(
-                llm_service.get_response,
-                text
-            )
-
-            content = response.response
-            console.print(f"[cyan]Assistant:[/cyan] {content}")
-            console.print(f"Avatar: {response.avatar_instructions}")
-
-            # ---------------- TTS ----------------
-            sr, audio_out = await asyncio.to_thread(
-                tts.long_form_synthesize,
-                content,
-                None,
-                0.5,
-                0.5
-            )
-
-            pcm_bytes = (audio_out * 32767).astype(np.int16).tobytes()
-
-            is_speaking = True
-
-            await websocket.send_bytes(pcm_bytes)
-            await websocket.send_json({
-                "type": "status",
-                "state": "speaking"
-            })
+            if data:
+                buffer.extend(data)
 
     except WebSocketDisconnect:
         console.print("[red]Client disconnected[/red]")
