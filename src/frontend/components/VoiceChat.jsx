@@ -10,7 +10,7 @@ export default function VoiceChat() {
 
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [connected, setConnected] = useState(false);
-  const [messages, setMessages] = useState([]);
+  const [latestResponse, setLatestResponse] = useState("");
 
   const TTS_SAMPLE_RATE = 24000;
   const MIC_SAMPLE_RATE = 16000;
@@ -18,13 +18,17 @@ export default function VoiceChat() {
   const start = async () => {
     if (connected) return;
 
+    // ---------- OUTPUT AUDIO ----------
     audioCtxRef.current = new AudioContext({ sampleRate: TTS_SAMPLE_RATE });
     await audioCtxRef.current.resume();
 
+    // ---------- WEBSOCKET ----------
     wsRef.current = new WebSocket("ws://localhost:8000/voice");
     wsRef.current.binaryType = "arraybuffer";
 
-    wsRef.current.onopen = () => setConnected(true);
+    wsRef.current.onopen = () => {
+      setConnected(true);
+    };
 
     wsRef.current.onmessage = (event) => {
       if (typeof event.data === "string") {
@@ -35,16 +39,13 @@ export default function VoiceChat() {
         }
 
         if (msg.type === "assistant_text") {
-          setMessages((prev) => [
-            ...prev,
-            { role: "assistant", text: msg.content }
-          ]);
+          setLatestResponse(msg.content);
         }
 
         return;
       }
 
-      // ---------- PLAY TTS ----------
+      // ---------- PLAY TTS AUDIO ----------
       const pcm = new Int16Array(event.data);
       const f32 = new Float32Array(pcm.length);
 
@@ -69,6 +70,7 @@ export default function VoiceChat() {
       source.start();
     };
 
+    // ---------- MIC ----------
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
     micCtxRef.current = new AudioContext({ sampleRate: MIC_SAMPLE_RATE });
@@ -135,9 +137,7 @@ export default function VoiceChat() {
             whiteSpace: "pre-wrap"
           }}
         >
-          {messages.map((m, i) => (
-            <div key={i}>{m.text}</div>
-          ))}
+          {latestResponse}
         </div>
       </div>
     </div>
