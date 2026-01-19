@@ -10,6 +10,7 @@ export default function VoiceChat() {
 
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [connected, setConnected] = useState(false);
+  const [messages, setMessages] = useState([]);
 
   const TTS_SAMPLE_RATE = 24000;
   const MIC_SAMPLE_RATE = 16000;
@@ -17,24 +18,29 @@ export default function VoiceChat() {
   const start = async () => {
     if (connected) return;
 
-    // ---------- OUTPUT AUDIO ----------
     audioCtxRef.current = new AudioContext({ sampleRate: TTS_SAMPLE_RATE });
     await audioCtxRef.current.resume();
 
-    // ---------- WEBSOCKET ----------
     wsRef.current = new WebSocket("ws://localhost:8000/voice");
     wsRef.current.binaryType = "arraybuffer";
 
-    wsRef.current.onopen = () => {
-      setConnected(true);
-    };
+    wsRef.current.onopen = () => setConnected(true);
 
     wsRef.current.onmessage = (event) => {
       if (typeof event.data === "string") {
         const msg = JSON.parse(event.data);
+
         if (msg.type === "status") {
           allowMicRef.current = msg.state === "listening";
         }
+
+        if (msg.type === "assistant_text") {
+          setMessages((prev) => [
+            ...prev,
+            { role: "assistant", text: msg.content }
+          ]);
+        }
+
         return;
       }
 
@@ -63,7 +69,6 @@ export default function VoiceChat() {
       source.start();
     };
 
-    // ---------- MIC ----------
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
     micCtxRef.current = new AudioContext({ sampleRate: MIC_SAMPLE_RATE });
@@ -109,7 +114,7 @@ export default function VoiceChat() {
   };
 
   return (
-    <div style={{ padding: 40 }}>
+    <div style={{ padding: 40, maxWidth: 600 }}>
       <button onClick={start} disabled={connected}>
         {connected ? "Connected" : "Connect"}
       </button>
@@ -118,6 +123,22 @@ export default function VoiceChat() {
         <button onClick={toggleSpeaking} disabled={!connected}>
           {isSpeaking ? "Stop Talking" : "Start Talking"}
         </button>
+      </div>
+
+      <div style={{ marginTop: 30 }}>
+        <h3>Assistant</h3>
+        <div
+          style={{
+            padding: 12,
+            border: "1px solid #ccc",
+            minHeight: 120,
+            whiteSpace: "pre-wrap"
+          }}
+        >
+          {messages.map((m, i) => (
+            <div key={i}>{m.text}</div>
+          ))}
+        </div>
       </div>
     </div>
   );
