@@ -129,9 +129,9 @@ async def voice_endpoint(websocket: WebSocket):
 
                     content = response.response
                     await websocket.send_json({
-    "type": "assistant_text",
-    "content": content
-})
+                        "type": "assistant_text",
+                        "content": content
+                    })
 
                     console.print(f"[cyan]Assistant:[/cyan] {content}")
 
