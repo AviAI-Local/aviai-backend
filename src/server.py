@@ -11,7 +11,7 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from agent.prompt.builder import PromptBuilder
 from agent.memory.history import get_session_history
 from agent.llm.service import LLMService
-from agent.io.tts.tts_koko import TextToSpeechService
+from agent.io.tts.tts_pocket import TextToSpeechService
 from agent.io.stt.faster_whisper import FasterWhisperSTT
 
 console = Console()
@@ -62,7 +62,7 @@ llm_service = LLMService(chat, session_id="default_session")
 INPUT_SR = 16000
 OUTPUT_SR = 24000
 BYTES_PER_SAMPLE = 2
-PROCESS_SECONDS = 0.6
+PROCESS_SECONDS = 5
 MIN_BYTES = INPUT_SR * BYTES_PER_SAMPLE * PROCESS_SECONDS
 
 def faster_whisper_transcribe(stt: FasterWhisperSTT, audio_np: np.ndarray) -> str:
