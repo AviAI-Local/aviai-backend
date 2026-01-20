@@ -13,13 +13,15 @@ from agent.io.stt.whisper_stt import WhisperSTT
 from agent.io.audio.recorder import record_audio
 from agent.io.audio.player import play_audio
 from agent.llm.service import LLMService
-from agent.io.tts.tts_koko import TextToSpeechService
+# from agent.io.tts.tts_koko import TextToSpeechService
 # from agent.io.tts.emotion import analyze_emotion
+from agent.io.tts.tts_pocket import TextToSpeechService
+from agent.io.stt.faster_whisper import FasterWhisperSTT
 
 console = Console()
 
 def main():
-    stt = WhisperSTT()
+    stt = FasterWhisperSTT()
     tts = TextToSpeechService()
 
     prompt = PromptBuilder().build()

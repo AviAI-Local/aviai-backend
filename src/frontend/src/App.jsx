@@ -4,7 +4,7 @@ import VoiceChat from '../components/VoiceChat';
 function App() {
   return (
     <div>
-      <VoiceChat />
+      <VoiceChat/>
     </div>
   );
 }

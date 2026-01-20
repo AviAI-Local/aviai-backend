@@ -103,6 +103,17 @@ class FasterWhisperSTT:
         finally:
             self._stream = None
 
+    def transcribe(self, audio_data: np.array) -> str:
+        segments, _ = self.model.transcribe(
+            audio_data,
+                language=self.language,
+                beam_size=1,
+                vad_filter=True,
+                vad_parameters=dict(min_silence_duration_ms=500),
+                temperature=0,
+            )
+        return " ".join(seg.text for seg in segments).strip()
+
     def listen_once(self) -> str:
         """
         Blocks until the user finishes speaking, then returns the utterance as a string.

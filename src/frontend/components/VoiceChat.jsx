@@ -1,104 +1,172 @@
 import { useRef, useState } from "react";
 
+const TTS_SAMPLE_RATE = 24000;
+const MIC_SAMPLE_RATE = 16000;
+
+// ========== AUDIO CONVERSION UTILITIES ==========
+
+function pcm16ToFloat32(pcm16Array) {
+  const float32 = new Float32Array(pcm16Array.length);
+  for (let i = 0; i < pcm16Array.length; i++) {
+    float32[i] = pcm16Array[i] / 32768;
+  }
+  return float32;
+}
+
+function float32ToPcm16(float32Array) {
+  const pcm16 = new Int16Array(float32Array.length);
+  for (let i = 0; i < float32Array.length; i++) {
+    const s = Math.max(-1, Math.min(1, float32Array[i]));
+    pcm16[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
+  }
+  return pcm16;
+}
+
+// ========== AUDIO OUTPUT (TTS) ==========
+
+async function initAudioOutput(audioCtxRef) {
+  audioCtxRef.current = new AudioContext({ sampleRate: TTS_SAMPLE_RATE });
+  await audioCtxRef.current.resume();
+}
+
+function playAudio(audioData, audioCtxRef, onPlaybackComplete) {
+  const pcm16 = new Int16Array(audioData);
+  const float32 = pcm16ToFloat32(pcm16);
+
+  const ctx = audioCtxRef.current;
+  const buffer = ctx.createBuffer(1, float32.length, TTS_SAMPLE_RATE);
+  buffer.copyToChannel(float32, 0);
+
+  const source = ctx.createBufferSource();
+  source.buffer = buffer;
+  source.connect(ctx.destination);
+
+  source.onended = onPlaybackComplete;
+  source.start();
+}
+
+// ========== MICROPHONE INPUT ==========
+
+async function initMicrophone(micCtxRef) {
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  micCtxRef.current = new AudioContext({ sampleRate: MIC_SAMPLE_RATE });
+  await micCtxRef.current.resume();
+  return stream;
+}
+
+function setupProcessor(stream, micCtxRef, processorRef, onAudioData) {
+  const src = micCtxRef.current.createMediaStreamSource(stream);
+  processorRef.current = micCtxRef.current.createScriptProcessor(4096, 1, 1);
+
+  src.connect(processorRef.current);
+  processorRef.current.connect(micCtxRef.current.destination);
+
+  processorRef.current.onaudioprocess = (e) => {
+    const input = e.inputBuffer.getChannelData(0);
+    const pcm16 = float32ToPcm16(input);
+    onAudioData(pcm16.buffer);
+  };
+}
+
+// ========== WEBSOCKET HELPERS ==========
+
+function sendJson(wsRef, message) {
+  if (wsRef.current?.readyState === WebSocket.OPEN) {
+    wsRef.current.send(JSON.stringify(message));
+  }
+}
+
+// ========== MAIN COMPONENT ==========
+
 export default function VoiceChat() {
-  const wsRef = useRef(null);
+  // WebSocket refs
+  const sessionWsRef = useRef(null);
+  const conversationWsRef = useRef(null);
+
+  // Audio refs
   const audioCtxRef = useRef(null);
   const micCtxRef = useRef(null);
   const processorRef = useRef(null);
-  const allowMicRef = useRef(true);
   const speakingRef = useRef(false);
 
-  const [isSpeaking, setIsSpeaking] = useState(false);
+  // State
+  const [sessionId, setSessionId] = useState(null);
   const [connected, setConnected] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const [latestResponse, setLatestResponse] = useState("");
+  const [voice, setVoice] = useState("cosette");
+  const [isLoading, setIsLoading] = useState(false)
 
-  const TTS_SAMPLE_RATE = 24000;
-  const MIC_SAMPLE_RATE = 16000;
+  const handleMicAudioData = (audioBuffer) => {
+    if (!speakingRef.current) return;
+    if (!conversationWsRef.current || conversationWsRef.current.readyState !== WebSocket.OPEN) return;
 
-  const start = async () => {
+    conversationWsRef.current.send(audioBuffer);
+  };
+
+  const connectSession = async () => {
     if (connected) return;
+    setIsLoading(true)
 
-    // ---------- OUTPUT AUDIO ----------
-    audioCtxRef.current = new AudioContext({ sampleRate: TTS_SAMPLE_RATE });
-    await audioCtxRef.current.resume();
+    // Initialize audio contexts
+    await initAudioOutput(audioCtxRef);
 
-    // ---------- WEBSOCKET ----------
-    wsRef.current = new WebSocket("ws://localhost:8000/voice");
-    wsRef.current.binaryType = "arraybuffer";
+    // 1. Connect to session endpoint
+    sessionWsRef.current = new WebSocket("ws://localhost:8000/session/connect");
 
-    wsRef.current.onopen = () => {
-      setConnected(true);
+    sessionWsRef.current.onopen = () => {
+      // Send initial voice preference
+      sendJson(sessionWsRef, { voice });
     };
 
-    wsRef.current.onmessage = (event) => {
-      if (typeof event.data === "string") {
-        const msg = JSON.parse(event.data);
+    sessionWsRef.current.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
 
-        if (msg.type === "status") {
-          allowMicRef.current = msg.state === "listening";
-        }
+      if (msg.type === "session_created") {
+        const newSessionId = msg.session_id;
+        setSessionId(newSessionId);
+        console.log("Session created:", newSessionId, "Voice:", msg.voice);
+        setIsLoading(false)
 
-        if (msg.type === "assistant_text") {
-          setLatestResponse(msg.content);
-        }
+        // 2. Connect to conversation endpoint with session ID
+        conversationWsRef.current = new WebSocket("ws://localhost:8000/session/conversation");
+        conversationWsRef.current.binaryType = "arraybuffer";
 
-        return;
+        conversationWsRef.current.onopen = async () => {
+          // Send session ID
+          sendJson(conversationWsRef, { session_id: newSessionId });
+
+          // Setup microphone
+          const stream = await initMicrophone(micCtxRef);
+          setupProcessor(stream, micCtxRef, processorRef, handleMicAudioData);
+
+          setConnected(true);
+        };
+
+        conversationWsRef.current.onmessage = handleConversationMessage;
       }
 
-      // ---------- PLAY TTS AUDIO ----------
-      const pcm = new Int16Array(event.data);
-      const f32 = new Float32Array(pcm.length);
-
-      for (let i = 0; i < pcm.length; i++) {
-        f32[i] = pcm[i] / 32768;
+      if (msg.type === "voice_updated") {
+        console.log("Voice updated to:", msg.voice);
       }
-
-      const ctx = audioCtxRef.current;
-      const buffer = ctx.createBuffer(1, f32.length, TTS_SAMPLE_RATE);
-      buffer.copyToChannel(f32, 0);
-
-      const source = ctx.createBufferSource();
-      source.buffer = buffer;
-      source.connect(ctx.destination);
-
-      source.onended = () => {
-        wsRef.current?.send(
-          JSON.stringify({ type: "audio_playback_complete" })
-        );
-      };
-
-      source.start();
     };
+  };
 
-    // ---------- MIC ----------
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  const handleConversationMessage = (event) => {
+    if (typeof event.data === "string") {
+      const msg = JSON.parse(event.data);
 
-    micCtxRef.current = new AudioContext({ sampleRate: MIC_SAMPLE_RATE });
-    await micCtxRef.current.resume();
-
-    const src = micCtxRef.current.createMediaStreamSource(stream);
-
-    processorRef.current =
-      micCtxRef.current.createScriptProcessor(4096, 1, 1);
-
-    src.connect(processorRef.current);
-    processorRef.current.connect(micCtxRef.current.destination);
-
-    processorRef.current.onaudioprocess = (e) => {
-      if (!speakingRef.current) return;
-      if (!allowMicRef.current) return;
-      if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
-
-      const input = e.inputBuffer.getChannelData(0);
-      const pcm = new Int16Array(input.length);
-
-      for (let i = 0; i < input.length; i++) {
-        const s = Math.max(-1, Math.min(1, input[i]));
-        pcm[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
+      if (msg.type === "assistant_text") {
+        setLatestResponse(msg.content);
       }
 
-      wsRef.current.send(pcm.buffer);
-    };
+      return;
+    }
+
+    // Binary data = TTS audio
+    playAudio(event.data, audioCtxRef, () => {
+      sendJson(conversationWsRef, { type: "audio_playback_complete" });
+    });
   };
 
   const toggleSpeaking = () => {
@@ -109,17 +177,82 @@ export default function VoiceChat() {
     setIsSpeaking(next);
 
     if (!next) {
-      wsRef.current?.send(
-        JSON.stringify({ type: "end_of_utterance" })
-      );
+      sendJson(conversationWsRef, { type: "end_of_utterance" });
+    }
+  };
+
+  const disconnect = async () => {
+    if (!sessionId) {
+      console.log("No sessionId, cannot disconnect");
+      return;
+    }
+
+    console.log("Starting disconnect for session:", sessionId);
+
+    // Call disconnect endpoint
+    try {
+      console.log("Creating WebSocket to /session/disconnect");
+      const disconnectWs = new WebSocket("ws://localhost:8000/session/disconnect");
+
+      disconnectWs.onopen = () => {
+        console.log("Disconnect WebSocket OPENED successfully");
+        console.log("Sending session_id:", sessionId);
+        sendJson({ current: disconnectWs }, { session_id: sessionId });
+      };
+
+      disconnectWs.onmessage = (event) => {
+        console.log("Received message from disconnect endpoint:", event.data);
+      };
+
+      disconnectWs.onerror = (error) => {
+        console.error("Disconnect WebSocket ERROR:", error);
+      };
+
+      disconnectWs.onclose = (event) => {
+        console.log("Disconnect WebSocket CLOSED:", event.code, event.reason);
+      };
+
+      // Close all connections after delay
+      setTimeout(() => {
+        console.log("Timeout: closing all connections");
+        disconnectWs.close();
+        sessionWsRef.current?.close();
+        conversationWsRef.current?.close();
+
+        setConnected(false);
+        setSessionId(null);
+        setLatestResponse("");
+      }, 500);
+
+    } catch (error) {
+      console.error("Error during disconnect:", error);
+      // Fallback: close connections directly
+      sessionWsRef.current?.close();
+      conversationWsRef.current?.close();
+      setConnected(false);
+      setSessionId(null);
+      setLatestResponse("");
     }
   };
 
   return (
     <div style={{ padding: 40, maxWidth: 600 }}>
-      <button onClick={start} disabled={connected}>
-        {connected ? "Connected" : "Connect"}
-      </button>
+      <h2>Voice Chat</h2>
+
+      <div>
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <button onClick={connectSession} disabled={connected}>
+            {connected ? "Connected" : "Connect"}
+          </button>
+        )}
+        {!isLoading && connected && (
+          <button onClick={disconnect} style={{ marginLeft: 10 }}>
+            Disconnect
+          </button>
+        )}
+      </div>
 
       <div style={{ marginTop: 20 }}>
         <button onClick={toggleSpeaking} disabled={!connected}>

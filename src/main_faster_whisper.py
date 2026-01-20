@@ -1,11 +1,3 @@
-import warnings
-
-warnings.filterwarnings(
-    "ignore",
-    category=RuntimeWarning,
-    message=r".*(invalid value|divide by zero|overflow) encountered in matmul.*",
-)
-
 import threading
 import time
 import numpy as np
@@ -27,14 +19,6 @@ from agent.io.stt.faster_whisper import FasterWhisperSTT
 # from agent.io.tts.emotion import analyze_emotion
 
 console = Console()
-
-import warnings
-
-warnings.filterwarnings(
-    "ignore",
-    message=".*invalid value encountered in matmul.*",
-    category=RuntimeWarning,
-)
 
 def main():
     stt = FasterWhisperSTT(model_size="small", silence_db=-45, end_silence_sec=1.2)

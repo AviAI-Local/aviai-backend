@@ -92,7 +92,7 @@ class LLMService:
         # content = re.sub(r"\s*\([^)]*\)\s*", " ", content).strip()
 
         llm_response = self.parse_response(response)
-        console.log(f"Parsed LLM response: {llm_response}")
+        # console.log(f"Parsed LLM response: {llm_response}")
 
         return llm_response
 

@@ -1,3 +1,10 @@
+import warnings
+warnings.filterwarnings(
+    "ignore",
+    category=RuntimeWarning,
+    message=r".*(invalid value|divide by zero|overflow) encountered in matmul.*",
+)
+
 import numpy as np
 from pocket_tts import TTSModel
 
