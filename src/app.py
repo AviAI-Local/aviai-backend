@@ -4,7 +4,6 @@ from rich.console import Console
 import json
 
 from agent.session.service import Session
-from agent.io.stt.faster_whisper import FasterWhisperSTT
 
 console = Console()
 

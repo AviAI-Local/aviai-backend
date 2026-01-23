@@ -8,7 +8,7 @@ from langchain_ollama import ChatOllama
 from langchain_core.runnables.history import RunnableWithMessageHistory
 
 from agent.prompt.builder import PromptBuilder
-from agent.memory.history import get_session_history
+from agent.history.service import get_session_history
 from agent.io.stt.whisper_stt import WhisperSTT
 from agent.io.audio.recorder import record_audio
 from agent.io.audio.player import play_audio

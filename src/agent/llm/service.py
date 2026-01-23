@@ -4,7 +4,7 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 
 from agent.prompt.templates import STATIC_PROMPT
 from rich.console import Console
-from agent.model.response import LLMResponse
+from agent.llm.schema import LLMResponse
 
 console = Console()
 
@@ -47,24 +47,31 @@ class LLMService:
             # 3. Remove markdown code fences
             cleaned = re.sub(r"```(?:json)?", "", content).replace("```", "").strip()
 
-            # 4. Attempt JSON parsing
+            # 4. Fix newlines and control characters in JSON strings
+            # Replace literal newlines within the content with spaces
+            cleaned = cleaned.replace('\n', ' ')
+            # Normalize multiple spaces to single space
+            cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+
+            # 5. Attempt JSON parsing
             data = json.loads(cleaned)
 
-            # 5. Validate required keys (important!)
+            # 6. Validate required keys (important!)
             if not isinstance(data, dict):
                 raise ValueError("Parsed JSON is not an object")
 
             if "response" not in data:
                 raise KeyError("Missing 'response' field")
 
-            # 6. Fill optional fields safely
+            # 7. Fill optional fields safely
             data.setdefault("avatar_instructions", "neutral")
 
             return LLMResponse(**data)
 
         except Exception as e:
-            # Optional: log for debugging
-            # logger.warning("LLM response parsing failed: %s", e)
+            # Log for debugging
+            # if hasattr(response, "content"):
+                # console.log(f"[yellow]Response content: {response.content}[/yellow]")
             return default_response
 
 
@@ -83,16 +90,13 @@ class LLMService:
             config={"session_id": self.session_id},
         )
 
-        # response = re.sub(r"\s*\([^)]*\)\s*", " ", response).strip()
+        # console.log(f"[cyan]Raw LLM response: {response}[/cyan]")
 
-        # console.log(f"Raw LLM response: {response}")
-
-        # content = response.content if hasattr(response, "content") else str(response)
-
-        # content = re.sub(r"\s*\([^)]*\)\s*", " ", content).strip()
+        # if hasattr(response, "content"):
+            # console.log(f"[cyan]Response content: {response.content}[/cyan]")
 
         llm_response = self.parse_response(response)
-        # console.log(f"Parsed LLM response: {llm_response}")
+        # console.log(f"[green]Parsed LLM response: {llm_response}[/green]")
 
         return llm_response
 

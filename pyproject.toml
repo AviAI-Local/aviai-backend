@@ -25,7 +25,10 @@ dependencies = [
     "peft>=0.15.2",
     "setuptools>=80.9.0",
     "mlx==0.30.3",
-    "airllm==2.11.0"
+    "airllm==2.11.0",
+
+    # Pin NumPy for Numba compatibility
+    "numpy<2.3",
 ]
 
 [dependency-groups]

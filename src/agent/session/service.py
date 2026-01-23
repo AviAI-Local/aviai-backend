@@ -1,9 +1,11 @@
+import time
 from agent.prompt.builder import PromptBuilder
-from agent.memory.history import get_session_history
+from agent.history.service import get_session_history
 from agent.llm.service import LLMService
 from agent.io.tts.tts_pocket import TextToSpeechService
 from agent.io.stt.faster_whisper import FasterWhisperSTT
 from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from rich.console import Console
 from fastapi import WebSocket, WebSocketDisconnect
@@ -12,8 +14,11 @@ import json
 import numpy as np
 import asyncio
 from typing import Optional
-from agent.io.stt.faster_whisper import FasterWhisperSTT
-
+from datetime import datetime
+from zoneinfo import ZoneInfo
+from agent.history.service import ConversationHistoryService
+from agent.history.schema import ConversationHistoryResponse
+from agent.config import LLM_PROVIDER, LLM_MODEL, LLM_BASE_URL, TTS_VOICE
 
 console = Console()
 
@@ -23,15 +28,45 @@ class Session:
     # Will change to store in db after integrate the backend 
     _registry = {}
 
-    def __init__(self, voice: str = "cosette"):
+    def __init__(self, voice: str = "cosette", llm_provider: str = "lmstudio", base_url: str = None, model: str = None):
         self.session_id = str(uuid.uuid4())
         self.voice = voice
         self.buffer = bytearray()
         self.is_speaking = False
+        self.session_start_time = datetime.now(ZoneInfo("Asia/Ho_Chi_Minh"))
+        
+        self.service = ConversationHistoryService(history_response=ConversationHistoryResponse(
+            conversation_history_id=str(uuid.uuid4()),
+            session_id=self.session_id,
+            llm_provider=llm_provider,
+            model=model,
+            content=[],
+            timestamp=self.session_start_time.isoformat()
+        ))
+        self.service.save_conversation_history()
+
+        # Debug: Print LLM provider configuration
+        console.print(f"[magenta]============ LLM Configuration ============[/magenta]")
+        console.print(f"[magenta]Provider: {llm_provider}[/magenta]")
+        console.print(f"[magenta]Base URL: {base_url}[/magenta]")
+        console.print(f"[magenta]Model: {model}[/magenta]")
+        console.print(f"[magenta]===========================================[/magenta]")
 
         # Create session-specific LLM service
         prompt = PromptBuilder().build()
-        llm = ChatOllama(model="gemma3")
+
+        # Conditional LLM initialization based on provider
+        if llm_provider == "lmstudio":
+            llm = ChatOpenAI(
+                base_url=base_url,
+                api_key="not-needed",
+                model=model
+            )
+            console.print(f"[green]✓ Using LM Studio with model: {model}[/green]")
+        else:  # default to ollama
+            llm = ChatOllama(model=model)
+            console.print(f"[green]✓ Using Ollama with model: {model}[/green]")
+
         chain = prompt | llm
         chat = RunnableWithMessageHistory(
             chain,
@@ -69,12 +104,20 @@ class Session:
         try:
             msg = await websocket.receive()
             config = json.loads(msg.get("text", "{}"))
-            voice = config.get("voice", "cosette")
+            voice = config.get("voice") or TTS_VOICE
+            llm_provider = config.get("llm_provider") or LLM_PROVIDER
+            llm_provider = LLM_PROVIDER
+
+            base_url = config.get("base_url") or LLM_BASE_URL
+            model = config.get("model") or LLM_MODEL
         except:
             voice = "cosette"
+            llm_provider = "ollama"
+            base_url = None
+            model = None
 
         # Create new session
-        session = cls(voice=voice)
+        session = cls(voice=voice, llm_provider=llm_provider, base_url=base_url, model=model)
 
         # Send session info to client
         await websocket.send_json({
@@ -86,22 +129,40 @@ class Session:
         # Keep connection alive for session management
         try:
             while True:
-                msg = await websocket.receive()
-                payload = json.loads(msg.get("text", "{}"))
+                try:
+                    # Timeout: if no message in 30s, check if client is alive
+                    msg = await asyncio.wait_for(
+                        websocket.receive(),
+                        timeout=30.0
+                    )
+                    payload = json.loads(msg.get("text", "{}"))
 
-                if payload["type"] == "update_voice":
-                    session.voice = payload["voice"]
-                    session.tts = TextToSpeechService(voice=payload["voice"])
-                    await websocket.send_json({
-                        "type": "voice_updated",
-                        "voice": session.voice
-                    })
+                    # Handle ping from client
+                    if payload.get("type") == "ping":
+                        await websocket.send_json({"type": "pong"})
+                        continue
+
+                    if payload.get("type") == "update_voice":
+                        session.voice = payload["voice"]
+                        session.tts = TextToSpeechService(voice=payload["voice"])
+                        await websocket.send_json({
+                            "type": "voice_updated",
+                            "voice": session.voice
+                        })
+
+                except asyncio.TimeoutError:
+                    # No message received, send ping to check if client is alive
+                    try:
+                        await websocket.send_json({"type": "ping"})
+                    except:
+                        console.print(f"[red]Session {session.session_id} connection lost[/red]")
+                        break
 
         except WebSocketDisconnect:
-            session.cleanup()
             console.print(f"[red]Session {session.session_id} disconnected[/red]")
         except Exception as e:
             console.print(f"[red]Error in session connect: {e}[/red]")
+        finally:
             session.cleanup()
 
     async def handle_conversation(self, websocket: WebSocket):
@@ -150,11 +211,13 @@ class Session:
 
                         console.print(f"[yellow]{self.session_id} - You:[/yellow] {text}")
 
+                        start = time.perf_counter()
                         # Generate response
                         response = await asyncio.to_thread(
                             self.llm_service.get_response,
                             text
                         )
+                        llm_time = time.perf_counter() - start
 
                         content = response.response
                         await websocket.send_json({
@@ -164,6 +227,7 @@ class Session:
 
                         console.print(f"[cyan]{self.session_id} - Assistant:[/cyan] {content}")
 
+                        start = time.perf_counter()
                         # Generate TTS
                         sr, audio_out = await asyncio.to_thread(
                             self.tts.long_form_synthesize,
@@ -172,8 +236,19 @@ class Session:
                             0.5,
                             0.5
                         )
+                        tts_time = time.perf_counter() - start
 
                         pcm_bytes = (audio_out * 32767).astype(np.int16).tobytes()
+                        console.print(f"[dim]LLM time: {llm_time:.2f}s | TTS time: {tts_time:.2f}s[/dim]")
+
+                        # Save conversation entry to history file with timing
+                        self.service.add_conversation_entry(
+                            user_query=text,
+                            response_data=response,
+                            # user_emotion="neutral",
+                            llm_time=llm_time,
+                            tts_time=tts_time
+                        )
 
                         self.is_speaking = True
                         await websocket.send_bytes(pcm_bytes)
