@@ -1,0 +1,86 @@
+{
+    "conversation_history_id": "8663c37b-9eab-450f-9337-b7171b2cf128",
+    "session_id": "1c4be141-60dc-4fe0-a2ff-2dc59b654d33",
+    "llm_provider": "lmstudio",
+    "model": "qwen/qwen3-vl-8b",
+    "content": [
+        {
+            "timestamp": 1769185722.566603,
+            "datetime": "2026-01-23T23:28:42.566603+07:00",
+            "user_query": "Hello, can you introduce yourself?",
+            "response": "I'm Linh, 38, flight engineer at VAECO. I've been flying for 15 years. I was in the cockpit when the incident happened.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a calm, slightly nervous tone, reflecting professional composure under stress.",
+            "avatar_instructions": "sad",
+            "llm_time": 7.78,
+            "tts_time": 2.98
+        },
+        {
+            "timestamp": 1769185748.198311,
+            "datetime": "2026-01-23T23:29:08.198311+07:00",
+            "user_query": "What did you do on that day?",
+            "response": "I was on duty as flight engineer. We were preparing to land at Anyairport. I monitored systems, and when the noise hit, I stayed focused on instruments while pilots reacted.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a calm, slightly nervous tone, reflecting professional composure under stress.",
+            "avatar_instructions": "sad",
+            "llm_time": 7.84,
+            "tts_time": 1.78
+        },
+        {
+            "timestamp": 1769185776.723712,
+            "datetime": "2026-01-23T23:29:36.723712+07:00",
+            "user_query": "Do you see anyone else?",
+            "response": "Only the captain and co-pilot were in the cockpit. I was focused on my job and didn't interact much.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a calm, slightly nervous tone, reflecting professional composure under stress.",
+            "avatar_instructions": "sad",
+            "llm_time": 7.56,
+            "tts_time": 0.96
+        },
+        {
+            "timestamp": 1769185800.2124,
+            "datetime": "2026-01-23T23:30:00.212400+07:00",
+            "user_query": "Did you hear anything?",
+            "response": "I heard the radio altimeter callouts: '500 feet,' 'Minimums,' then '100-50-40-30-20-10.' I also heard pilots talking briefly after the noise.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a calm, slightly nervous tone, reflecting professional composure under stress.",
+            "avatar_instructions": "sad",
+            "llm_time": 8.31,
+            "tts_time": 2.39
+        },
+        {
+            "timestamp": 1769185828.624421,
+            "datetime": "2026-01-23T23:30:28.624421+07:00",
+            "user_query": "Did you see outside the window?",
+            "response": "I glanced outside briefly. The windshield looked fine — no cracks or blood. I didn’t see any obvious cause for the noise.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a calm, slightly nervous tone, reflecting professional composure under stress.",
+            "avatar_instructions": "sad",
+            "llm_time": 7.8,
+            "tts_time": 1.37
+        },
+        {
+            "timestamp": 1769185855.714313,
+            "datetime": "2026-01-23T23:30:55.714313+07:00",
+            "user_query": "Is there anyone with you except the pilot and co-pilot?",
+            "response": "No, only the captain and co-pilot were in the cockpit with me.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a calm, slightly nervous tone, reflecting professional composure under stress.",
+            "avatar_instructions": "sad",
+            "llm_time": 8.09,
+            "tts_time": 0.73
+        },
+        {
+            "timestamp": 1769185871.936841,
+            "datetime": "2026-01-23T23:31:11.936841+07:00",
+            "user_query": "Okay, thank you.",
+            "response": "You're welcome. I'm here if you need more details.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a calm, slightly nervous tone, reflecting professional composure under stress.",
+            "avatar_instructions": "sad",
+            "llm_time": 8.06,
+            "tts_time": 0.6
+        }
+    ],
+    "timestamp": "2026-01-23T23:28:23.707100+07:00"
+}
