@@ -1,0 +1,31 @@
+{
+    "conversation_history_id": "db2d14a1-32d4-417c-9762-a409fc488a50",
+    "session_id": "bba6070d-e92e-4811-8673-8ba986c0a54d",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1769232517.844784,
+            "datetime": "2026-01-24T12:28:37.844784+07:00",
+            "user_query": "Hello, how are you up to?",
+            "response": "I'm alright, thank you. A bit shaken, to be honest.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 8.62,
+            "tts_time": 35.52
+        },
+        {
+            "timestamp": 1769232576.965401,
+            "datetime": "2026-01-24T12:29:36.965401+07:00",
+            "user_query": "So what did you do?",
+            "response": "I was monitoring the engine parameters, checking the vibrations, as usual.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 1.33,
+            "tts_time": 44.79
+        }
+    ],
+    "timestamp": "2026-01-24T12:27:30.416681+07:00"
+}

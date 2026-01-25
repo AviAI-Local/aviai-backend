@@ -1,0 +1,31 @@
+{
+    "conversation_history_id": "17738471-855f-467a-a200-cbdb1e302ec6",
+    "session_id": "f1f28ec6-eb37-4225-b3c1-619ed28039d9",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1769318079.011648,
+            "datetime": "2026-01-25T12:14:39.011648+07:00",
+            "user_query": "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL",
+            "response": "I don't recall that.",
+            "user_emotion": "default",
+            "voice_instructions": "nervous and anxious",
+            "avatar_instructions": "fear",
+            "llm_time": 2.1,
+            "tts_time": 2.33
+        },
+        {
+            "timestamp": 1769318091.842583,
+            "datetime": "2026-01-25T12:14:51.842583+07:00",
+            "user_query": "How how how are you?",
+            "response": "I'm... focused on my instruments. It’s unsettling, honestly.",
+            "user_emotion": "default",
+            "voice_instructions": "nervous and anxious",
+            "avatar_instructions": "fear",
+            "llm_time": 1.44,
+            "tts_time": 4.75
+        }
+    ],
+    "timestamp": "2026-01-25T12:14:19.431196+07:00"
+}

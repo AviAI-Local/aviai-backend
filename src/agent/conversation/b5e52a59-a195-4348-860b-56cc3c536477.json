@@ -1,0 +1,20 @@
+{
+    "conversation_history_id": "ff3fa7f9-1d80-4ef2-9f3b-64962f9e91a2",
+    "session_id": "b5e52a59-a195-4348-860b-56cc3c536477",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1769317244.65926,
+            "datetime": "2026-01-25T12:00:44.659260+07:00",
+            "user_query": "Hello, hello, hello, hello, hello, hello, hello, hello, hello, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what, what",
+            "response": "I'm sorry, I didn't quite catch that. Could you repeat the question?",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a calm, professional tone, clear and measured pace",
+            "avatar_instructions": "default",
+            "llm_time": 2.32,
+            "tts_time": 4.21
+        }
+    ],
+    "timestamp": "2026-01-25T12:00:21.986066+07:00"
+}

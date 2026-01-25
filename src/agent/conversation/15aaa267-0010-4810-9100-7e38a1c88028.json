@@ -1,0 +1,53 @@
+{
+    "conversation_history_id": "31906a6b-c523-44f0-94eb-24af64011440",
+    "session_id": "15aaa267-0010-4810-9100-7e38a1c88028",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1769224036.171492,
+            "datetime": "2026-01-24T10:07:16.171492+07:00",
+            "user_query": "Hello, how are you?",
+            "response": "I'm alright, thank you. A little shaken after hearing about the incident, but focused on assisting with the investigation.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 9.2,
+            "tts_time": 3.72
+        },
+        {
+            "timestamp": 1769224060.021165,
+            "datetime": "2026-01-24T10:07:40.021165+07:00",
+            "user_query": "So what happened?",
+            "response": "We were preparing for landing, and then there was a sudden noise and vibration. The captain ordered the co-pilot to continue the flight, and he immediately did a quick check of the engines.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "fear",
+            "llm_time": 1.57,
+            "tts_time": 3.11
+        },
+        {
+            "timestamp": 1769224087.705504,
+            "datetime": "2026-01-24T10:08:07.705504+07:00",
+            "user_query": "What did the captain find?",
+            "response": "I don't recall specifically what he found, but he seemed concerned and initiated a rapid check of the engine systems.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 1.49,
+            "tts_time": 2.04
+        },
+        {
+            "timestamp": 1769224102.276391,
+            "datetime": "2026-01-24T10:08:22.276391+07:00",
+            "user_query": "Okay, thank you.",
+            "response": "You’re welcome. I’m doing my best to recall everything clearly.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 1.27,
+            "tts_time": 1.52
+        }
+    ],
+    "timestamp": "2026-01-24T10:06:48.697093+07:00"
+}

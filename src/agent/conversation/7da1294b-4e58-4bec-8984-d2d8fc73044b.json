@@ -1,0 +1,20 @@
+{
+    "conversation_history_id": "8b4e2097-eff5-40fc-bd5d-1ade2700acc8",
+    "session_id": "7da1294b-4e58-4bec-8984-d2d8fc73044b",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1769317189.826654,
+            "datetime": "2026-01-25T11:59:49.826654+07:00",
+            "user_query": "Hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello",
+            "response": "I’m here to answer your questions.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a calm, professional tone, clear and measured pace",
+            "avatar_instructions": "default",
+            "llm_time": 2.17,
+            "tts_time": 2.1
+        }
+    ],
+    "timestamp": "2026-01-25T11:59:29.635153+07:00"
+}

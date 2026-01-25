@@ -11,7 +11,7 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from agent.prompt.builder import PromptBuilder
 from agent.memory.history import get_session_history
 from agent.llm.service import LLMService
-from agent.io.tts.tts_pocket import TextToSpeechService
+from agent.io.tts.tts_qwen import TextToSpeechService
 from agent.io.stt.faster_whisper import FasterWhisperSTT
 
 console = Console()

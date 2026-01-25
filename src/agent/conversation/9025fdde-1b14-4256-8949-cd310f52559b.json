@@ -1,0 +1,20 @@
+{
+    "conversation_history_id": "7f805b87-3f2a-4453-8915-ca56978bb853",
+    "session_id": "9025fdde-1b14-4256-8949-cd310f52559b",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1769318025.237922,
+            "datetime": "2026-01-25T12:13:45.237922+07:00",
+            "user_query": "Hello, hello, hello, what's up?",
+            "response": "I'm here to answer your questions about the incident.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 1.95,
+            "tts_time": 3.33
+        }
+    ],
+    "timestamp": "2026-01-25T12:13:25.572968+07:00"
+}

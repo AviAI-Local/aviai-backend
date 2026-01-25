@@ -1,0 +1,8 @@
+{
+    "conversation_history_id": "6921a5c7-b95b-4e0e-9804-a248fd1e30e1",
+    "session_id": "20a9a691-9541-4584-850b-7513b6529ca8",
+    "llm_provider": "lmstudio",
+    "model": "qwen/qwen3-vl-8b",
+    "content": [],
+    "timestamp": "2026-01-25T11:32:03.205768+07:00"
+}

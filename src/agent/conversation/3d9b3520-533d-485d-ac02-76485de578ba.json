@@ -1,0 +1,31 @@
+{
+    "conversation_history_id": "68fd9be9-a73d-4ee5-a2cf-9a3e79a5dbe3",
+    "session_id": "3d9b3520-533d-485d-ac02-76485de578ba",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1769318184.391384,
+            "datetime": "2026-01-25T12:16:24.391384+07:00",
+            "user_query": "Hello, what's up?",
+            "response": "I'm here to answer your questions about the incident, please proceed.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 2.13,
+            "tts_time": 5.11
+        },
+        {
+            "timestamp": 1769318204.019661,
+            "datetime": "2026-01-25T12:16:44.019661+07:00",
+            "user_query": "What were you doing?",
+            "response": "I was monitoring the engine parameters, checking the vibrations… it was focused, you know?",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "fear",
+            "llm_time": 1.52,
+            "tts_time": 6.1
+        }
+    ],
+    "timestamp": "2026-01-25T12:16:03.031220+07:00"
+}
