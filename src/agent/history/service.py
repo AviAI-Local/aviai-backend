@@ -14,9 +14,9 @@ console = Console()
 
 
 class ConversationHistoryService:
-    def __init__(self, history_response: ConversationHistoryResponse, db: DBSession = None):
+    def __init__(self, history_response: ConversationHistoryResponse):
         self.history_response = history_response
-        self.db = db
+        # self.db = db
         self.history_dir = os.path.join(os.path.dirname(__file__), "..", "conversation")
         os.makedirs(self.history_dir, exist_ok=True)
 
@@ -54,7 +54,7 @@ class ConversationHistoryService:
         # Append to history_response.content (the source of truth)
         self.history_response.content.append(entry.model_dump())
 
-        self.save_conversation_history()
+        self.create_conversation_history()
         console.print(f"[dim]Conversation entry saved to {self.history_response.session_id}.json[/dim]")
 
 

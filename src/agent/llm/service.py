@@ -44,8 +44,10 @@ class LLMService:
             # 2. Remove parenthetical asides (e.g. (laughs), (pause))
             content = re.sub(r"\s*\([^)]*\)\s*", " ", content).strip()
 
-            # 3. Remove markdown code fences
-            cleaned = re.sub(r"```(?:json)?", "", content).replace("```", "").strip()
+            # 3. Remove markdown code fences (handles ```json, ``` with newlines)
+            # cleaned = re.sub(r"```(?:json)?", "", content).replace("```", "").strip()
+            cleaned = re.sub(r"```(?:json)?\s*", "", content)
+            cleaned = re.sub(r"\s*```", "", cleaned).strip()
 
             # 4. Fix newlines and control characters in JSON strings
             # Replace literal newlines within the content with spaces
@@ -53,17 +55,20 @@ class LLMService:
             # Normalize multiple spaces to single space
             cleaned = re.sub(r'\s+', ' ', cleaned).strip()
 
-            # 5. Attempt JSON parsing
+            # 5. Fix invalid escape sequences (LLM sometimes outputs \' which is not valid JSON)
+            cleaned = cleaned.replace("\\'", "'")
+
+            # 6. Attempt JSON parsing
             data = json.loads(cleaned)
 
-            # 6. Validate required keys (important!)
+            # 7. Validate required keys (important!)
             if not isinstance(data, dict):
                 raise ValueError("Parsed JSON is not an object")
 
             if "response" not in data:
                 raise KeyError("Missing 'response' field")
 
-            # 7. Fill optional fields safely
+            # 8. Fill optional fields safely
             data.setdefault("avatar_instructions", "neutral")
 
             return LLMResponse(**data)

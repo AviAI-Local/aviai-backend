@@ -43,7 +43,7 @@ class Session:
             content=[],
             timestamp=self.session_start_time.isoformat()
         ))
-        self.service.save_conversation_history()
+        self.service.create_conversation_history()
 
         # Debug: Print LLM provider configuration
         console.print(f"[magenta]============ LLM Configuration ============[/magenta]")
