@@ -121,7 +121,7 @@ export default function VoiceChat() {
   const [connected, setConnected] = useState(false);     // Are we fully connected?
   const [isSpeaking, setIsSpeaking] = useState(false);   // Is user currently talking?
   const [latestResponse, setLatestResponse] = useState(""); // Assistant's latest text
-  const [voice, setVoice] = useState("cosette");         // TTS voice preference
+  const [voice, setVoice] = useState("serena");         // TTS voice preference
   const [isLoading, setIsLoading] = useState(false)      // Loading state for connect
 
   // ==================== HANDLE MIC AUDIO DATA ====================

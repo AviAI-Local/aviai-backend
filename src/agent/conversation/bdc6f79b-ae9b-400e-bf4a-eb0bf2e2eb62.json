@@ -1,0 +1,31 @@
+{
+    "conversation_history_id": "18270b02-2168-435a-a1a0-c84f62ef533e",
+    "session_id": "bdc6f79b-ae9b-400e-bf4a-eb0bf2e2eb62",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1769361735.758384,
+            "datetime": "2026-01-26T00:22:15.758384+07:00",
+            "user_query": "Hello, what's up?",
+            "response": "I'm here to answer your questions about the incident. Let's begin.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 7.88,
+            "tts_time": 5.25
+        },
+        {
+            "timestamp": 1769361753.848632,
+            "datetime": "2026-01-26T00:22:33.848632+07:00",
+            "user_query": "What are you up to?",
+            "response": "Just... reviewing my checklist, sir. Ensuring everything was as it should be.",
+            "user_emotion": "default",
+            "voice_instructions": "nervous",
+            "avatar_instructions": "fear",
+            "llm_time": 1.27,
+            "tts_time": 5.43
+        }
+    ],
+    "timestamp": "2026-01-26T00:21:44.651819+07:00"
+}
