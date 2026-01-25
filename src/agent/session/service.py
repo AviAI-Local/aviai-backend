@@ -19,11 +19,14 @@ from agent.history.service import ConversationHistoryService
 from agent.history.schema import ConversationHistoryResponse
 from agent.config import LLM_PROVIDER, LLM_MODEL, LLM_BASE_URL, TTS_VOICE
 
-# ── Hardcoded LuxTTS import ─────────────────────────────────────────────────
-import sys
+# ── Path setup (critical fix) ───────────────────────────────────────────────
 import os
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_REF_WAV = os.path.join(BASE_DIR, "127389__acclivity__thetimehascome.wav")
 
+# ── Hardcoded LuxTTS import ─────────────────────────────────────────────────
+import sys
 
 from agent.io.tts.zipvoice.zipvoice.luxvoice import LuxTTS
 
@@ -56,13 +59,15 @@ class Session:
         self.session_start_time = datetime.now(ZoneInfo("Asia/Ho_Chi_Minh"))
 
         # Reference fallback
-        self.reference_audio_path = reference_audio_path
-        if not self.reference_audio_path:
-            self.reference_audio_path = r"127389__acclivity__thetimehascome.wav"
-            console.print("[yellow]No reference path → using fallback[/yellow]")
+        self.reference_audio_path = reference_audio_path or DEFAULT_REF_WAV
 
         if not os.path.exists(self.reference_audio_path):
-            console.print(f"[red]Reference missing: {self.reference_audio_path}[/red]")
+            console.print(
+                f"[bold red]Reference audio NOT FOUND:[/bold red] {self.reference_audio_path}\n"
+                f"    → Make sure the file is in the same folder as service.py"
+            )
+        else:
+            console.print(f"[cyan]Using reference audio: {self.reference_audio_path}[/cyan]")
 
         # LuxTTS
         device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -75,16 +80,19 @@ class Session:
         )
         self.sample_rate = 48000
 
-        # Pre-encode
-        try:
-            self.encoded_prompt = self.tts_model.encode_prompt(
-                self.reference_audio_path,
-                rms=0.01
-            )
-            console.print(f"[green]Reference encoded OK: {self.reference_audio_path}[/green]")
-        except Exception as e:
-            console.print(f"[red]Encode failed: {e}[/red]")
-            self.encoded_prompt = None
+        # Pre-encode reference
+        self.encoded_prompt = None
+        if os.path.exists(self.reference_audio_path):
+            try:
+                self.encoded_prompt = self.tts_model.encode_prompt(
+                    self.reference_audio_path,
+                    rms=0.01
+                )
+                console.print(f"[green]Reference encoded successfully[/green]")
+            except Exception as e:
+                console.print(f"[red]Failed to encode reference: {e}[/red]")
+        else:
+            console.print("[yellow]Skipping reference encoding (file missing)[/yellow]")
 
         # LLM & history
         self.service = ConversationHistoryService(history_response=ConversationHistoryResponse(
@@ -121,7 +129,10 @@ class Session:
         )
 
         Session._registry[self.session_id] = self
-        console.print(f"[green]Session {self.session_id} ready (ref: {self.reference_audio_path})[/green]")
+        console.print(
+            f"[green]Session {self.session_id} ready "
+            f"(ref: {os.path.basename(self.reference_audio_path)})[/green]"
+        )
 
     @classmethod
     def get_by_id(cls, session_id: str) -> Optional["Session"]:
@@ -141,9 +152,7 @@ class Session:
             base_url = config.get("base_url") or LLM_BASE_URL
             model = config.get("model") or LLM_MODEL
 
-            ref_path = config.get("reference_audio_path")
-            if not ref_path:
-                ref_path = r"C:\Users\Cypher\Downloads\127389__acclivity__thetimehascome.wav"
+            ref_path = config.get("reference_audio_path") or DEFAULT_REF_WAV
 
             session = cls(
                 voice=voice,
@@ -162,7 +171,7 @@ class Session:
                 llm_provider="ollama",
                 base_url=None,
                 model=None,
-                reference_audio_path=r"C:\Users\Cypher\Downloads\127389__acclivity__thetimehascome.wav"
+                reference_audio_path=DEFAULT_REF_WAV   # ← fixed here too
             )
 
         await websocket.send_json({
@@ -185,11 +194,14 @@ class Session:
                     if "reference_audio_path" in payload:
                         new_ref = payload["reference_audio_path"]
                         session.reference_audio_path = new_ref
-                        try:
-                            session.encoded_prompt = session.tts_model.encode_prompt(new_ref, rms=0.01)
-                            console.print(f"[green]Reference updated: {new_ref}[/green]")
-                        except Exception as err:
-                            console.print(f"[red]Update failed: {err}[/red]")
+                        if os.path.exists(new_ref):
+                            try:
+                                session.encoded_prompt = session.tts_model.encode_prompt(new_ref, rms=0.01)
+                                console.print(f"[green]Reference updated and encoded: {new_ref}[/green]")
+                            except Exception as err:
+                                console.print(f"[red]Reference update encode failed: {err}[/red]")
+                        else:
+                            console.print(f"[red]New reference not found: {new_ref}[/red]")
                     await websocket.send_json({
                         "type": "voice_updated",
                         "voice": "LuxTTS-cloned"
@@ -203,6 +215,11 @@ class Session:
             console.print(f"[red]Keep-alive error: {e}[/red]")
         finally:
             session.cleanup()
+
+    # ───────────────────────────────────────────────────────────────────────────
+    # The rest of the class (handle_conversation, _lux_long_synthesize, cleanup)
+    # remains unchanged — no path-related issues there
+    # ───────────────────────────────────────────────────────────────────────────
 
     async def handle_conversation(self, websocket: WebSocket):
         console.print(f"[green]Conversation started: {self.session_id}[/green]")
@@ -243,7 +260,6 @@ class Session:
 
                         start = time.perf_counter()
 
-                        # ── Generate with high pitch ────────────────────────────────
                         sr, audio_out = await asyncio.to_thread(
                             self._lux_long_synthesize,
                             content,
@@ -256,7 +272,7 @@ class Session:
                             continue
 
                         # Apply way higher pitch post-generation
-                        pitch_factor = 2.0 # ← WAY HIGHER (adjust 1.3–1.6)
+                        pitch_factor = 2.0  # ← WAY HIGHER (adjust 1.3–1.6)
                         if pitch_factor != 1.0 and len(audio_out) > 10:
                             new_length = int(len(audio_out) / pitch_factor)
                             if new_length > 0:

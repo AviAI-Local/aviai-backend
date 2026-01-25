@@ -1,0 +1,31 @@
+{
+    "conversation_history_id": "c35f5934-676a-4a1b-8336-df9397106f33",
+    "session_id": "d4495473-4a09-4e9f-9fb3-24937fbfcae5",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1769363838.163539,
+            "datetime": "2026-01-26T00:57:18.163539+07:00",
+            "user_query": "Hello, what's up?",
+            "response": "I'm here for the interview. Let's begin.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 1.88,
+            "tts_time": 4.04
+        },
+        {
+            "timestamp": 1769363853.405742,
+            "datetime": "2026-01-26T00:57:33.405742+07:00",
+            "user_query": "How are you?",
+            "response": "I'm… a little unsettled, to be honest. It's difficult to talk about what happened.",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "fear",
+            "llm_time": 1.36,
+            "tts_time": 5.04
+        }
+    ],
+    "timestamp": "2026-01-26T00:56:58.827521+07:00"
+}
