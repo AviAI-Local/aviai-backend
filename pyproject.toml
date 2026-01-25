@@ -9,16 +9,13 @@ dependencies = [
     # Core LLM / agent
     "langchain>=0.3.25",
     "langchain-ollama>=0.3.3",
-
     # Speech-to-text
     "openai-whisper>=20240930",
     "sounddevice>=0.5.2",
     "torchaudio>=2.6.0",
-
     # Text-to-speech
     "chatterbox-tts>=0.1.1",
     "kokoro>=0.9.4",
-
     # NLP / utils
     "nltk>=3.9.1",
     "rich>=14.0.0",
@@ -26,9 +23,11 @@ dependencies = [
     "setuptools>=80.9.0",
     "mlx==0.30.3",
     "airllm==2.11.0",
-
     # Pin NumPy for Numba compatibility
     "numpy<2.3",
+    "alembic>=1.18.1",
+    "pytz>=2025.2",
+    "psycopg2-binary>=2.9.11",
 ]
 
 [dependency-groups]

@@ -7,18 +7,20 @@ from langchain_core.chat_history import InMemoryChatMessageHistory
 from agent.history.schema import ConversationHistoryResponse, ConversationHistoryContent
 from agent.llm.schema import LLMResponse
 from rich.console import Console
+from database.model import ConversationHistory, Session as DBSession, Scenario
 
 _sessions = {}
 console = Console()
 
 
 class ConversationHistoryService:
-    def __init__(self, history_response: ConversationHistoryResponse):
+    def __init__(self, history_response: ConversationHistoryResponse, db: DBSession = None):
         self.history_response = history_response
+        self.db = db
         self.history_dir = os.path.join(os.path.dirname(__file__), "..", "conversation")
         os.makedirs(self.history_dir, exist_ok=True)
 
-    def save_conversation_history(self):
+    def create_conversation_history(self):
         """Save conversation history to a JSON file"""
         history_data = {
             "conversation_history_id": self.history_response.conversation_history_id,
@@ -54,6 +56,7 @@ class ConversationHistoryService:
 
         self.save_conversation_history()
         console.print(f"[dim]Conversation entry saved to {self.history_response.session_id}.json[/dim]")
+
 
 def get_session_history(session_id: str):
     """Get or create in-memory chat history for LangChain (separate from file storage)"""
