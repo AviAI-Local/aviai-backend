@@ -1,0 +1,20 @@
+{
+    "conversation_history_id": "642e5307-8127-46a5-a902-2ec924e8cc01",
+    "session_id": "05434088-aa42-4459-8fcb-2a125b734640",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1769363484.012888,
+            "datetime": "2026-01-26T00:51:24.012888+07:00",
+            "user_query": "Hello what's-",
+            "response": "I'm not sure what you mean. Could you please repeat the question?",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 8.61,
+            "tts_time": 5.16
+        }
+    ],
+    "timestamp": "2026-01-26T00:50:54.152824+07:00"
+}

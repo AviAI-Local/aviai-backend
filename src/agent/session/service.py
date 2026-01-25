@@ -23,10 +23,9 @@ from agent.config import LLM_PROVIDER, LLM_MODEL, LLM_BASE_URL, TTS_VOICE
 import sys
 import os
 
-LUXTTS_PATH = r"C:\Users\Cypher\Downloads\Local-LLM-Aviai\src\agent\io\tts\zipvoice\zipvoice"
-sys.path.insert(0, LUXTTS_PATH)
 
-from luxvoice import LuxTTS
+
+from agent.io.tts.zipvoice.zipvoice.luxvoice import LuxTTS
 
 import torch
 import nltk
@@ -59,7 +58,7 @@ class Session:
         # Reference fallback
         self.reference_audio_path = reference_audio_path
         if not self.reference_audio_path:
-            self.reference_audio_path = r"C:\Users\Cypher\Downloads\127389__acclivity__thetimehascome.wav"
+            self.reference_audio_path = r"127389__acclivity__thetimehascome.wav"
             console.print("[yellow]No reference path → using fallback[/yellow]")
 
         if not os.path.exists(self.reference_audio_path):
