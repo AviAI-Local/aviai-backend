@@ -60,7 +60,7 @@ uv pip install faster_whisper
    - Download and install PostgreSQL from the official website: [https://www.postgresql.org/download/](https://www.postgresql.org/download/)
    - After installation, open the PostgreSQL shell (psql) and run:
      ```sql
-     CREATE DATABASE aviai;
+     CREATE DATABASE aviai_db;
      ```
    - Make sure to remember your PostgreSQL username and password for later configuration.
 
@@ -71,8 +71,8 @@ uv pip install faster_whisper
       DB_USER=postgres
       DB_PASSWORD=123456789
       DB_HOST=localhost
-      DB_PORT=5432
-      DB_NAME=aviai
+      DB_PORT=5433
+      DB_NAME=aviai_db
      ```
    - Replace `username`, `password`, and other values with your actual database credentials and configuration
 
@@ -87,8 +87,8 @@ If you are setting up Alembic for the very first time in a new project (no `alem
    ```
 2. **Configure Alembic:**
    - Edit `alembic.ini` and set the `sqlalchemy.url` to match your database connection string from the `.env` file, or ensure your config system is set up to read from environment variables.
-   - In `migrations/env.py`, import your Base metadata (e.g., from `app.database.config import Base`) and set `target_metadata = Base.metadata`.
-   - Import all model modules in `migrations/env.py` (e.g., `from app.database import models`) to ensure Alembic can detect all models for autogeneration.
+   - In `alembic/env.py`, import your Base metadata (e.g., from `app.database.config import Base`) and set `target_metadata = Base.metadata`.
+   - Import all model modules in `alembic/env.py` (e.g., `from app.database import models`) to ensure Alembic can detect all models for autogeneration.
 3. **Generate the initial migration:**
    ```bash
    alembic revision --autogenerate -m "Initial migration"
@@ -100,8 +100,8 @@ If you are setting up Alembic for the very first time in a new project (no `alem
 
 ---
 
-### 2. Applying Migrations with an Existing `migrations/` Folder
-If the `migrations/` folder is already present:
+### 2. Applying Migrations with an Existing `alembic/` Folder
+If the `alembic/` folder is already present:
 
 1. **Ensure your `.env` file is properly configured** with your database credentials.
 2. **Run Alembic migrations to create all tables:**
@@ -111,7 +111,7 @@ If the `migrations/` folder is already present:
    This will apply all migrations to your database using your credentials from the `.env` file.
 
 **Note:**
-- You do **not** need to run `alembic init` if the `migrations/` folder is already present.
+- You do **not** need to run `alembic init` if the `alembic/` folder is already present.
 - If you encounter errors, check your database credentials in the `.env` file and ensure your database is running.
 
 ---
@@ -125,7 +125,7 @@ To update your database schema after making changes to your models:
    ```
    This will create a new migration file in the `migrations/versions/` directory.
 2. **Review the migration script:**
-   Open the generated file in `migrations/versions/` and ensure the changes are correct.
+   Open the generated file in `alembic/versions/` and ensure the changes are correct.
 3. **Apply the migration to your database:**
    ```bash
    alembic upgrade head
