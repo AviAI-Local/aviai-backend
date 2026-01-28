@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from rich.console import Console
 import json
 
-from agent.session.service import Session
+from agent.session.service import SessionService
 
 console = Console()
 
@@ -24,7 +24,7 @@ app.add_middleware(
 @app.websocket("/session/connect")
 async def session_connect(websocket: WebSocket):
     """Handle session connection - delegates to Session class"""
-    await Session.handle_connect(websocket)
+    await SessionService.handle_connect(websocket)
 
 @app.websocket("/session/conversation")
 async def start_conversation(websocket: WebSocket):
@@ -41,7 +41,7 @@ async def start_conversation(websocket: WebSocket):
         return
 
     # Get session from registry
-    session = Session.get_by_id(session_id)
+    session = SessionService.get_by_id(session_id)
     if not session:
         await websocket.close(code=1008, reason="Invalid session_id")
         return
@@ -66,7 +66,7 @@ async def session_disconnect(websocket: WebSocket):
             return
 
         # Get session from registry
-        session = Session.get_by_id(session_id)
+        session = SessionService.get_by_id(session_id)
         if session:
             # Cleanup the session
             session.cleanup()

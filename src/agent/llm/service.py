@@ -98,7 +98,7 @@ class LLMService:
         # console.log(f"[cyan]Raw LLM response: {response}[/cyan]")
 
         # if hasattr(response, "content"):
-            # console.log(f"[cyan]Response content: {response.content}[/cyan]")
+        console.log(f"[cyan]Response content: {response.content}[/cyan]")
 
         llm_response = self.parse_response(response)
         # console.log(f"[green]Parsed LLM response: {llm_response}[/green]")

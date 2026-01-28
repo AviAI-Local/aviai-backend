@@ -8,7 +8,7 @@ from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from rich.console import Console
-from fastapi import WebSocket, WebSocketDisconnect
+from fastapi import WebSocket, WebSocketDisconnect, Depends
 import uuid
 import json
 import numpy as np
@@ -19,22 +19,25 @@ from zoneinfo import ZoneInfo
 from agent.history.service import ConversationHistoryService
 from agent.history.schema import ConversationHistoryResponse
 from agent.config import LLM_PROVIDER, LLM_MODEL, LLM_BASE_URL, TTS_VOICE
+from database.config import SessionLocal
 
 console = Console()
 
-class Session:
+class SessionService:
     """Session that manages its own WebSocket connections and lifecycle"""
 
     # Will change to store in db after integrate the backend 
     _registry = {}
 
-    def __init__(self, voice: str = "cosette", llm_provider: str = "lmstudio", base_url: str = None, model: str = None):
-        self.session_id = str(uuid.uuid4())
+    def __init__(self, session_id: str, scenario_id: str, voice: str, llm_provider: str, base_url: str, model: str):
+        self.session_id = session_id
+        self.scenario_id = scenario_id
         self.voice = voice
         self.buffer = bytearray()
         self.is_speaking = False
         self.session_start_time = datetime.now(ZoneInfo("Asia/Ho_Chi_Minh"))
         
+        self.db = SessionLocal()
         self.service = ConversationHistoryService(history_response=ConversationHistoryResponse(
             conversation_history_id=str(uuid.uuid4()),
             session_id=self.session_id,
@@ -42,7 +45,7 @@ class Session:
             model=model,
             content=[],
             timestamp=self.session_start_time.isoformat()
-        ))
+        ), db=self.db)
         self.service.create_conversation_history()
 
         # Debug: Print LLM provider configuration
@@ -52,8 +55,23 @@ class Session:
         console.print(f"[magenta]Model: {model}[/magenta]")
         console.print(f"[magenta]===========================================[/magenta]")
 
-        # Create session-specific LLM service
-        prompt = PromptBuilder().build()
+        data = self.load_usecase_from_api_local()
+
+        self.scenario_data = {
+                "personal_characteristics": data.get("personal_characteristics", ""),
+                "attitude_in_interview": data.get("attitude_in_interview", ""),
+                "rule_interview": data.get("rule_interview", ""),
+                "scenario_text": data.get("usecase_summary", ""),
+                "character_name": data.get("character_name", "")
+        }
+
+        # Create session-specific LLM service with scenario data
+        prompt = PromptBuilder(
+            personal_characteristics=self.scenario_data["personal_characteristics"],
+            attitude_in_interview=self.scenario_data["attitude_in_interview"],
+            rule_interview=self.scenario_data["rule_interview"],
+            scenario_text=self.scenario_data["scenario_text"]
+        ).build()
 
         # Conditional LLM initialization based on provider
         if llm_provider == "lmstudio":
@@ -66,7 +84,7 @@ class Session:
         else:  # default to ollama
             llm = ChatOllama(model=model)
             console.print(f"[green]✓ Using Ollama with model: {model}[/green]")
-
+        
         chain = prompt | llm
         chat = RunnableWithMessageHistory(
             chain,
@@ -86,12 +104,12 @@ class Session:
         )
 
         # Register in class registry
-        Session._registry[self.session_id] = self
+        SessionService._registry[self.session_id] = self
 
         console.print(f"[green]Session {self.session_id} created with voice={voice}[/green]")
 
     @classmethod
-    def get_by_id(cls, session_id: str) -> Optional["Session"]:
+    def get_by_id(cls, session_id: str) -> Optional["SessionService"]:
         """Retrieve session by ID from registry"""
         return cls._registry.get(session_id)
 
@@ -117,7 +135,14 @@ class Session:
             model = None
 
         # Create new session
-        session = cls(voice=voice, llm_provider=llm_provider, base_url=base_url, model=model)
+        session = cls(
+            session_id=str(uuid.uuid4()), 
+            scenario_id=str(uuid.uuid4()), 
+            voice=voice, 
+            llm_provider=llm_provider, 
+            base_url=base_url, 
+            model=model
+        )
 
         # Send session info to client
         await websocket.send_json({
@@ -276,8 +301,31 @@ class Session:
         try:
             self.buffer.clear()
 
-            if self.session_id in Session._registry:
-                del Session._registry[self.session_id]
+            if self.session_id in SessionService._registry:
+                del SessionService._registry[self.session_id]
+                self.service.save_conversation_history()
+                self.db.close()
                 console.print(f"[yellow]Session {self.session_id} cleaned up[/yellow]")
+                
         except Exception as e:
             console.print(f"[red]Error during cleanup: {e}[/red]")
+
+
+    def load_usecase_from_api_local(self) -> dict:
+        """
+        For local testing: load usecase data from scenario/usecase_1.json.
+        Returns:
+            dict: Usecase data from the local file.
+        """
+        import os
+        # Get project root (go up from src/agent/session/service.py to project root)
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+        local_path = os.path.join(project_root, "scenario", "usecase_1.json")
+        try:
+            with open(local_path, "r", encoding="utf-8") as f:
+                usecase_data = json.load(f)
+            console.log(f"Loaded usecase from local file: {usecase_data.get('usecase_name', 'Unknown')}")
+            return usecase_data
+        except Exception as e:
+            console.log(f"Error loading usecase from local file: {e}")
+            raise

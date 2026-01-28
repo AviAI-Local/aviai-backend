@@ -34,7 +34,7 @@ class Account(Base):
     # relationship ONE-TO-MANY with other tables
     sessions = relationship("Session", back_populates="account", passive_deletes=True)
     notes = relationship("Note", back_populates="account", passive_deletes=True)
-    created_screnarios = relationship("Scenario", back_populates="creator", foreign_keys="Scenario.created_by", passive_deletes=True)
+    created_scenarios = relationship("Scenario", back_populates="creator", foreign_keys="Scenario.created_by", passive_deletes=True)
 
     def to_dict(self):
         return {
@@ -96,7 +96,7 @@ class Session(Base):
     scenario = relationship("Scenario", back_populates="sessions", passive_deletes=True) 
     account = relationship("Account", back_populates="sessions", passive_deletes=True)
     # relationship ONE-TO-ONE with other tables
-    conversation_histories = relationship("ConversationHistory", back_populates="session", passive_deletes=True)
+    # conversation_histories = relationship("ConversationHistory", back_populates="session", passive_deletes=True)
     notes = relationship("Note", back_populates="session", passive_deletes=True)
     
     def to_dict(self):
@@ -111,11 +111,13 @@ class Session(Base):
 class ConversationHistory(Base):
     __tablename__ = "conversation_history"
     conversation_history_id = Column(String, primary_key=True, index=True)
-    session_id = Column(String, ForeignKey("session.session_id", ondelete="CASCADE"), nullable=False)
+    session_id = Column(String)
+    # session_id = Column(String, primary_key=True, index=True)
+    # session_id = Column(String, ForeignKey("session.session_id", ondelete="CASCADE"), nullable=False)
     content = Column(JSON)  # Stores a list of message dicts in JSON format
     timestamp = Column(DateTime, default=get_vietnam_time)
     # relationship MANY-TO-ONE with other tables
-    session = relationship("Session", back_populates="conversation_histories", passive_deletes=True)
+    # session = relationship("Session", back_populates="conversation_histories", passive_deletes=True)
     
     def to_dict(self):
         return {

@@ -1,0 +1,53 @@
+{
+    "conversation_history_id": "35dae9c8-7d75-4ac8-9fbc-4596d0cfef65",
+    "session_id": "bb2583ea-a4b1-451b-b017-d5d329a86c52",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1769620242.061445,
+            "datetime": "2026-01-29T00:10:42.061445+07:00",
+            "user_query": "Hello, can you introduce yourself?",
+            "response": "I'm Linh. I'm a flight engineer with VAECO.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 4.48,
+            "tts_time": 9.43
+        },
+        {
+            "timestamp": 1769620260.12413,
+            "datetime": "2026-01-29T00:11:00.124130+07:00",
+            "user_query": "Can you tell me a little bit more about yourself?",
+            "response": "I've been working as a flight engineer for over 15 years, mostly with VAECO. It’s a good job, a lot of responsibility but I find it satisfying.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 1.52,
+            "tts_time": 1.47
+        },
+        {
+            "timestamp": 1769620282.345435,
+            "datetime": "2026-01-29T00:11:22.345435+07:00",
+            "user_query": "Can you tell me about that day?",
+            "response": "I… I was monitoring the engine performance. It happened so quickly. The vibrations increased suddenly.",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "fear",
+            "llm_time": 1.24,
+            "tts_time": 1.11
+        },
+        {
+            "timestamp": 1769620296.004516,
+            "datetime": "2026-01-29T00:11:36.004516+07:00",
+            "user_query": "Okay, thank you.",
+            "response": "You're welcome.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 1.05,
+            "tts_time": 0.23
+        }
+    ],
+    "timestamp": "2026-01-29T00:10:10.456900+07:00"
+}

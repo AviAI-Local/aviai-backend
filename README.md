@@ -7,13 +7,17 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 # or on Windows: powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 
 # Install dependencies using uv (recommended)
+uv python install 3.12
+uv python list
+rm -rf .venv
+uv venv --python 3.12 --prompt aviai-backend .venv
+source .venv/bin/activate
 uv sync
 
-# Activate the virtual environment
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
 # Download NLTK data (for sentence tokenization)
 python -c "import nltk; nltk.download('punkt_tab')"
+
 ```
 
 #### Install and Setup Ollama
@@ -28,11 +32,27 @@ ollama pull gemma3  # or any other model you prefer
 python -m ensurepip --upgrade --default-pip
 ```
 
+
+
 ### Usage
 
 #### Basic Usage
 ```bash
-python app.py
+cd src 
+python -m uvicorn app:app --reload
+
+# In case still missing package  
+uv pip install pocket_tts
+uv pip install "numpy<2.3"
+uv pip install 'uvicorn[standard]'
+uv pip install websockets
+uv pip install langchain_ollama langchain_openai langchain_core
+
+uv pip install fastapi
+
+uv pip install dotenv 
+
+uv pip install faster_whisper
 ```
 
 
@@ -59,7 +79,7 @@ python app.py
 ## Database Migration (Alembic)
 
 ### 1. First-Time Alembic Setup 
-If you are setting up Alembic for the very first time in a new project (no `migrations/` folder exists):
+If you are setting up Alembic for the very first time in a new project (no `alembic/` folder exists):
 
 1. **Initialize Alembic:**
    ```bash

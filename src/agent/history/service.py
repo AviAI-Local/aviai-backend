@@ -14,9 +14,9 @@ console = Console()
 
 
 class ConversationHistoryService:
-    def __init__(self, history_response: ConversationHistoryResponse):
+    def __init__(self, history_response: ConversationHistoryResponse, db: DBSession):
         self.history_response = history_response
-        # self.db = db
+        self.db = db
         self.history_dir = os.path.join(os.path.dirname(__file__), "..", "conversation")
         os.makedirs(self.history_dir, exist_ok=True)
 
@@ -56,6 +56,39 @@ class ConversationHistoryService:
 
         self.create_conversation_history()
         console.print(f"[dim]Conversation entry saved to {self.history_response.session_id}.json[/dim]")
+
+    def load_json_file(self) -> ConversationHistoryResponse:
+        """Load conversation history from JSON file"""
+        file_path = os.path.join(self.history_dir, f"{self.history_response.session_id}.json")
+
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"File not found: {file_path}")
+
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+
+        # Pydantic validates structure automatically
+        # Raises ValidationError if data doesn't match schema
+        return ConversationHistoryResponse(**data)
+
+    def save_conversation_history(self) -> ConversationHistory:
+        data = self.load_json_file()
+
+        content_as_dicts = [item.model_dump() for item in data.content]
+
+        conversation = ConversationHistory(
+            conversation_history_id = data.conversation_history_id,
+            session_id = data.session_id,
+            content = content_as_dicts,
+            timestamp = data.timestamp
+        )
+
+        self.db.add(conversation)
+        self.db.commit()
+        self.db.refresh(conversation)
+
+        console.print("Save successfully")
+        return conversation
 
 
 def get_session_history(session_id: str):
