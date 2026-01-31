@@ -1,80 +1,10 @@
-import threading
-import time
-import numpy as np
-from queue import Queue
-from rich.console import Console
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-from langchain_ollama import ChatOllama
-from langchain_core.runnables.history import RunnableWithMessageHistory
+from account.view import router as account_router
+from auth.view import router as auth_router
 
-from agent.prompt.builder import PromptBuilder
-from agent.memory.history import get_session_history
-from agent.io.stt.whisper_stt import WhisperSTT
-from agent.io.audio.recorder import record_audio
-from agent.io.audio.player import play_audio
-from agent.llm.service import LLMService
-# from agent.io.tts.tts_koko import TextToSpeechService
-# from agent.io.tts.emotion import analyze_emotion
-from agent.io.tts.tts_pocket import TextToSpeechService
-from agent.io.stt.faster_whisper import FasterWhisperSTT
+app = FastAPI(title="Cognitive Interview API")
 
-console = Console()
-
-def main():
-    stt = FasterWhisperSTT()
-    tts = TextToSpeechService()
-
-    prompt = PromptBuilder().build()
-    llm = ChatOllama(model="gemma3")
-    chain = prompt | llm
-
-    chat = RunnableWithMessageHistory(
-        chain,
-        get_session_history,
-        input_messages_key="input",
-        history_messages_key="history",
-    )
-
-    llm_service = LLMService(chat, session_id="default_session")
-
-    while True:
-        console.input("🎤 Press Enter to start recording, Enter again to stop")
-
-        q = Queue()
-        stop = threading.Event()
-        th = threading.Thread(target=record_audio, args=(stop, q))
-        th.start()
-
-        input()
-        stop.set()
-        th.join()
-
-        audio_np = np.frombuffer(b"".join(q.queue), dtype=np.int16).astype(np.float32) / 32768.0
-        with console.status("Transcribing...", spinner="dots"):
-            text = stt.transcribe(audio_np)
-        console.print(f"[yellow]You:[/yellow] {text}")
-
-        with console.status("Generating response...", spinner="dots"):
-            start = time.perf_counter()
-            response = llm_service.get_response(text)
-            content = response.response
-
-            llm_time = time.perf_counter() - start
-
-            start = time.perf_counter()
-            sample_rate, audio_array = tts.long_form_synthesize(
-                content,
-                audio_prompt_path=None,
-                exaggeration=0.5,
-                cfg_weight=0.5
-            )
-            tts_time = time.perf_counter() - start
-        
-        console.print(f"[dim]LLM time: {llm_time:.2f}s | TTS time: {tts_time:.2f}s[/dim]")
-        console.print(f"[cyan]Assistant:[/cyan] {content}")
-        console.print(f"Facial expression: {response.avatar_instructions}")
-
-        play_audio(sample_rate, audio_array)
-
-if __name__ == "__main__":
-    main()
+app.include_router(account_router, prefix="/api/v1/account", tags=["account"])
+app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
