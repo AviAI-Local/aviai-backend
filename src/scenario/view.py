@@ -1,33 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException, Body, Query
 from typing import List
 from sqlalchemy.orm import Session
+
+from auth.dependencies import get_current_user
+from database.model import Account
+from scenario.schema import ScenarioResponse, create_request_example
 from .service import ScenarioService
 from database.config import get_db
-from pydantic import BaseModel
-from datetime import datetime
 from typing import Optional
 from typing import Literal
 
 router = APIRouter(tags=["scenario"])  # ← prefix removed → handled in main.py
-
-class ScenarioResponse(BaseModel):
-    scenario_id: str
-    scenario_name: str
-    scenario_summary: str
-    personal_characteristics: str
-    attitude_in_interview: str
-    rule_interview: str
-    character_name: str
-    character_gender: str
-    industry: str
-    scenario_text: str
-    created_by: str
-    created_at: datetime
-    times_chosen: int = 0
-
-    class Config:
-        from_attributes = True
-
 
 @router.post(
     "/",
@@ -35,10 +18,12 @@ class ScenarioResponse(BaseModel):
     summary="Create new scenario"
 )
 async def create_scenario(
-    data: dict = Body(...),
-    db: Session = Depends(get_db)
+    data: dict = Body(..., examples=[create_request_example]),
+    db: Session = Depends(get_db),
+    current_user: Account = Depends(get_current_user)
 ):
     service = ScenarioService(db)
+    data["created_by"] = current_user.account_id
     result = service.create_scenario_with_validation(data)
     return result["scenario"]
 
