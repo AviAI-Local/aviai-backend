@@ -5,8 +5,10 @@ from .service import ScenarioService
 from database.config import get_db
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
+from typing import Literal
 
-router = APIRouter(tags=["scenarios"])  # ← prefix removed → handled in main.py
+router = APIRouter(tags=["scenario"])  # ← prefix removed → handled in main.py
 
 class ScenarioResponse(BaseModel):
     scenario_id: str
@@ -47,34 +49,34 @@ async def get_all_scenarios(db: Session = Depends(get_db)):
     items = service.get_all_scenarios()
     return items
 
-
-
-
-@router.get("/sorted/name", response_model=List[ScenarioResponse])
-async def sorted_by_name(
-    order: str = Query("asc", pattern=r"^(asc|desc)$"),
+@router.get(
+    "/limit/{limit}",
+    response_model=List[ScenarioResponse],
+    summary="Get scenarios with limit, sorting, pagination, exclusion"
+)
+async def get_scenarios_with_limit(
+    limit: int,
+    sort_by: Literal["name", "date", "popularity"] = "date",
+    order: Literal["asc", "desc"] = "desc",
+    page: int = Query(1, ge=1),
+    exclude_ids: Optional[str] = None,
     db: Session = Depends(get_db)
 ):
+    if limit <= 0:
+        raise HTTPException(status_code=400, detail="Limit must be positive")
+
+    exclude_list = None
+    if exclude_ids:
+        exclude_list = [x.strip() for x in exclude_ids.split(",") if x.strip()]
+
     service = ScenarioService(db)
-    return service.get_scenarios_sorted_by_name(order)
-
-
-@router.get("/sorted/date", response_model=List[ScenarioResponse])
-async def sorted_by_date(
-    order: str = Query("desc", pattern=r"^(asc|desc)$"),
-    db: Session = Depends(get_db)
-):
-    service = ScenarioService(db)
-    return service.get_scenarios_sorted_by_date(order)
-
-
-@router.get("/sorted/popularity", response_model=List[ScenarioResponse])
-async def sorted_by_popularity(
-    order: str = Query("desc", pattern=r"^(asc|desc)$"),
-    db: Session = Depends(get_db)
-):
-    service = ScenarioService(db)
-    return service.get_scenarios_sorted_by_popularity(order)
+    return service.get_scenarios_with_limit(
+        limit=limit,
+        sort_by=sort_by,
+        order=order,
+        page=page,
+        exclude_ids=exclude_list
+    )
 
 
 @router.get("/search", response_model=List[ScenarioResponse])
@@ -84,6 +86,27 @@ async def search_by_name(
 ):
     service = ScenarioService(db)
     return service.search_by_name(q)
+
+@router.get(
+    "/sorted",
+    response_model=List[ScenarioResponse],
+    summary="Sort scenarios dynamically"
+)
+async def sort_scenarios(
+    sort_by: str = Query("date", pattern=r"^(name|date|popularity)$"),
+    order: str = Query("desc", pattern=r"^(asc|desc)$"),
+    db: Session = Depends(get_db)
+):
+    service = ScenarioService(db)
+
+    if sort_by == "name":
+        return service.get_scenarios_sorted_by_name(order)
+    if sort_by == "popularity":
+        return service.get_scenarios_sorted_by_popularity(order)
+
+    return service.get_scenarios_sorted_by_date(order)
+
+
 @router.get("/{scenario_id}", response_model=ScenarioResponse)
 async def get_scenario(scenario_id: str, db: Session = Depends(get_db)):
     service = ScenarioService(db)
@@ -123,3 +146,4 @@ async def mark_as_used(scenario_id: str, db: Session = Depends(get_db)):
         "scenario_id": scenario.scenario_id,
         "times_chosen": scenario.times_chosen
     }
+
