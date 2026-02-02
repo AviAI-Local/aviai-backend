@@ -171,16 +171,8 @@ export default function SessionPage() {
   };
 
   // Disconnect and go back
-  const handleDisconnect = async () => {
-    try {
-      // Notify backend to save conversation history
-      await fetch(`${API_BASE_URL}/session/${sessionId}/cleanup`, {
-        method: "POST"
-      });
-    } catch (err) {
-      console.error("Cleanup failed:", err);
-    }
-    
+  const handleDisconnect = () => {
+    // Cleanup happens automatically on backend when WebSocket closes (via finally block)
     conversationWsRef.current?.close();
     navigate("/");
   };
