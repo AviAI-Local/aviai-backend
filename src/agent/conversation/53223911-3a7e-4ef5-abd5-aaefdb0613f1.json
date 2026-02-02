@@ -1,0 +1,53 @@
+{
+    "conversation_history_id": "1a1512f0-2d13-4203-893e-7f9e6064ae04",
+    "session_id": "53223911-3a7e-4ef5-abd5-aaefdb0613f1",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1770027619.547792,
+            "datetime": "2026-02-02T17:20:19.547792+07:00",
+            "user_query": "can you introduce yourself?",
+            "response": "I'm Linh. I'm a flight engineer with VAECO.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 2.13,
+            "tts_time": 1.82
+        },
+        {
+            "timestamp": 1770027632.554718,
+            "datetime": "2026-02-02T17:20:32.554718+07:00",
+            "user_query": "Can you tell me a little bit about yourself?",
+            "response": "I've been a flight engineer for over 15 years, mostly with VAECO. It’s a steady job, I find. I’m based in Ho Chi Minh City now, but I used to work in Hanoi.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 1.63,
+            "tts_time": 1.71
+        },
+        {
+            "timestamp": 1770027651.017034,
+            "datetime": "2026-02-02T17:20:51.017034+07:00",
+            "user_query": "Do you see anyone else?",
+            "response": "I… I see the investigators. There are three of them. And the captain, of course. They’re all looking at the instruments.",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "fear",
+            "llm_time": 1.37,
+            "tts_time": 1.44
+        },
+        {
+            "timestamp": 1770027667.465463,
+            "datetime": "2026-02-02T17:21:07.465463+07:00",
+            "user_query": "Did you hear anything?",
+            "response": "The engine… it was making a strange noise. A high-pitched whine. I was focused on the vibration readings, trying to identify the source. It was… unsettling.",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "fear",
+            "llm_time": 1.5,
+            "tts_time": 2.06
+        }
+    ],
+    "timestamp": "2026-02-02T17:20:10.443246+07:00"
+}
