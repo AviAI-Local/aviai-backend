@@ -221,7 +221,9 @@ class ConversationHandler:
                         content = response.response
                         await websocket.send_json({
                             "type": "assistant_text",
-                            "content": content
+                            "content": content,
+                            "voice_instructions": response.voice_instructions,
+                            "avatar_instructions": response.avatar_instructions
                         })
 
                         console.print(f"[cyan]{self.session.session_id} - Assistant:[/cyan] {content}")

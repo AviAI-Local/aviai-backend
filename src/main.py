@@ -20,4 +20,4 @@ app.add_middleware(
 app.include_router(account_router, prefix="/api/v1/account", tags=["account"])
 app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(scenario_router, prefix="/api/v1/scenario", tags=["scenario"])
-app.include_router(session_router, prefix="/session", tags=["session"]) 
+app.include_router(session_router, prefix="/api/v1/session", tags=["session"]) 

@@ -54,17 +54,35 @@ class LLMService:
 
             json_str = content[start:end+1]
 
-            # 4. Fix newlines inside string values by escaping them properly
-            # Replace actual newlines with escaped \n for JSON compatibility
-            def fix_string_newlines(match):
-                s = match.group(0)
-                # Replace actual newlines with \n escape sequence
-                s = s.replace('\n', '\\n')
-                s = s.replace('\r', '\\r')
-                return s
+            # 4. Fix smart quotes and special characters
+            json_str = json_str.replace('"', '"').replace('"', '"')  # Smart double quotes
+            json_str = json_str.replace(''', "'").replace(''', "'")  # Smart single quotes
+            json_str = json_str.replace('…', '...')  # Ellipsis
 
-            # Match string values and fix newlines inside them
-            json_str = re.sub(r'"[^"\\]*(?:\\.[^"\\]*)*"', fix_string_newlines, json_str)
+            # 5. Fix control characters - escape them for JSON compatibility
+            # First, temporarily protect already-escaped sequences
+            json_str = json_str.replace('\\n', '\x00NEWLINE\x00')
+            json_str = json_str.replace('\\r', '\x00RETURN\x00')
+            json_str = json_str.replace('\\t', '\x00TAB\x00')
+            json_str = json_str.replace('\\b', '\x00BACKSPACE\x00')
+            json_str = json_str.replace('\\f', '\x00FORMFEED\x00')
+
+            # Now escape actual control characters
+            json_str = json_str.replace('\n', '\\n')
+            json_str = json_str.replace('\r', '\\r')
+            json_str = json_str.replace('\t', '\\t')
+            json_str = json_str.replace('\b', '\\b')
+            json_str = json_str.replace('\f', '\\f')
+
+            # Remove any other control characters (0x00-0x1F)
+            json_str = re.sub(r'[\x01-\x08\x0b\x0e-\x1f]', '', json_str)
+
+            # Restore protected sequences
+            json_str = json_str.replace('\x00NEWLINE\x00', '\\n')
+            json_str = json_str.replace('\x00RETURN\x00', '\\r')
+            json_str = json_str.replace('\x00TAB\x00', '\\t')
+            json_str = json_str.replace('\x00BACKSPACE\x00', '\\b')
+            json_str = json_str.replace('\x00FORMFEED\x00', '\\f')
 
             # 5. Parse JSON
             data = json.loads(json_str)
