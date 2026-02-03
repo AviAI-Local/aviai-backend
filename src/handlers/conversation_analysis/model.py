@@ -1,6 +1,10 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
+
+# -------------------------
+# INPUT STRUCTURES
+# -------------------------
 
 class ConversationEntry(BaseModel):
     timestamp: float
@@ -13,9 +17,13 @@ class ConversationEntry(BaseModel):
 
 
 class ConversationHistoryInput(BaseModel):
-    last_updated: str
+    last_updated: Optional[str]
     conversation_history: List[ConversationEntry]
 
+
+# -------------------------
+# LLM OUTPUT STRUCTURES
+# -------------------------
 
 class LLMEmotionAnalysis(BaseModel):
     user_emotion_analysis: str
@@ -29,8 +37,12 @@ class LLMConversationSummary(BaseModel):
     conversation_summary: str
 
 
+# -------------------------
+# ANALYSIS RESULT STRUCTURES
+# -------------------------
+
 class EmotionAnalysisEntry(BaseModel):
-    time: str  # Format: "0:30", "1:15", etc.
+    time: str
     user_emotion_analysis: str
 
 
@@ -39,11 +51,13 @@ class ConversationAnalysisOutput(BaseModel):
     summary: str
 
 
+# -------------------------
+# API RESPONSES
+# -------------------------
+
 class ConversationAnalysisCombinedResponse(BaseModel):
-    # JSON Analysis
     analysis: List[EmotionAnalysisEntry]
     summary: str
-    # PDF Output
     analysis_id: str
     pdf_base64: str
     filename: str
@@ -52,4 +66,14 @@ class ConversationAnalysisCombinedResponse(BaseModel):
 class ConversationAnalysisPdfResponse(BaseModel):
     analysis_id: str
     pdf_base64: str
-    filename: str 
+    filename: str
+
+
+class ConversationAnalysisResponse(BaseModel):
+    analysis_id: str
+    conversation_history_id: Optional[str]
+    summary: str
+    analysis: List[EmotionAnalysisEntry]
+    pdf_base64: str
+    filename: str
+    created_at: Optional[str] = None
