@@ -19,8 +19,8 @@ export default function HomePage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          scenario_id: "820a81ee-9119-4533-b1ec-c5b5f52ac014", // TODO: Allow user to select scenario
-          account_id: "73ab2577-92b1-4b74-8def-22ff3e2f30bc",   // TODO: Get from auth
+          scenario_id: "e8a00ed4-4249-4a66-a41f-ec83fc25f731", // TODO: Allow user to select scenario
+          account_id: "2b1e70d5-a191-4338-a8ff-77e69912530f",   // TODO: Get from auth
         }),
       });
 

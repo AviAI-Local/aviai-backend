@@ -1,0 +1,77 @@
+{
+  "last_updated": "2025-06-24T18:50:57.516375",
+  "conversation_history": [
+    {
+      "timestamp": 1750765794.5353432,
+      "datetime": "2025-06-24T18:49:54.535346",
+      "user_query": "Can you introduce about yourself?",
+      "response": "I'm Linh, a flight engineer from Hanoi, living in Ho Chi Minh City. I have over 15 years of experience in this role and work at VAECO.",
+      "user_emotion": "angry",
+      "voice_instructions": "Speak with a calm, professional tone.",
+      "avatar_instructions": "default"
+    },
+    {
+      "timestamp": 1750765807.3138728,
+      "datetime": "2025-06-24T18:50:07.313877",
+      "user_query": "How are you feeling today?",
+      "response": "I'm doing well, thank you for asking.",
+      "user_emotion": "neutral",
+      "voice_instructions": "Speak with a calm, professional tone, clear and measured pace.",
+      "avatar_instructions": "default"
+    },
+    {
+      "timestamp": 1750765818.397301,
+      "datetime": "2025-06-24T18:50:18.397315",
+      "user_query": "Can you recall the accident when you were in the cockpit?",
+      "response": "Yes, I recall the incident clearly. It happened quickly, and I was focused on my instruments.",
+      "user_emotion": "fear",
+      "voice_instructions": "Tension and urgency, slightly higher pitch, and faster pace",
+      "avatar_instructions": "fear"
+    },
+    {
+      "timestamp": 1750765834.4205718,
+      "datetime": "2025-06-24T18:50:34.420574",
+      "user_query": "What exactly happened during the landing?",
+      "response": "The aircraft experienced strong vibrations during approach, but we remained calm and landed safely.",
+      "user_emotion": "anxious",
+      "voice_instructions": "Speak with concern and careful consideration",
+      "avatar_instructions": "concerned"
+    },
+    {
+      "timestamp": 1750765857.514768,
+      "datetime": "2025-06-24T18:50:57.514770",
+      "user_query": "Did you see any damage to the aircraft?",
+      "response": "I didn't notice any visible damage to the windshield or exterior during the incident.",
+      "user_emotion": "curious",
+      "voice_instructions": "Speak with interest and analytical tone",
+      "avatar_instructions": "thoughtful"
+    },
+    {
+      "timestamp": 1750765870.123456,
+      "datetime": "2025-06-24T18:51:10.123456",
+      "user_query": "How did the pilots react during the incident?",
+      "response": "The pilots remained professional and decisive throughout the entire situation.",
+      "user_emotion": "impressed",
+      "voice_instructions": "Speak with admiration and respect",
+      "avatar_instructions": "admiring"
+    },
+    {
+      "timestamp": 1750765885.789012,
+      "datetime": "2025-06-24T18:51:25.789012",
+      "user_query": "Were you afraid during the incident?",
+      "response": "I was concerned but focused on my duties and supporting the flight crew.",
+      "user_emotion": "confident",
+      "voice_instructions": "Speak with assurance and professionalism",
+      "avatar_instructions": "confident"
+    },
+    {
+      "timestamp": 1750765900.456789,
+      "datetime": "2025-06-24T18:51:40.456789",
+      "user_query": "What would you do differently if this happened again?",
+      "response": "I would follow the same procedures, as our training and response were appropriate for the situation.",
+      "user_emotion": "determined",
+      "voice_instructions": "Speak with conviction and certainty",
+      "avatar_instructions": "determined"
+    }
+  ]
+} 
