@@ -30,22 +30,23 @@ Return ONLY the conversation summary in the specified JSON format.
 """
 
 
-parser = PydanticOutputParser(
-    pydantic_object=LLMConversationSummary
-)
+def get_conversation_summary_chain():
+    llm = ChatOllama(
+        base_url="http://localhost:11434",
+        model="gemma3",
+        temperature=0.3,
+        format="json"
+    )
 
-prompt = ChatPromptTemplate.from_messages(
-    [
-        ("system", SYSTEM_PROMPT),
-        ("user", "Analyze this conversation history for emotional summary: {conversation_data}")
-    ]
-).partial(format_instructions=parser.get_format_instructions())
+    parser = PydanticOutputParser(
+        pydantic_object=LLMConversationSummary
+    )
 
-llm = ChatOllama(
-    base_url="http://localhost:11434",
-    model="gemma3",
-    temperature=0.3,
-    format="json"
-)
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", SYSTEM_PROMPT),
+            ("user", "Analyze this conversation history for emotional summary: {conversation_data}")
+        ]
+    )
 
-conversation_summary_chain = prompt | llm | parser
+    return prompt | llm | parser

@@ -8,7 +8,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.lib import colors
 
-from .summary_chain import conversation_summary_chain
+from .summary_chain import get_conversation_summary_chain
 from .chain import analyze_conversation
 
 from .model import ConversationHistoryInput, ConversationAnalysisOutput, LLMEmotionAnalysisOutput
@@ -197,9 +197,9 @@ async def analyze_conversation_history(conversation_data: Dict[str, Any]) -> Con
     llm_result =  await analyze_conversation({
     "conversation_data": conversation_json
 })
-    
+    summary_chain = get_conversation_summary_chain()
     # Generate conversation summary
-    summary_result = await conversation_summary_chain.ainvoke({
+    summary_result = await summary_chain.ainvoke({
     "conversation_data": conversation_json
 })
     
