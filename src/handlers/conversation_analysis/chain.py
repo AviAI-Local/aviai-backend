@@ -25,17 +25,22 @@ Rules:
 - Do NOT return explanations
 """
 
-prompt = ChatPromptTemplate.from_messages(
-    [
-        ("system", SYSTEM_PROMPT),          # ← SYSTEM PROMPT GOES HERE
-        ("human", "{conversation_data}")    # ← runtime input
-    ]
-)
+def get_emotion_analysis_chain():
+    llm = get_llm()
 
-llm = get_llm()
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", SYSTEM_PROMPT),
+            ("human", "{conversation_data}"),
+        ]
+    )
+
+    return prompt | llm
+
 
 async def analyze_conversation(inputs: dict) -> LLMEmotionAnalysisOutput:
-    raw = await (prompt | llm).ainvoke(inputs)
+    chain = get_emotion_analysis_chain()
+    raw = await chain.ainvoke(inputs)
 
     data = json.loads(raw.content)
 
