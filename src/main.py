@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from handlers.performance_analysis.view import router as performance_analysis_router
 
 from account.view import router as account_router
 from auth.view import router as auth_router
@@ -22,3 +23,4 @@ app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(scenario_router, prefix="/api/v1/scenario", tags=["scenario"])
 app.include_router(session_router, prefix="/session", tags=["session"]) 
 app.include_router(analysis_router, prefix="/analysis", tags=["analysis"]) 
+app.include_router(performance_analysis_router,prefix="/api/v1/performance-analysis",tags=["performance-analysis"])

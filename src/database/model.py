@@ -6,7 +6,7 @@ import enum
 import pytz
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.sql import func
-
+from sqlalchemy import Float,Boolean
 def get_vietnam_timezone():
     """Get Vietnam timezone object."""
     return pytz.timezone('Asia/Ho_Chi_Minh')
@@ -194,4 +194,97 @@ class ConversationAnalysis(Base):
             "analysis": self.analysis,
             "filename": self.filename,
             "created_at": self.created_at.isoformat() if self.created_at else None,
+        }
+class CIPerformanceEvaluation(Base):
+    __tablename__ = "ci_performance_evaluation"
+    evaluation_id = Column(String, primary_key=True, index=True)
+    user_id = Column(String, ForeignKey("account.account_id"), nullable=False)
+    conversation_id = Column(String, ForeignKey("conversation_history.conversation_history_id"), nullable=False)
+    session_id = Column(String, ForeignKey("session.session_id"), nullable=False)
+    
+    # Individual weight scores (A1-A5, B6-B8, C9-C10)
+    a1_score = Column(Float, nullable=False, default=0.0)  # Open-ended rate
+    a2_score = Column(Float, nullable=False, default=0.0)  # Leading rate (inverse)
+    a3_score = Column(Float, nullable=False, default=0.0)  # CI phase adherence
+    a4_score = Column(Float, nullable=False, default=0.0)  # Pacing & Turn-taking
+    a5_score = Column(Float, nullable=False, default=0.0)  # Neutrality & Plain language
+    b6_score = Column(Float, nullable=False, default=0.0)  # Trauma-informed empathy
+    b7_score = Column(Float, nullable=False, default=0.0)  # Active listening
+    b8_score = Column(Float, nullable=False, default=0.0)  # Emotion regulation
+    c9_score = Column(Float, nullable=False, default=0.0)  # Structured approach
+    c10_score = Column(Float, nullable=False, default=0.0)  # Contamination-safe
+    
+    # Total score and verdict
+    total_score = Column(Float, nullable=False, default=0.0)
+    verdict = Column(String, nullable=False)  # PASS, BORDERLINE, FAIL
+    
+    # CI Phases (boolean flags)
+    rapport_safety = Column(Boolean, default=False)
+    context_reinstatement = Column(Boolean, default=False)
+    free_recall = Column(Boolean, default=False)
+    varied_focused_retrieval = Column(Boolean, default=False)
+    closure = Column(Boolean, default=False)
+    
+    # Quantitative metrics
+    open_rate = Column(Float, default=0.0)
+    leading_rate = Column(Float, default=0.0)
+    emotion_regulation = Column(Float, default=0.0)
+    
+    # Behavioral assessments
+    active_listening = Column(String, nullable=False)  # good, fair, poor, absent
+    neutral_language = Column(String, nullable=False)  # good, fair, poor
+    contamination_risk = Column(String, nullable=False)  # low, medium, high
+    pacing_ok = Column(String, nullable=False)  # good, fair, poor
+    trauma_informed = Column(String, nullable=False)  # good, fair, poor
+    
+    # Question classifications (stored as JSON)
+    question_classifications = Column(JSON, nullable=True)
+    
+    # Coaching feedback (stored as JSON)
+    coaching_feedback = Column(JSON, nullable=True)
+    
+    # Timestamps
+    created_at = Column(DateTime, default=get_vietnam_time)
+    updated_at = Column(DateTime, default=get_vietnam_time, onupdate=get_vietnam_time)
+    
+    # Relationships
+    user = relationship("Account")
+    conversation = relationship("ConversationHistory")
+    session = relationship("Session")
+    
+    def to_dict(self):
+        return {
+            "evaluation_id": self.evaluation_id,
+            "user_id": self.user_id,
+            "conversation_id": self.conversation_id,
+            "session_id": self.session_id,
+            "a1_score": self.a1_score,
+            "a2_score": self.a2_score,
+            "a3_score": self.a3_score,
+            "a4_score": self.a4_score,
+            "a5_score": self.a5_score,
+            "b6_score": self.b6_score,
+            "b7_score": self.b7_score,
+            "b8_score": self.b8_score,
+            "c9_score": self.c9_score,
+            "c10_score": self.c10_score,
+            "total_score": self.total_score,
+            "verdict": self.verdict,
+            "rapport_safety": self.rapport_safety,
+            "context_reinstatement": self.context_reinstatement,
+            "free_recall": self.free_recall,
+            "varied_focused_retrieval": self.varied_focused_retrieval,
+            "closure": self.closure,
+            "open_rate": self.open_rate,
+            "leading_rate": self.leading_rate,
+            "emotion_regulation": self.emotion_regulation,
+            "active_listening": self.active_listening,
+            "neutral_language": self.neutral_language,
+            "contamination_risk": self.contamination_risk,
+            "pacing_ok": self.pacing_ok,
+            "trauma_informed": self.trauma_informed,
+            "question_classifications": self.question_classifications,
+            "coaching_feedback": self.coaching_feedback,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None
         }
