@@ -11,28 +11,13 @@ from .summary_chain import get_conversation_summary_chain
 from .chain import analyze_conversation
 
 from .model import ConversationHistoryInput, ConversationAnalysisOutput
+from .pdf_styles import get_style, DEFAULT_STYLE
 
 
-# -------------------------
-# PDF CONFIGURATION
-# -------------------------
-PDF_CONFIG = {
-    "title": "Conversation Analysis Report",
-    "margin": 0.5 * inch,
-    "title_font_size": 18,
-    "heading_font_size": 14,
-    "body_font_size": 10,
-    "analysis_font_size": 11,
-    "heading_color": colors.darkblue,
-    "wrap_threshold": 100,
-    "wrap_line_length": 80,
-}
-
-
-def _wrap_text(text: str, style, story: list,
-               max_line: int = PDF_CONFIG["wrap_line_length"],
-               threshold: int = PDF_CONFIG["wrap_threshold"]):
+def _wrap_text(text: str, style, story: list, cfg: dict):
     """Append text as wrapped Paragraphs to story list."""
+    threshold = cfg["wrap_threshold"]
+    max_line = cfg["wrap_line_length"]
     if len(text) > threshold:
         words = text.split()
         lines, current = [], ""
@@ -80,9 +65,9 @@ def calculate_conversation_times(conversation_history: list) -> list:
     return times
 
 
-def create_pdf_from_analysis(analysis_data: ConversationAnalysisOutput, analysis_id: str = None) -> bytes:
+def create_pdf_from_analysis(analysis_data: ConversationAnalysisOutput, analysis_id: str = None, style: str = DEFAULT_STYLE) -> bytes:
     """Create a PDF from conversation analysis data with improved layout."""
-    cfg = PDF_CONFIG
+    cfg = get_style(style)
     buffer = BytesIO()
     doc = SimpleDocTemplate(
         buffer, pagesize=letter,
@@ -130,7 +115,7 @@ def create_pdf_from_analysis(analysis_data: ConversationAnalysisOutput, analysis
 
     # Summary
     story.append(Paragraph("Conversation Summary", heading_style))
-    _wrap_text(analysis_data.summary, normal_style, story)
+    _wrap_text(analysis_data.summary, normal_style, story, cfg)
     story.append(Spacer(1, 20))
 
     # Emotion analysis timeline
@@ -139,7 +124,7 @@ def create_pdf_from_analysis(analysis_data: ConversationAnalysisOutput, analysis
     for i, entry in enumerate(analysis_data.analysis, 1):
         story.append(Paragraph(f"<b>Entry {i} - Time: {entry.time}</b>", analysis_style))
         story.append(Paragraph("<b>Emotion Analysis:</b>", field_style))
-        _wrap_text(entry.user_emotion_analysis, field_style, story)
+        _wrap_text(entry.user_emotion_analysis, field_style, story, cfg)
         story.append(Spacer(1, 15))
 
         if i < len(analysis_data.analysis):

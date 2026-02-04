@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, UploadFile, File, Depends
+from fastapi import APIRouter, HTTPException, UploadFile, File, Depends, Query
 import json
 import base64
 import uuid
@@ -8,6 +8,7 @@ from datetime import datetime
 
 from .service import analyze_conversation_history, create_pdf_from_analysis
 from .model import ConversationAnalysisCombinedResponse
+from .pdf_styles import list_styles, DEFAULT_STYLE
 from database.model import ConversationAnalysis as ConversationAnalysisDB
 from database.config import get_db
 from agent.history.query import ConversationHistoryQueryService
@@ -26,11 +27,11 @@ def convert_to_vietnam_time(timestamp):
 
 
 def _save_and_respond(
-    analysis_result, conversation_history_id: str, db: Session
+    analysis_result, conversation_history_id: str, db: Session, style: str = DEFAULT_STYLE
 ) -> ConversationAnalysisCombinedResponse:
     """Generate PDF, persist analysis to DB, and return the combined response."""
     analysis_id = str(uuid.uuid4())
-    pdf_bytes = create_pdf_from_analysis(analysis_result, analysis_id)
+    pdf_bytes = create_pdf_from_analysis(analysis_result, analysis_id, style=style)
     pdf_base64 = base64.b64encode(pdf_bytes).decode()
     filename = f"conversation_analysis_{analysis_id}.pdf"
 
@@ -57,12 +58,19 @@ def _save_and_respond(
 router = APIRouter()
 
 
+@router.get("/styles")
+def get_available_styles():
+    """Return all available PDF style presets."""
+    return list_styles()
+
+
 @router.post(
     "/analyze-by-id/{conversation_history_id}",
     response_model=ConversationAnalysisCombinedResponse,
 )
 async def analyze_conversation_by_id(
     conversation_history_id: str,
+    style: str = Query(DEFAULT_STYLE, description="PDF style preset name"),
     db: Session = Depends(get_db),
 ):
     query_service = ConversationHistoryQueryService(db)
@@ -90,7 +98,7 @@ async def analyze_conversation_by_id(
         "conversation_history": conversation_content,
     })
 
-    return _save_and_respond(analysis_result, conversation_history_id, db)
+    return _save_and_respond(analysis_result, conversation_history_id, db, style=style)
 
 
 @router.get("/{analysis_id}")
@@ -111,6 +119,7 @@ def get_analysis(analysis_id: str, db: Session = Depends(get_db)):
 )
 async def analyze_conversation_from_file(
     file: UploadFile = File(...),
+    style: str = Query(DEFAULT_STYLE, description="PDF style preset name"),
     db: Session = Depends(get_db),
 ):
     content = await file.read()
@@ -139,4 +148,4 @@ async def analyze_conversation_from_file(
     })
 
     # 3. STORE & RESPOND
-    return _save_and_respond(analysis_result, conversation_history_id, db)
+    return _save_and_respond(analysis_result, conversation_history_id, db, style=style)
