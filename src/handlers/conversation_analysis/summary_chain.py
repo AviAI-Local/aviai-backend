@@ -1,7 +1,7 @@
-from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
 
+from .llm import get_llm
 from .model import LLMConversationSummary
 
 
@@ -31,12 +31,7 @@ Return ONLY the conversation summary in the specified JSON format.
 
 
 def get_conversation_summary_chain():
-    llm = ChatOllama(
-        base_url="http://localhost:11434",
-        model="gemma3",
-        temperature=0.3,
-        format="json"
-    )
+    llm = get_llm()
 
     parser = PydanticOutputParser(
         pydantic_object=LLMConversationSummary

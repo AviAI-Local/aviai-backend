@@ -1,6 +1,7 @@
-from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate
 import json
+
+from .llm import get_llm
 from .model import LLMEmotionAnalysisOutput
 
 SYSTEM_PROMPT = """
@@ -31,12 +32,7 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
-llm = ChatOllama(
-    model="gemma3",
-    base_url="http://localhost:11434",
-    temperature=0.3,
-    format="json"
-)
+llm = get_llm()
 
 async def analyze_conversation(inputs: dict) -> LLMEmotionAnalysisOutput:
     raw = await (prompt | llm).ainvoke(inputs)

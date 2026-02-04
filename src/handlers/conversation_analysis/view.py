@@ -13,13 +13,45 @@ from database.config import get_db
 from agent.history.query import ConversationHistoryQueryService
 from database.model import ConversationHistory
 
+TIMEZONE = "Asia/Ho_Chi_Minh"
+
+
 def convert_to_vietnam_time(timestamp):
     if timestamp is None:
         return None
-    vietnam_tz = pytz.timezone("Asia/Ho_Chi_Minh")
+    tz = pytz.timezone(TIMEZONE)
     if timestamp.tzinfo is None:
         timestamp = pytz.utc.localize(timestamp)
-    return timestamp.astimezone(vietnam_tz)
+    return timestamp.astimezone(tz)
+
+
+def _save_and_respond(
+    analysis_result, conversation_history_id: str, db: Session
+) -> ConversationAnalysisCombinedResponse:
+    """Generate PDF, persist analysis to DB, and return the combined response."""
+    analysis_id = str(uuid.uuid4())
+    pdf_bytes = create_pdf_from_analysis(analysis_result, analysis_id)
+    pdf_base64 = base64.b64encode(pdf_bytes).decode()
+    filename = f"conversation_analysis_{analysis_id}.pdf"
+
+    db_obj = ConversationAnalysisDB(
+        analysis_id=analysis_id,
+        conversation_history_id=conversation_history_id,
+        summary=analysis_result.summary,
+        analysis=[a.model_dump() for a in analysis_result.analysis],
+        pdf_base64=pdf_base64,
+        filename=filename,
+    )
+    db.add(db_obj)
+    db.commit()
+
+    return ConversationAnalysisCombinedResponse(
+        analysis=analysis_result.analysis,
+        summary=analysis_result.summary,
+        analysis_id=analysis_id,
+        pdf_base64=pdf_base64,
+        filename=filename,
+    )
 
 
 router = APIRouter()
@@ -58,33 +90,7 @@ async def analyze_conversation_by_id(
         "conversation_history": conversation_content,
     })
 
-    analysis_id = str(uuid.uuid4())
-
-    pdf_bytes = create_pdf_from_analysis(analysis_result, analysis_id)
-    pdf_base64 = base64.b64encode(pdf_bytes).decode()
-    filename = f"conversation_analysis_{analysis_id}.pdf"
-
-    db_obj = ConversationAnalysisDB(
-        analysis_id=analysis_id,
-        conversation_history_id=conversation_history_id,
-        summary=analysis_result.summary,
-        analysis=[a.model_dump() for a in analysis_result.analysis],
-        pdf_base64=pdf_base64,
-        filename=filename,
-    )
-
-    db.add(db_obj)
-    db.commit()
-
-    return ConversationAnalysisCombinedResponse(
-        analysis=analysis_result.analysis,
-        summary=analysis_result.summary,
-        analysis_id=analysis_id,  # MUST be str
-        pdf_base64=pdf_base64,
-        filename=filename,
-    )
-
-
+    return _save_and_respond(analysis_result, conversation_history_id, db)
 
 
 @router.get("/{analysis_id}")
@@ -98,13 +104,6 @@ def get_analysis(analysis_id: str, db: Session = Depends(get_db)):
 
     return obj.to_dict()
 
-from fastapi import Body
-
-
-from fastapi import UploadFile, File
-
-# DROP-IN FIXED /analyze ENDPOINT
-# Writes uploaded JSON conversation history into DB and links analysis correctly
 
 @router.post(
     "/analyze",
@@ -139,30 +138,5 @@ async def analyze_conversation_from_file(
         "conversation_history": payload["conversation_history"],
     })
 
-    # 3. STORE ANALYSIS
-    analysis_id = str(uuid.uuid4())
-
-    pdf_bytes = create_pdf_from_analysis(analysis_result, analysis_id)
-    pdf_base64 = base64.b64encode(pdf_bytes).decode()
-    filename = f"conversation_analysis_{analysis_id}.pdf"
-
-    db_obj = ConversationAnalysisDB(
-        analysis_id=analysis_id,
-        conversation_history_id=conversation_history_id,
-        summary=analysis_result.summary,
-        analysis=[a.model_dump() for a in analysis_result.analysis],
-        pdf_base64=pdf_base64,
-        filename=filename,
-    )
-
-    db.add(db_obj)
-    db.commit()
-
-    # 4. RESPONSE
-    return ConversationAnalysisCombinedResponse(
-        analysis=analysis_result.analysis,
-        summary=analysis_result.summary,
-        analysis_id=analysis_id,
-        pdf_base64=pdf_base64,
-        filename=filename,
-    )
+    # 3. STORE & RESPOND
+    return _save_and_respond(analysis_result, conversation_history_id, db)

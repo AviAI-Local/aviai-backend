@@ -1,5 +1,4 @@
 import json
-import base64
 from typing import Dict, Any
 from io import BytesIO
 from reportlab.lib.pagesizes import letter
@@ -11,7 +10,44 @@ from reportlab.lib import colors
 from .summary_chain import get_conversation_summary_chain
 from .chain import analyze_conversation
 
-from .model import ConversationHistoryInput, ConversationAnalysisOutput, LLMEmotionAnalysisOutput
+from .model import ConversationHistoryInput, ConversationAnalysisOutput
+
+
+# -------------------------
+# PDF CONFIGURATION
+# -------------------------
+PDF_CONFIG = {
+    "title": "Conversation Analysis Report",
+    "margin": 0.5 * inch,
+    "title_font_size": 18,
+    "heading_font_size": 14,
+    "body_font_size": 10,
+    "analysis_font_size": 11,
+    "heading_color": colors.darkblue,
+    "wrap_threshold": 100,
+    "wrap_line_length": 80,
+}
+
+
+def _wrap_text(text: str, style, story: list,
+               max_line: int = PDF_CONFIG["wrap_line_length"],
+               threshold: int = PDF_CONFIG["wrap_threshold"]):
+    """Append text as wrapped Paragraphs to story list."""
+    if len(text) > threshold:
+        words = text.split()
+        lines, current = [], ""
+        for word in words:
+            if len(current + " " + word) <= max_line:
+                current += " " + word if current else word
+            else:
+                lines.append(current)
+                current = word
+        if current:
+            lines.append(current)
+        for line in lines:
+            story.append(Paragraph(line, style))
+    else:
+        story.append(Paragraph(text, style))
 
 
 def convert_timestamp_to_readable(timestamp: float, base_timestamp: float) -> str:
@@ -46,123 +82,70 @@ def calculate_conversation_times(conversation_history: list) -> list:
 
 def create_pdf_from_analysis(analysis_data: ConversationAnalysisOutput, analysis_id: str = None) -> bytes:
     """Create a PDF from conversation analysis data with improved layout."""
+    cfg = PDF_CONFIG
     buffer = BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=letter, 
-                          rightMargin=0.5*inch, leftMargin=0.5*inch,
-                          topMargin=0.5*inch, bottomMargin=0.5*inch)
+    doc = SimpleDocTemplate(
+        buffer, pagesize=letter,
+        rightMargin=cfg["margin"], leftMargin=cfg["margin"],
+        topMargin=cfg["margin"], bottomMargin=cfg["margin"],
+    )
     story = []
-    
+
     # Get styles
     styles = getSampleStyleSheet()
     title_style = ParagraphStyle(
-        'CustomTitle',
-        parent=styles['Heading1'],
-        fontSize=18,
-        spaceAfter=30,
-        alignment=1,  # Center alignment
-        textColor=colors.darkblue
+        'CustomTitle', parent=styles['Heading1'],
+        fontSize=cfg["title_font_size"], spaceAfter=30,
+        alignment=1, textColor=cfg["heading_color"],
     )
     heading_style = ParagraphStyle(
-        'CustomHeading',
-        parent=styles['Heading2'],
-        fontSize=14,
-        spaceAfter=12,
-        spaceBefore=20,
-        textColor=colors.darkblue
+        'CustomHeading', parent=styles['Heading2'],
+        fontSize=cfg["heading_font_size"], spaceAfter=12,
+        spaceBefore=20, textColor=cfg["heading_color"],
     )
     normal_style = ParagraphStyle(
-        'CustomNormal',
-        parent=styles['Normal'],
-        fontSize=10,
-        spaceAfter=6,
-        leading=14
+        'CustomNormal', parent=styles['Normal'],
+        fontSize=cfg["body_font_size"], spaceAfter=6, leading=14,
     )
     analysis_style = ParagraphStyle(
-        'AnalysisStyle',
-        parent=styles['Normal'],
-        fontSize=11,
-        spaceAfter=8,
-        leading=14,
-        leftIndent=20
+        'AnalysisStyle', parent=styles['Normal'],
+        fontSize=cfg["analysis_font_size"], spaceAfter=8,
+        leading=14, leftIndent=20,
     )
     field_style = ParagraphStyle(
-        'FieldStyle',
-        parent=styles['Normal'],
-        fontSize=10,
-        spaceAfter=4,
-        leading=12,
-        leftIndent=30
+        'FieldStyle', parent=styles['Normal'],
+        fontSize=cfg["body_font_size"], spaceAfter=4,
+        leading=12, leftIndent=30,
     )
-    
-    # Add title
-    story.append(Paragraph("Conversation Analysis Report", title_style))
+
+    # Title
+    story.append(Paragraph(cfg["title"], title_style))
     story.append(Spacer(1, 20))
-    
-    # Add analysis details
+
+    # Analysis ID
     if analysis_id:
         story.append(Paragraph("Analysis Information", heading_style))
         story.append(Paragraph(f"<b>Analysis ID:</b> {analysis_id}", normal_style))
         story.append(Spacer(1, 20))
-    
-    # Add summary section
+
+    # Summary
     story.append(Paragraph("Conversation Summary", heading_style))
-    summary_text = analysis_data.summary
-    if len(summary_text) > 100:
-        # Split long text into paragraphs
-        words = summary_text.split()
-        lines = []
-        current_line = ""
-        for word in words:
-            if len(current_line + " " + word) <= 80:
-                current_line += " " + word if current_line else word
-            else:
-                lines.append(current_line)
-                current_line = word
-        if current_line:
-            lines.append(current_line)
-        
-        for line in lines:
-            story.append(Paragraph(line, normal_style))
-    else:
-        story.append(Paragraph(summary_text, normal_style))
-    
+    _wrap_text(analysis_data.summary, normal_style, story)
     story.append(Spacer(1, 20))
-    
-    # Add emotion analysis section
+
+    # Emotion analysis timeline
     story.append(Paragraph("Emotion Analysis Timeline", heading_style))
-    
+
     for i, entry in enumerate(analysis_data.analysis, 1):
         story.append(Paragraph(f"<b>Entry {i} - Time: {entry.time}</b>", analysis_style))
-        
-        # Add emotion analysis
-        story.append(Paragraph(f"<b>Emotion Analysis:</b>", field_style))
-        emotion_analysis = entry.user_emotion_analysis
-        if len(emotion_analysis) > 100:
-            # Split long text into paragraphs
-            words = emotion_analysis.split()
-            lines = []
-            current_line = ""
-            for word in words:
-                if len(current_line + " " + word) <= 80:
-                    current_line += " " + word if current_line else word
-                else:
-                    lines.append(current_line)
-                    current_line = word
-            if current_line:
-                lines.append(current_line)
-            
-            for line in lines:
-                story.append(Paragraph(line, field_style))
-        else:
-            story.append(Paragraph(emotion_analysis, field_style))
-        
+        story.append(Paragraph("<b>Emotion Analysis:</b>", field_style))
+        _wrap_text(entry.user_emotion_analysis, field_style, story)
         story.append(Spacer(1, 15))
-        
-        # Add a separator line between entries
+
         if i < len(analysis_data.analysis):
             story.append(Paragraph("<hr/>", normal_style))
             story.append(Spacer(1, 10))
-    
+
     doc.build(story)
     return buffer.getvalue()
 
