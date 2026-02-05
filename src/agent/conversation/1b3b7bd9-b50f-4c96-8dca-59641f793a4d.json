@@ -1,0 +1,31 @@
+{
+    "conversation_history_id": "1a7240fe-3619-4098-b0e1-69de992d28bf",
+    "session_id": "1b3b7bd9-b50f-4c96-8dca-59641f793a4d",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1770029217.538548,
+            "datetime": "2026-02-02T17:46:57.538548+07:00",
+            "user_query": "Hello, now can you introduce yourself?",
+            "response": "I’m Linh. I’m a flight engineer with VAECO. I’ve been doing this for over fifteen years.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 4.01,
+            "tts_time": 4.72
+        },
+        {
+            "timestamp": 1770029234.273381,
+            "datetime": "2026-02-02T17:47:14.273381+07:00",
+            "user_query": "Can you tell me a little bit more about yourself?",
+            "response": "I work in Ho Chi Minh City, mostly. I’m based with VAECO – it’s a big company, over 2800 people. I enjoy the work, it’s a steady job.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 1.61,
+            "tts_time": 1.57
+        }
+    ],
+    "timestamp": "2026-02-02T17:46:42.277991+07:00"
+}

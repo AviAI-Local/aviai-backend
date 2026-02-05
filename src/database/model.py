@@ -12,7 +12,7 @@ def get_vietnam_timezone():
 def get_vietnam_time():
     """Get current time in Vietnam timezone."""
     vietnam_tz = get_vietnam_timezone()
-    return datetime.datetime.now(vietnam_tz)
+    return datetime.now(vietnam_tz)
 
 class RoleEnum(enum.Enum):
     ADMIN = "admin"
@@ -99,6 +99,9 @@ class Session(Base):
     # conversation_histories = relationship("ConversationHistory", back_populates="session", passive_deletes=True)
     notes = relationship("Note", back_populates="session", passive_deletes=True)
     
+    llm_provider = Column(String, nullable=True)  # "ollama", "lmstudio"
+    model = Column(String, nullable=True)         # "llama3", "gpt-4"
+
     def to_dict(self):
         return {
             "session_id": self.session_id,
