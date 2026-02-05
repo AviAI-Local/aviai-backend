@@ -92,6 +92,10 @@ class ConversationHistoryService:
 
             content_as_dicts = [item.model_dump() if hasattr(item, 'model_dump') else item for item in data.content]
 
+            if content_as_dicts == []:
+                console.print(f"[red]✗ Conversation history did not save to DB[/red]")
+                return
+
             conversation = ConversationHistory(
                 conversation_history_id=data.conversation_history_id,
                 session_id=data.session_id,

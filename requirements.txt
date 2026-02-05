@@ -181,6 +181,7 @@ win32-setctime==1.2.0
 wrapt==2.0.1
 yarl==1.22.0
 zstandard==0.23.0
+reportlab==4.4.9
 psycopg2-binary
 pytz
 alembic
