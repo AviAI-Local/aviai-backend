@@ -35,7 +35,7 @@ async def get_notes_by_session(session_id: str, db: DBSession = Depends(get_db))
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
-@router.get("/notes/account/{account_id}", response_model=List[Dict])
+@router.get("/account/{account_id}", response_model=List[Dict])
 async def get_notes_by_account(account_id: str, db: DBSession = Depends(get_db)):
     """Get all notes for a specific account."""
     service = NoteService(db)

@@ -97,14 +97,14 @@ class NoteService:
         self.db.commit()
         return True 
 
-def search_by_scenario_name(self, scenario_name: str):
-    return (
-        self.db.query(Note)
-        .join(DBSession, Note.session_id == DBSession.session_id)
-        .join(Scenario, DBSession.scenario_id == Scenario.scenario_id)
-        .filter(Scenario.scenario_name.ilike(f"%{scenario_name}%"))
-        .all()
-    )
+    def search_by_scenario_name(self, scenario_name: str):
+        return (
+            self.db.query(Note)
+            .join(DBSession, Note.session_id == DBSession.session_id)
+            .join(Scenario, DBSession.scenario_id == Scenario.scenario_id)
+            .filter(Scenario.scenario_name.ilike(f"%{scenario_name}%"))
+            .all()
+        )
     
     def validate_update_data(self, update_data: Dict) -> None:
         """Validate update data and raise appropriate exceptions."""
