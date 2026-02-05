@@ -41,42 +41,53 @@ class LLMService:
             # 1. Extract content safely
             content = response.content if hasattr(response, "content") else str(response)
 
-            # 2. Remove parenthetical asides (e.g. (laughs), (pause))
-            content = re.sub(r"\s*\([^)]*\)\s*", " ", content).strip()
+            # 2. Fix smart quotes and special characters
+            content = content.replace('\u201c', '"').replace('\u201d', '"')
+            content = content.replace('\u2018', "'").replace('\u2019', "'")
+            content = content.replace('\u2026', '...')
 
-            # 3. Remove markdown code fences (handles ```json, ``` with newlines)
-            # cleaned = re.sub(r"```(?:json)?", "", content).replace("```", "").strip()
-            cleaned = re.sub(r"```(?:json)?\s*", "", content)
-            cleaned = re.sub(r"\s*```", "", cleaned).strip()
+            # 3. Find start of JSON object
+            start = content.find('{')
+            if start == -1:
+                raise ValueError("No JSON object found")
 
-            # 4. Fix newlines and control characters in JSON strings
-            # Replace literal newlines within the content with spaces
-            cleaned = cleaned.replace('\n', ' ')
-            # Normalize multiple spaces to single space
-            cleaned = re.sub(r'\s+', ' ', cleaned).strip()
+            # 4. Parse only the first JSON object, ignoring trailing garbage
+            decoder = json.JSONDecoder(strict=False)
+            data, _ = decoder.raw_decode(content, start)
 
-            # 5. Fix invalid escape sequences (LLM sometimes outputs \' which is not valid JSON)
-            cleaned = cleaned.replace("\\'", "'")
+            # 5. Validate and return
+            if not isinstance(data, dict) or "response" not in data:
+                raise ValueError("Invalid JSON structure")
 
-            # 6. Attempt JSON parsing
-            data = json.loads(cleaned)
-
-            # 7. Validate required keys (important!)
-            if not isinstance(data, dict):
-                raise ValueError("Parsed JSON is not an object")
-
-            if "response" not in data:
-                raise KeyError("Missing 'response' field")
-
-            # 8. Fill optional fields safely
             data.setdefault("avatar_instructions", "neutral")
+            data.setdefault("voice_instructions", "neutral")
 
             return LLMResponse(**data)
 
         except Exception as e:
-            # Log for debugging
-            # if hasattr(response, "content"):
-                # console.log(f"[yellow]Response content: {response.content}[/yellow]")
+            console.log(f"[red]Parse error: {e}[/red]")
+
+            # Fallback: extract fields using regex
+            try:
+                content = response.content if hasattr(response, "content") else str(response)
+
+                # Extract response field
+                resp_match = re.search(r'"response"\s*:\s*"((?:[^"\\]|\\.)*)"', content, re.DOTALL)
+                if resp_match:
+                    resp_text = resp_match.group(1)
+                    # Clean up escape sequences
+                    resp_text = resp_text.replace('\\n', ' ').replace('\\r', ' ')
+                    resp_text = re.sub(r'\s+', ' ', resp_text).strip()
+
+                    console.log(f"[green]Fallback extraction successful[/green]")
+                    return LLMResponse(
+                        response=resp_text,
+                        avatar_instructions="neutral",
+                        voice_instructions="neutral"
+                    )
+            except Exception as fallback_error:
+                console.log(f"[red]Fallback failed: {fallback_error}[/red]")
+
             return default_response
 
 

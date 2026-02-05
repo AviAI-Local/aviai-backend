@@ -1,0 +1,42 @@
+{
+    "conversation_history_id": "fd33a182-b5f2-448c-9664-1d73ca7cb546",
+    "session_id": "4f83bf82-33e1-4cf0-8822-511f5023786b",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1770028191.915009,
+            "datetime": "2026-02-02T17:29:51.915009+07:00",
+            "user_query": "Hello, can you introduce yourself?",
+            "response": "I'm Linh. I’m a flight engineer with VAECO.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 3.79,
+            "tts_time": 4.5
+        },
+        {
+            "timestamp": 1770028205.169546,
+            "datetime": "2026-02-02T17:30:05.169546+07:00",
+            "user_query": "Can you tell me a little bit more about yourself?",
+            "response": "I'm sorry, I didn't quite understand that. Could you please repeat?",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "neutral",
+            "llm_time": 1.6,
+            "tts_time": 0.68
+        },
+        {
+            "timestamp": 1770028224.210339,
+            "datetime": "2026-02-02T17:30:24.210339+07:00",
+            "user_query": "Can you tell me a little bit more about yourself?",
+            "response": "I'm sorry, I didn't quite understand that. Could you please repeat?",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "neutral",
+            "llm_time": 1.45,
+            "tts_time": 0.59
+        }
+    ],
+    "timestamp": "2026-02-02T17:29:37.378995+07:00"
+}
