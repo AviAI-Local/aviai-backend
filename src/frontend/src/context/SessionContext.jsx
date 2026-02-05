@@ -206,6 +206,12 @@ export function SessionProvider({ children }) {
     }
   }, [connected, sendJson]);
 
+  // Send text message directly (skip STT)
+  const sendTextMessage = useCallback((text) => {
+    if (!connected || !text.trim()) return;
+    sendJson({ type: "text_message", text: text.trim() });
+  }, [connected, sendJson]);
+
   // Disconnect and cleanup
   const disconnect = useCallback(() => {
     // Close WebSocket
@@ -261,6 +267,7 @@ export function SessionProvider({ children }) {
     createSession,
     connectConversation,
     toggleSpeaking,
+    sendTextMessage,
     disconnect,
     resetSession,
   };

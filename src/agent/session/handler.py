@@ -70,12 +70,13 @@ class ConversationHandler:
             llm = ChatOpenAI(
                 base_url=os.environ.get("MODEL_URL"),
                 api_key=os.environ.get("MODEL_API_KEY"),
-                model=os.environ.get("MODEL_NAME")
+                model=os.environ.get("MODEL_NAME"),
+                model_kwargs={"response_format": {"type": "json_object"}}
             )
             # console.print(f"[green]✓ Using LM Studio with model: {model}[/green]")
         else:  # default to ollama
             model = os.environ.get("OLLAMA_MODEL_NAME")
-            llm = ChatOllama(model=model)
+            llm = ChatOllama(model=model, format="json")
             # console.print(f"[green]✓ Using Ollama with model: {model}[/green]")
         
         chain = prompt | llm
@@ -164,8 +165,61 @@ class ConversationHandler:
         finally:
             self.cleanup()
 
+    async def process_response(self, websocket: WebSocket, text: str):
+        """Process user text through LLM and TTS, send response back"""
+        console.print(f"[yellow]{self.session.session_id} - You:[/yellow] {text}")
+
+        await websocket.send_json({
+            "type": "user_query",
+            "query": text
+        })
+
+        start = time.perf_counter()
+        response = await asyncio.to_thread(
+            self.llm_service.get_response,
+            text
+        )
+        llm_time = time.perf_counter() - start
+
+        content = response.response
+        await websocket.send_json({
+            "type": "assistant_text",
+            "content": content,
+            "voice_instructions": response.voice_instructions,
+            "avatar_instructions": response.avatar_instructions
+        })
+
+        console.print(f"[cyan]{self.session.session_id} - Assistant:[/cyan] {content}")
+
+        start = time.perf_counter()
+        sr, audio_out = await asyncio.to_thread(
+            self.tts.long_form_synthesize,
+            content,
+            None,
+            0.5,
+            0.5
+        )
+        tts_time = time.perf_counter() - start
+
+        pcm_bytes = (audio_out * 32767).astype(np.int16).tobytes()
+        console.print(f"[dim]LLM time: {llm_time:.2f}s | TTS time: {tts_time:.2f}s[/dim]")
+
+        self.service.add_conversation_entry(
+            user_query=text,
+            response_data=response,
+            llm_time=llm_time,
+            tts_time=tts_time
+        )
+
+        self.is_speaking = True
+        await websocket.send_bytes(pcm_bytes)
+        await websocket.send_json({
+            "type": "status",
+            "state": "speaking"
+        })
+
     async def handle_conversation(self, websocket: WebSocket):
-        """Handle /session/conversation endpoint"""
+        """Handle /session/conversation endpoint - supports both voice and text input"""
         console.print(f"[green]Conversation started for session {self.session.session_id}[/green]")
 
         await websocket.send_json({
@@ -189,11 +243,19 @@ class ConversationHandler:
                         })
                         continue
 
+                    # Handle text input directly (skip STT)
+                    if payload["type"] == "text_message":
+                        text = payload.get("text", "").strip()
+                        if not text:
+                            continue
+                        await self.process_response(websocket, text)
+                        continue
+
+                    # Handle voice input (STT → LLM → TTS)
                     if payload["type"] == "end_of_utterance":
                         if not self.buffer:
                             continue
 
-                        # Transcribe
                         audio_np = (
                             np.frombuffer(self.buffer, dtype=np.int16)
                             .astype(np.float32) / 32768.0
@@ -208,55 +270,7 @@ class ConversationHandler:
                         if not text:
                             continue
 
-                        console.print(f"[yellow]{self.session.session_id} - You:[/yellow] {text}")
-
-                        start = time.perf_counter()
-                        # Generate response
-                        response = await asyncio.to_thread(
-                            self.llm_service.get_response,
-                            text
-                        )
-                        llm_time = time.perf_counter() - start
-
-                        content = response.response
-                        await websocket.send_json({
-                            "type": "assistant_text",
-                            "content": content,
-                            "voice_instructions": response.voice_instructions,
-                            "avatar_instructions": response.avatar_instructions
-                        })
-
-                        console.print(f"[cyan]{self.session.session_id} - Assistant:[/cyan] {content}")
-
-                        start = time.perf_counter()
-                        # Generate TTS
-                        sr, audio_out = await asyncio.to_thread(
-                            self.tts.long_form_synthesize,
-                            content,
-                            None,
-                            0.5,
-                            0.5
-                        )
-                        tts_time = time.perf_counter() - start
-
-                        pcm_bytes = (audio_out * 32767).astype(np.int16).tobytes()
-                        console.print(f"[dim]LLM time: {llm_time:.2f}s | TTS time: {tts_time:.2f}s[/dim]")
-
-                        # Save conversation entry to history file with timing
-                        self.service.add_conversation_entry(
-                            user_query=text,
-                            response_data=response,
-                            # user_emotion="neutral",
-                            llm_time=llm_time,
-                            tts_time=tts_time
-                        )
-
-                        self.is_speaking = True
-                        await websocket.send_bytes(pcm_bytes)
-                        await websocket.send_json({
-                            "type": "status",
-                            "state": "speaking"
-                        })
+                        await self.process_response(websocket, text)
                         continue
 
                 # Handle binary audio data

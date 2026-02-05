@@ -41,53 +41,21 @@ class LLMService:
             # 1. Extract content safely
             content = response.content if hasattr(response, "content") else str(response)
 
-            # 2. Remove markdown code fences
-            content = re.sub(r"```json\s*", "", content)
-            content = re.sub(r"```\s*", "", content)
-            content = content.strip()
+            # 2. Fix smart quotes and special characters
+            content = content.replace('\u201c', '"').replace('\u201d', '"')
+            content = content.replace('\u2018', "'").replace('\u2019', "'")
+            content = content.replace('\u2026', '...')
 
-            # 3. Find JSON object boundaries
+            # 3. Find start of JSON object
             start = content.find('{')
-            end = content.rfind('}')
-            if start == -1 or end == -1:
+            if start == -1:
                 raise ValueError("No JSON object found")
 
-            json_str = content[start:end+1]
+            # 4. Parse only the first JSON object, ignoring trailing garbage
+            decoder = json.JSONDecoder(strict=False)
+            data, _ = decoder.raw_decode(content, start)
 
-            # 4. Fix smart quotes and special characters
-            json_str = json_str.replace('"', '"').replace('"', '"')  # Smart double quotes
-            json_str = json_str.replace(''', "'").replace(''', "'")  # Smart single quotes
-            json_str = json_str.replace('…', '...')  # Ellipsis
-
-            # 5. Fix control characters - escape them for JSON compatibility
-            # First, temporarily protect already-escaped sequences
-            json_str = json_str.replace('\\n', '\x00NEWLINE\x00')
-            json_str = json_str.replace('\\r', '\x00RETURN\x00')
-            json_str = json_str.replace('\\t', '\x00TAB\x00')
-            json_str = json_str.replace('\\b', '\x00BACKSPACE\x00')
-            json_str = json_str.replace('\\f', '\x00FORMFEED\x00')
-
-            # Now escape actual control characters
-            json_str = json_str.replace('\n', '\\n')
-            json_str = json_str.replace('\r', '\\r')
-            json_str = json_str.replace('\t', '\\t')
-            json_str = json_str.replace('\b', '\\b')
-            json_str = json_str.replace('\f', '\\f')
-
-            # Remove any other control characters (0x00-0x1F)
-            json_str = re.sub(r'[\x01-\x08\x0b\x0e-\x1f]', '', json_str)
-
-            # Restore protected sequences
-            json_str = json_str.replace('\x00NEWLINE\x00', '\\n')
-            json_str = json_str.replace('\x00RETURN\x00', '\\r')
-            json_str = json_str.replace('\x00TAB\x00', '\\t')
-            json_str = json_str.replace('\x00BACKSPACE\x00', '\\b')
-            json_str = json_str.replace('\x00FORMFEED\x00', '\\f')
-
-            # 5. Parse JSON
-            data = json.loads(json_str)
-
-            # 6. Validate and return
+            # 5. Validate and return
             if not isinstance(data, dict) or "response" not in data:
                 raise ValueError("Invalid JSON structure")
 

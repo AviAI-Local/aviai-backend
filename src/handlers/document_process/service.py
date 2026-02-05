@@ -8,7 +8,7 @@ from fastapi import UploadFile
 from pdfminer.high_level import extract_text as extract_pdf_text
 from docx import Document as DocxDocument
 
-from .model import DocumentExtractResp, DocumentLLMResp
+from handlers.document_process.schema import DocumentExtractResp, DocumentLLMResp
 
 
 def _extract_text_from_txt(file_bytes: bytes) -> str:
@@ -100,8 +100,8 @@ async def process_document(upload_file: UploadFile) -> DocumentExtractResp:
         personal_characteristics=parsed.get("personal_characteristics", ""),
         scenario=parsed.get("scenario", ""),
         attitude_in_interview=parsed.get("attitude_in_interview", ""),
-        usecase_name=llm_resp.usecase_name,
-        usecase_summary=llm_resp.usecase_summary,
+        scenario_name=llm_resp.scenario_name,
+        scenario_summary=llm_resp.scenario_summary,
         character_name=llm_resp.character_name,
         gender=llm_resp.gender,
     )

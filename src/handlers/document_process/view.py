@@ -1,6 +1,6 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from .service import process_document
-from .model import DocumentExtractResp
+from .schema import DocumentExtractResp
 
 router = APIRouter()
 

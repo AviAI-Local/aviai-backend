@@ -1,21 +1,20 @@
+import os
 import httpx
 import re
-from .model import DocumentLLMResp
+from .schema import DocumentLLMResp
 
-OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL = "gemma3:latest"
+OLLAMA_BASE_URL = os.environ.get("OLLAMA_MODEL_URL")
+OLLAMA_URL = f"{OLLAMA_BASE_URL}/api/generate"
+MODEL = os.environ.get("OLLAMA_MODEL_NAME")
 
-SYSTEM_PROMPT = """
-You are Usecase-DocExtractor.
+SYSTEM_PROMPT = """You are scenario-DocExtractor. You extract metadata from documents.
+You MUST return a JSON object with exactly these fields:
+- "scenario_name": a short name for the scenario
+- "scenario_summary": a brief summary of the scenario
+- "character_name": the name of the main character
+- "gender": "male" or "female"
 
-Extract and return STRICT JSON with:
-- usecase_name
-- usecase_summary
-- character_name
-- gender (male or female)
-
-No extra text. No markdown.
-"""
+Return ONLY the JSON object. No extra text."""
 
 
 def _strip_markdown_json(text: str) -> str:
@@ -34,8 +33,10 @@ def _strip_markdown_json(text: str) -> str:
 async def extract_metadata(text: str) -> DocumentLLMResp:
     payload = {
         "model": MODEL,
-        "prompt": f"{SYSTEM_PROMPT}\n\n{text}",
+        "system": SYSTEM_PROMPT,
+        "prompt": f"Extract metadata from the following document:\n\n{text}",
         "stream": False,
+        "format": "json",
     }
 
     async with httpx.AsyncClient(timeout=120) as client:
