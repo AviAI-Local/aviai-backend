@@ -4,6 +4,8 @@ from datetime import datetime
 from database.config import Base
 import enum
 import pytz
+from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy.sql import func
 
 def get_vietnam_timezone():
     """Get Vietnam timezone object."""
@@ -150,4 +152,46 @@ class Note(Base):
             "title": self.title,
             "note_content": self.note_content,
             "timestamp": self.timestamp.isoformat() if self.timestamp else None
+        }
+class ConversationAnalysis(Base):
+    __tablename__ = "conversation_analysis"
+
+    analysis_id = Column(String, primary_key=True, index=True)
+
+    conversation_history_id = Column(
+        String,
+        ForeignKey(
+            "conversation_history.conversation_history_id",
+            ondelete="CASCADE"
+        ),
+        nullable=False,
+        index=True,
+    )
+
+    summary = Column(Text, nullable=False)
+    analysis = Column(JSONB, nullable=False)
+
+    pdf_base64 = Column(Text, nullable=False)
+    filename = Column(Text, nullable=False)
+
+    created_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False
+    )
+
+    # relationship
+    conversation_history = relationship(
+        "ConversationHistory",
+        passive_deletes=True,
+    )
+
+    def to_dict(self):
+        return {
+            "analysis_id": self.analysis_id,
+            "conversation_history_id": self.conversation_history_id,
+            "summary": self.summary,
+            "analysis": self.analysis,
+            "filename": self.filename,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
         }
