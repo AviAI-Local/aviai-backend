@@ -23,6 +23,15 @@ async def create_session(
     session = service.create_session(session_data)
     return {"session_id": session.session_id}
 
+@router.get("/")
+async def get_session_by_account_id(
+    db: Session = Depends(get_db),
+    current_user: Account = Depends(get_current_user)
+):
+    service = SessionService(db)
+    sessions = service.get_session_by_account(current_user.account_id)
+    return sessions
+
 @router.websocket("/{session_id}/connect")
 async def session_connect(session_id: str, websocket: WebSocket, db: Session = Depends(get_db)):
     """Handle session connection - delegates to Session class"""

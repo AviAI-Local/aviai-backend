@@ -41,35 +41,21 @@ class LLMService:
             # 1. Extract content safely
             content = response.content if hasattr(response, "content") else str(response)
 
-            # 2. Remove markdown code fences
-            content = re.sub(r"```json\s*", "", content)
-            content = re.sub(r"```\s*", "", content)
-            content = content.strip()
+            # 2. Fix smart quotes and special characters
+            content = content.replace('\u201c', '"').replace('\u201d', '"')
+            content = content.replace('\u2018', "'").replace('\u2019', "'")
+            content = content.replace('\u2026', '...')
 
-            # 3. Find JSON object boundaries
+            # 3. Find start of JSON object
             start = content.find('{')
-            end = content.rfind('}')
-            if start == -1 or end == -1:
+            if start == -1:
                 raise ValueError("No JSON object found")
 
-            json_str = content[start:end+1]
+            # 4. Parse only the first JSON object, ignoring trailing garbage
+            decoder = json.JSONDecoder(strict=False)
+            data, _ = decoder.raw_decode(content, start)
 
-            # 4. Fix newlines inside string values by escaping them properly
-            # Replace actual newlines with escaped \n for JSON compatibility
-            def fix_string_newlines(match):
-                s = match.group(0)
-                # Replace actual newlines with \n escape sequence
-                s = s.replace('\n', '\\n')
-                s = s.replace('\r', '\\r')
-                return s
-
-            # Match string values and fix newlines inside them
-            json_str = re.sub(r'"[^"\\]*(?:\\.[^"\\]*)*"', fix_string_newlines, json_str)
-
-            # 5. Parse JSON
-            data = json.loads(json_str)
-
-            # 6. Validate and return
+            # 5. Validate and return
             if not isinstance(data, dict) or "response" not in data:
                 raise ValueError("Invalid JSON structure")
 

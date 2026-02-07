@@ -1,0 +1,64 @@
+{
+    "conversation_history_id": "48311ec7-e36d-4bf7-b39d-16525fe3f832",
+    "session_id": "fbf268c4-b73a-4f28-92c3-bdd95fe514f1",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1770112892.63523,
+            "datetime": "2026-02-03T17:01:32.635230+07:00",
+            "user_query": "Hello, can you introduce yourself?",
+            "response": "I’m Linh. I’m a flight engineer with VAECO.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 5.25,
+            "tts_time": 6.24
+        },
+        {
+            "timestamp": 1770112907.955244,
+            "datetime": "2026-02-03T17:01:47.955244+07:00",
+            "user_query": "Can you tell me a little bit more about yourself?",
+            "response": "I've been a flight engineer for over fifteen years. I work with VAECO, a company with over 2800 employees. I find it a satisfying job.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 1.55,
+            "tts_time": 1.83
+        },
+        {
+            "timestamp": 1770112927.943496,
+            "datetime": "2026-02-03T17:02:07.943496+07:00",
+            "user_query": "Can you tell me more about the accident?",
+            "response": "I was monitoring the engine diagnostics. There was a sudden vibration, and the readings… they spiked. Quickly.",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "fear",
+            "llm_time": 1.31,
+            "tts_time": 1.28
+        },
+        {
+            "timestamp": 1770112946.413123,
+            "datetime": "2026-02-03T17:02:26.413123+07:00",
+            "user_query": "Did you see anyone else?",
+            "response": "I'm sorry, I didn't quite understand that. Could you please repeat?",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "neutral",
+            "llm_time": 1.34,
+            "tts_time": 0.69
+        },
+        {
+            "timestamp": 1770112965.642998,
+            "datetime": "2026-02-03T17:02:45.642998+07:00",
+            "user_query": "Could you please tell me did you see anyone else?",
+            "response": "I… I was focused on the instruments. The vibration was intense. I saw the co-pilot, he was looking at the screens too. It was… chaotic.",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "fear",
+            "llm_time": 1.48,
+            "tts_time": 1.79
+        }
+    ],
+    "timestamp": "2026-02-03T17:01:10.059317+07:00"
+}

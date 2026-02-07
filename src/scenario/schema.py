@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 from pydantic import BaseModel
 
 class ScenarioResponse(BaseModel):
@@ -7,7 +8,7 @@ class ScenarioResponse(BaseModel):
     scenario_summary: str
     personal_characteristics: str
     attitude_in_interview: str
-    rule_interview: str
+    rule_interview: Optional[str] = ""
     character_name: str
     character_gender: str
     industry: str
