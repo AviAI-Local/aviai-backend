@@ -1,0 +1,61 @@
+
+{
+    "session_id": "c9e2d8a7-c73e-438f-8d94-60357d09d3b6",
+    "content": [
+      {
+        "timestamp": 1755224576.710788,
+        "datetime": "2025-08-15T09:22:56.710789",
+        "user_query": "can you introduce yourself",
+        "response": "My name is Linh. I'm a flight engineer at VAECO.",
+        "user_emotion": "default",
+        "voice_instructions": "Speak with a calm, professional tone, clear and measured pace",
+        "avatar_instructions": "default"
+      },
+      {
+        "timestamp": 1755224593.274643,
+        "datetime": "2025-08-15T09:23:13.274644",
+        "user_query": "what happens in the cockpit",
+        "response": "We were preparing to land a Boeing 747-400 at Anyairport. The captain and co-pilot were busy with their tasks.",
+        "user_emotion": "default",
+        "voice_instructions": "Speak with clear and measured pace, calm tone",
+        "avatar_instructions": "default"
+      },
+      {
+        "timestamp": 1755224625.745295,
+        "datetime": "2025-08-15T09:23:45.745296",
+        "user_query": "why it crashed",
+        "response": "I don't recall that. We didn't crash. The aircraft experienced strong vibrations after the noise, but we landed safely.",
+        "user_emotion": "default",
+        "voice_instructions": "Speak with a calm, professional tone, clear and measured pace",
+        "avatar_instructions": "default"
+      },
+      {
+        "timestamp": 1755224650.2346509,
+        "datetime": "2025-08-15T09:24:10.234651",
+        "user_query": "are you nervous",
+        "response": "I'm a bit shaken after what happened, but I'm okay.",
+        "user_emotion": "default",
+        "voice_instructions": "Speak with a calm and measured pace",
+        "avatar_instructions": "default"
+      },
+      {
+        "timestamp": 1755224672.037025,
+        "datetime": "2025-08-15T09:24:32.037025",
+        "user_query": "are you stronger after this accident",
+        "response": "I don't feel like I've been affected in any way. We followed standard procedures and landed safely.",
+        "user_emotion": "default",
+        "voice_instructions": "Speak with a calm, professional tone, clear and measured pace",
+        "avatar_instructions": "default"
+      },
+      {
+        "timestamp": 1755224686.531467,
+        "datetime": "2025-08-15T09:24:46.531468",
+        "user_query": "thank you",
+        "response": "You're welcome.",
+        "user_emotion": "default",
+        "voice_instructions": "Speak with a calm, professional tone, clear and measured pace",
+        "avatar_instructions": "default"
+      }
+    ],
+    "timestamp": "2025-08-15T09:22:47.148242"
+  }
