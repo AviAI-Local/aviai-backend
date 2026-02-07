@@ -21,6 +21,13 @@ class ConversationHistoryResponse(BaseModel):
     content: List[ConversationHistoryContent]
     timestamp: Optional[str] = None
 
+class PdfConversionResponse(BaseModel):
+    conversation_history_id: str
+    session_id: str
+    pdf_base64: str
+    filename: str
+    timestamp: Optional[str] = None
+
 conversation_history_example = {
     "conversation_history_id": "c1234567-89ab-4cde-f012-3456789abcde",
     "session_id": "abc12345-6789-4def-0123-456789abcdef",
@@ -35,5 +42,13 @@ conversation_history_example = {
             "avatar_instructions": "neutral"
         }
     ],
+    "timestamp": "2025-06-15T21:36:58.427619+07:00"
+}
+
+pdf_conversion_example = {
+    "conversation_history_id": "c1234567-89ab-4cde-f012-3456789abcde",
+    "session_id": "abc12345-6789-4def-0123-456789abcdef",
+    "pdf_base64": "JVBERi0xLjQKJcOkw7zDtsO...",
+    "filename": "conversation_c1234567-89ab-4cde-f012-3456789abcde.pdf",
     "timestamp": "2025-06-15T21:36:58.427619+07:00"
 }
