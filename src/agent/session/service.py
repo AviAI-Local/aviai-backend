@@ -13,10 +13,11 @@ import uuid
 import json
 import numpy as np
 import asyncio
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 from datetime import datetime
 from zoneinfo import ZoneInfo
-from database.model import Account, Scenario, Session as DBSession, get_vietnam_time
+from agent.session.schema import SessionResponse
+from database.model import Account, ConversationHistory, Scenario, Session as DBSession, get_vietnam_time
 from agent.history.service import ConversationHistoryService
 from agent.history.schema import ConversationHistoryResponse
 from agent.config import LLM_PROVIDER, LLM_MODEL, LLM_BASE_URL, TTS_VOICE
@@ -28,83 +29,64 @@ class SessionService:
     """Session that manages its own WebSocket connections and lifecycle"""
     def __init__(self, db: DBSession):
         self.db = db
-        # self.session_id = session_id
-        # self.scenario_id = scenario_id
-        # self.voice = voice
         self.buffer = bytearray()
-        # self.is_speaking = False
-        # self.session_start_time = datetime.now(ZoneInfo("Asia/Ho_Chi_Minh"))
-        
-        # self.service = ConversationHistoryService(history_response=ConversationHistoryResponse(
-        #     conversation_history_id=str(uuid.uuid4()),
-        #     session_id=self.session_id,
-        #     llm_provider=llm_provider,
-        #     model=model,
-        #     content=[],
-        #     timestamp=self.session_start_time.isoformat()
-        # ), db=self.db)
-        # self.service.create_conversation_history()
 
-        # Debug: Print LLM provider configuration
-        # console.print(f"[magenta]============ LLM Configuration ============[/magenta]")
-        # console.print(f"[magenta]Provider: {llm_provider}[/magenta]")
-        # console.print(f"[magenta]Base URL: {base_url}[/magenta]")
-        # console.print(f"[magenta]Model: {model}[/magenta]")
-        # console.print(f"[magenta]===========================================[/magenta]")
+    def get_session_by_account(self, account_id: str) -> List[SessionResponse]:
+        """Get all sessions for a specific account."""
+        # Verify account exists
+        account = self.db.query(Account).filter(Account.account_id == account_id).first()
+        if not account:
+            raise HTTPException(status_code=404, detail=f"Account with ID {account_id} does not exist")
 
-        # data = self.load_usecase_from_api_local()
+        # Get all sessions belonging to this account
+        sessions = self.db.query(DBSession).filter(DBSession.account_id == account_id).all()
 
-        # self.scenario_data = {
-        #         "personal_characteristics": data.get("personal_characteristics", ""),
-        #         "attitude_in_interview": data.get("attitude_in_interview", ""),
-        #         "rule_interview": data.get("rule_interview", ""),
-        #         "scenario_text": data.get("usecase_summary", ""),
-        #         "character_name": data.get("character_name", "")
-        # }
+        # Return empty list if no sessions found
+        if not sessions:
+            return []
 
-        # # Create session-specific LLM service with scenario data
-        # prompt = PromptBuilder(
-        #     personal_characteristics=self.scenario_data["personal_characteristics"],
-        #     attitude_in_interview=self.scenario_data["attitude_in_interview"],
-        #     rule_interview=self.scenario_data["rule_interview"],
-        #     scenario_text=self.scenario_data["scenario_text"]
-        # ).build()
+        # Get scenario names by scenario_id
+        scenario_ids = list(set(s.scenario_id for s in sessions))
+        scenarios = self.db.query(Scenario).filter(Scenario.scenario_id.in_(scenario_ids)).all()
+        scenario_map = {s.scenario_id: s.scenario_name for s in scenarios}
 
-        # # Conditional LLM initialization based on provider
-        # if llm_provider == "lmstudio":
-        #     llm = ChatOpenAI(
-        #         base_url=base_url,
-        #         api_key="not-needed",
-        #         model=model
-        #     )
-        #     console.print(f"[green]✓ Using LM Studio with model: {model}[/green]")
-        # else:  # default to ollama
-        #     llm = ChatOllama(model=model)
-        #     console.print(f"[green]✓ Using Ollama with model: {model}[/green]")
-        
-        # chain = prompt | llm
-        # chat = RunnableWithMessageHistory(
-        #     chain,
-        #     get_session_history,
-        #     input_messages_key="input",
-        #     history_messages_key="history",
-        # )
-        # self.llm_service = LLMService(chat, session_id=self.session_id)
+        # Get conversation histories for all sessions
+        session_ids = [s.session_id for s in sessions]
+        conversations = self.db.query(ConversationHistory).filter(
+            ConversationHistory.session_id.in_(session_ids)
+        ).all()
+        # Map session_id -> conversation history
+        conv_map = {c.session_id: c for c in conversations}
 
-        # # Session-specific TTS with voice setting
-        # self.tts = TextToSpeechService(voice=TTS_VOICE)
+        # Build response with scenario_name and conversation_history
+        result = []
+        for session in sessions:
+            scenario_name = scenario_map.get(session.scenario_id, "Unknown")
+            conv = conv_map.get(session.session_id)
 
-        # self.stt = FasterWhisperSTT(
-        #     model_size="small",
-        #     silence_db=-45,
-        #     end_silence_sec=1.2,
-        # )
+            # Build conversation history response if exists
+            conv_response = None
+            if conv:
+                conv_response = ConversationHistoryResponse(
+                    conversation_history_id=conv.conversation_history_id,
+                    session_id=conv.session_id,
+                    llm_provider=session.llm_provider,
+                    model=session.model,
+                    content=conv.content,
+                    timestamp=conv.timestamp.isoformat() if conv.timestamp else None
+                )
 
-        # Register in class registry
-        # SessionService._registry[self.session_id] = self
+            result.append(SessionResponse(
+                session_id=session.session_id,
+                scenario_id=session.scenario_id,
+                scenario_name=scenario_name,
+                account_id=session.account_id,
+                created_at=session.created_at.isoformat() if session.created_at else None,
+                recording=session.recording,
+                conversation_history=conv_response
+            ))
+        return result
 
-        # console.print(f"[green]Session {self.session_id} created with voice={voice}[/green]")
-    
     def create_session(self, session_data: Dict) -> DBSession:
         self.validate_session_data(session_data)
 
