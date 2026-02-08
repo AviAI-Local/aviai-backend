@@ -17,7 +17,6 @@ dependencies = [
     "sounddevice>=0.5.2",
     "torchaudio>=2.6.0",
     # Text-to-speech
-    "chatterbox-tts>=0.1.1",
     "kokoro>=0.9.4",
     "pocket-tts>=0.1.0",
     # Web / API
@@ -33,7 +32,6 @@ dependencies = [
     "rich>=14.0.0",
     "peft>=0.15.2",
     "setuptools>=80.9.0",
-    "mlx==0.30.3",
     "airllm==2.11.0",
     # Pin NumPy for Numba compatibility
     "numpy<2.3",
@@ -41,6 +39,11 @@ dependencies = [
     "alembic>=1.18.1",
     "pytz>=2025.2",
     "psycopg2-binary>=2.9.11",
+    # PDF
+    "reportlab>=4.0.0",
+    "pdfminer.six>=20221105",
+    # Document processing
+    "python-docx>=1.0.0",
 ]
 
 [dependency-groups]

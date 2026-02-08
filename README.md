@@ -1,133 +1,170 @@
-### Installation
+# AviAI Backend
 
+Local LLM + STT + TTS pipeline for cognitive interview simulation.
+
+## Quick Start with Docker
+
+### 1. Prerequisites
+- Docker & Docker Compose
+- Ollama installed on host machine
+
+### 2. Setup Ollama (on host)
 ```bash
-# Install uv if you haven't already
+# Install Ollama: https://ollama.ai
+ollama pull gemma3
+ollama serve
+```
+
+### 3. Create `.env` file
+```env
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_NAME=aviai
+SECRET_KEY=your_secret_key_here
+ALGORITHM=HS256
+```
+
+### 4. Run
+```bash
+docker-compose up --build
+```
+
+API available at: http://localhost:8000/docs
+
+### Docker Commands
+```bash
+# Build and run
+docker-compose up --build
+
+# Run in background
+docker-compose up -d
+
+# View logs
+docker-compose logs -f api
+
+# Stop
+docker-compose down
+
+# Reset database (delete volume)
+docker-compose down -v
+```
+
+---
+
+## Local Development (Alternative)
+
+### 1. Prerequisites
+- Python 3.12+
+- PostgreSQL 16+
+- Ollama
+
+### 2. Install uv
+```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
-# or on macOS: brew install uv
-# or on Windows: powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+# or: brew install uv (macOS)
+```
 
-# Install dependencies using uv (recommended)
+### 3. Setup Python environment
+```bash
 uv python install 3.12
-uv python list
-rm -rf .venv
-uv venv --python 3.12 --prompt aviai-backend .venv
-source .venv/bin/activate
+uv venv --python 3.12 .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
 uv sync
+```
 
-
-# Download NLTK data (for sentence tokenization)
+### 4. Download NLTK data
+```bash
 python -c "import nltk; nltk.download('punkt_tab')"
-
 ```
 
-#### Install and Setup Ollama
+### 5. Setup PostgreSQL
+```sql
+CREATE DATABASE aviai;
+```
 
+### 6. Create `.env` file
+```env
+DB_USER=postgres
+DB_PASSWORD=your_password
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=aviai
+SECRET_KEY=your_secret_key
+ALGORITHM=algroithm
+OLLAMA_MODEL_URL=url
+```
+
+### 7. Run migrations
 ```bash
-# Install and start Ollama
-# Follow instructions at https://ollama.ai
-ollama pull gemma3  # or any other model you prefer
+alembic upgrade head
 ```
 
+### 8. Start server
 ```bash
-python -m ensurepip --upgrade --default-pip
+cd src
+uvicorn main:app --reload --port 8000
 ```
-
-
-
-### Usage
-
-#### Basic Usage
-```bash
-cd src 
-python -m uvicorn app:app --reload
-
-# In case still missing package  
-uv pip install pocket_tts
-uv pip install "numpy<2.3"
-uv pip install 'uvicorn[standard]'
-uv pip install websockets
-uv pip install langchain_ollama langchain_openai langchain_core
-
-uv pip install fastapi
-
-uv pip install dotenv 
-
-uv pip install faster_whisper
-```
-
-
-4. **Install PostgreSQL and Create Database:**
-   - Download and install PostgreSQL from the official website: [https://www.postgresql.org/download/](https://www.postgresql.org/download/)
-   - After installation, open the PostgreSQL shell (psql) and run:
-     ```sql
-     CREATE DATABASE aviai_db;
-     ```
-   - Make sure to remember your PostgreSQL username and password for later configuration.
-
-5. **Set up environment variables:**
-   - Create a `.env` file in the root directory of the project
-   - Add the following environment variables with your database credentials:
-     ```env
-      DB_USER=postgres
-      DB_PASSWORD=123456789
-      DB_HOST=localhost
-      DB_PORT=5433
-      DB_NAME=aviai_db
-     ```
-   - Replace `username`, `password`, and other values with your actual database credentials and configuration
-
-## Database Migration (Alembic)
-
-### 1. First-Time Alembic Setup 
-If you are setting up Alembic for the very first time in a new project (no `alembic/` folder exists):
-
-1. **Initialize Alembic:**
-   ```bash
-   alembic init migrations
-   ```
-2. **Configure Alembic:**
-   - Edit `alembic.ini` and set the `sqlalchemy.url` to match your database connection string from the `.env` file, or ensure your config system is set up to read from environment variables.
-   - In `alembic/env.py`, import your Base metadata (e.g., from `app.database.config import Base`) and set `target_metadata = Base.metadata`.
-   - Import all model modules in `alembic/env.py` (e.g., `from app.database import models`) to ensure Alembic can detect all models for autogeneration.
-3. **Generate the initial migration:**
-   ```bash
-   alembic revision --autogenerate -m "Initial migration"
-   ```
-4. **Apply the initial migration:**
-   ```bash
-   alembic upgrade head
-   ```
 
 ---
 
-### 2. Applying Migrations with an Existing `alembic/` Folder
-If the `alembic/` folder is already present:
+## Database Migrations
 
-1. **Ensure your `.env` file is properly configured** with your database credentials.
-2. **Run Alembic migrations to create all tables:**
-   ```bash
-   alembic upgrade head
-   ```
-   This will apply all migrations to your database using your credentials from the `.env` file.
+```bash
+# Apply existing migrations
+alembic upgrade head
 
-**Note:**
-- You do **not** need to run `alembic init` if the `alembic/` folder is already present.
-- If you encounter errors, check your database credentials in the `.env` file and ensure your database is running.
+# Create new migration after model changes
+alembic revision --autogenerate -m "Description of changes"
+alembic upgrade head
+```
 
 ---
 
-### 3. Regular Migration Workflow (For Ongoing Development)
-To update your database schema after making changes to your models:
+## Project Structure
 
-1. **Generate a new migration script:**
-   ```bash
-   alembic revision --autogenerate -m "Describe your migration, e.g. Add character_name to usecase"
-   ```
-   This will create a new migration file in the `migrations/versions/` directory.
-2. **Review the migration script:**
-   Open the generated file in `alembic/versions/` and ensure the changes are correct.
-3. **Apply the migration to your database:**
-   ```bash
-   alembic upgrade head
-   ```
-   This will apply all pending migrations to your database.
+```
+.
+├── src/
+│   ├── main.py              # FastAPI app
+│   ├── account/             # Account management
+│   ├── auth/                # Authentication (JWT)
+│   ├── agent/               # LLM agent & sessions
+│   ├── scenario/            # Interview scenarios
+│   ├── note/                # Notes management
+│   ├── handlers/            # Document & analysis handlers
+│   └── database/            # DB config & models
+├── alembic/                 # Database migrations
+├── Dockerfile
+├── docker-compose.yml
+└── pyproject.toml
+```
+
+---
+
+## API Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `/api/v1/auth` | Authentication (login, register) |
+| `/api/v1/account` | Account management |
+| `/api/v1/scenario` | Interview scenarios |
+| `/api/v1/session` | Interview sessions |
+| `/api/v1/conversation` | Conversation history |
+| `/api/v1/note` | Notes |
+| `/api/v1/document` | Document processing |
+| `/api/v1/analysis` | Conversation analysis |
+
+---
+
+## Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `DB_USER` | PostgreSQL username | - |
+| `DB_PASSWORD` | PostgreSQL password | - |
+| `DB_HOST` | Database host | `localhost` |
+| `DB_PORT` | Database port | `5432` |
+| `DB_NAME` | Database name | - |
+| `SECRET_KEY` | JWT secret key | - |
+| `ALGORITHM` | JWT algorithm | `HS256` |
+| `OLLAMA_MODEL_URL` | Ollama API URL | `http://localhost:11434` |
