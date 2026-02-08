@@ -65,7 +65,7 @@ async def get_conversation_session_id(session_id: str, db: Session = Depends(get
     "/convert-to-pdf/{conversation_id}",
     response_model=PdfConversionResponse,
     description="Convert conversation history to PDF format",
-    responses={200: {"content": {"application/json": {"example": pdf_conversion_example}}}}
+    responses={200: {"content": {"application/json": {"examples": [pdf_conversion_example]}}}}
 )
 async def convert_conversation_to_pdf(conversation_id: str, db: Session = Depends(get_db)):
     """Convert a conversation history to PDF format."""

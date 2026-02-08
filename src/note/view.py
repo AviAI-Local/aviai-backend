@@ -7,7 +7,7 @@ from note.schema import NoteResponse, note_example, note_request_example
 router = APIRouter()
 
 #  GET /notes -> GET/
-@router.get("/", response_model=List[NoteResponse], responses={200: {"content": {"application/json": {"example": [note_example]}}}})
+@router.get("/", response_model=List[NoteResponse], responses={200: {"content": {"application/json": {"examples": [[note_example]]}}}})
 async def get_all_notes(db: DBSession = Depends(get_db)):
     """Get all available notes."""
     service = NoteService(db)
@@ -15,7 +15,7 @@ async def get_all_notes(db: DBSession = Depends(get_db)):
     return [note.to_dict() for note in notes]
 
 # GET /notes/{note_id} -> GET/{note_id}
-@router.get("/{note_id}", response_model=NoteResponse, responses={200: {"content": {"application/json": {"example": note_example}}}})
+@router.get("/{note_id}", response_model=NoteResponse, responses={200: {"content": {"application/json": {"examples": [note_example]}}}})
 async def get_note(note_id: str, db: DBSession = Depends(get_db)):
     """Get a specific note by ID."""
     service = NoteService(db)
@@ -25,7 +25,7 @@ async def get_note(note_id: str, db: DBSession = Depends(get_db)):
     return note.to_dict()
 
 # GET /notes/session/{session_id} -> GET/session/{session_id}
-@router.get("/session/{session_id}", response_model=List[NoteResponse], responses={200: {"content": {"application/json": {"example": [note_example]}}}})
+@router.get("/session/{session_id}", response_model=List[NoteResponse], responses={200: {"content": {"application/json": {"examples": [[note_example]]}}}})
 async def get_notes_by_session(session_id: str, db: DBSession = Depends(get_db)):
     """Get all notes for a specific session."""
     service = NoteService(db)
@@ -58,10 +58,10 @@ async def search_note_by_scenario_name(
 @router.post(
     "/create",
     response_model=NoteResponse,
-    responses={200: {"content": {"application/json": {"example": note_example}}}}
+    responses={200: {"content": {"application/json": {"examples": [note_example]}}}}
 )
 async def create_note(
-    note_data: Dict = Body(..., example=note_request_example),
+    note_data: Dict = Body(..., examples=[note_request_example]),
     db: DBSession = Depends(get_db)
 ):
     """Create a new note."""
@@ -94,19 +94,19 @@ Update one or more fields of a note. Only provided fields will be updated. Retur
 **Note:** The timestamp will be automatically updated to the current time when the note is modified.
 """,
     responses={
-        200: {"content": {"application/json": {"example": note_example}}},
+        200: {"content": {"application/json": {"examples": [note_example]}}},
         404: {"description": "Note not found"}
     }
 )
 async def update_note(
     note_id: str,
-    update_data: Dict = Body(..., example={
+    update_data: Dict = Body(..., examples=[{
         "title": "Updated Interview Notes",
         "note_content": {
             "key_points": "Updated key points from the interview",
             "observations": "Updated observations about the candidate"
         }
-    }),
+    }]),
     db: DBSession = Depends(get_db)
 ):
     """Update a note."""
