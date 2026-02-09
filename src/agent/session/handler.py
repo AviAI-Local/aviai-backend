@@ -72,7 +72,6 @@ class ConversationHandler:
                 base_url=os.environ.get("MODEL_URL"),
                 api_key=os.environ.get("MODEL_API_KEY"),
                 model=os.environ.get("MODEL_NAME"),
-                model_kwargs={"response_format": {"type": "json_object"}}
             )
             # console.print(f"[green]✓ Using LM Studio with model: {model}[/green]")
         else:  # default to ollama
