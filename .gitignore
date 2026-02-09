@@ -9,6 +9,10 @@ nitro/
 .ruff_cache/
 *.gguf
 
+# Ignore recording files but keep folder
+recordings/*
+!recordings/.gitkeep
+
 # C extensions
 *.so
 *.wav

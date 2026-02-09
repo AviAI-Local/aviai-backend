@@ -1,5 +1,8 @@
+import os
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from handlers.performance_analysis.view import router as performance_analysis_router
 
 from account.view import router as account_router
@@ -11,8 +14,18 @@ from agent.session.view import router as session_router
 from handlers.conversation_analysis.view import router as analysis_router
 from agent.history.view import router as history_router
 from agent.recording.view import router as recording_router
+from agent.models import init_models
 
-app = FastAPI(title="Cognitive Interview API")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: Load ML models
+    init_models()
+    yield
+    # Shutdown: cleanup if needed
+
+
+app = FastAPI(title="Cognitive Interview API", lifespan=lifespan)
 
 # CORS for frontend
 app.add_middleware(
@@ -33,4 +46,9 @@ app.include_router(analysis_router, prefix="/api/v1/analysis", tags=["analysis"]
 app.include_router(session_router, prefix="/api/v1/session", tags=["session"]) 
 app.include_router(history_router, prefix="/api/v1/conversation", tags=["conversation"]) 
 app.include_router(recording_router, prefix="/api/v1/recording", tags=["recording"])
+
+# Serve static recordings
+recordings_dir = os.getenv("RECORDING_DB_URL", "./recordings")
+os.makedirs(recordings_dir, exist_ok=True)
+app.mount("/recordings", StaticFiles(directory=recordings_dir), name="recordings")
 

@@ -10,11 +10,9 @@ from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
 import numpy as np
 from rich.console import Console
-from agent.config import TTS_VOICE
 from agent.history.schema import ConversationHistoryResponse
 from agent.history.service import ConversationHistoryService, get_session_history
-from agent.io.stt.faster_whisper import FasterWhisperSTT
-from agent.io.tts.tts_pocket import TextToSpeechService
+from agent.models import get_tts, get_stt
 from agent.llm.service import LLMService
 from agent.prompt.builder import PromptBuilder
 from agent.session.service import SessionService, load_usecase_from_api_local, load_scenario_from_api
@@ -76,7 +74,8 @@ class ConversationHandler:
             # console.print(f"[green]✓ Using LM Studio with model: {model}[/green]")
         else:  # default to ollama
             model = os.environ.get("OLLAMA_MODEL_NAME")
-            llm = ChatOllama(model=model, format="json")
+            base_url = os.environ.get("OLLAMA_MODEL_URL", "http://localhost:11434")
+            llm = ChatOllama(model=model, base_url=base_url, format="json")
             # console.print(f"[green]✓ Using Ollama with model: {model}[/green]")
         
         chain = prompt | llm
@@ -88,14 +87,9 @@ class ConversationHandler:
         )
         self.llm_service = LLMService(chat, session_id=self.session.session_id)
 
-        # Session-specific TTS with voice setting
-        self.tts = TextToSpeechService(voice=TTS_VOICE)
-
-        self.stt = FasterWhisperSTT(
-            model_size="small",
-            silence_db=-45,
-            end_silence_sec=1.2,
-        )
+        # Use shared TTS and STT instances (pre-loaded at startup)
+        self.tts = get_tts()
+        self.stt = get_stt()
 
     async def handle_connect(self, websocket: WebSocket):
         """Handle /session/connect endpoint"""

@@ -46,16 +46,21 @@ class LLMService:
             content = content.replace('\u2018', "'").replace('\u2019', "'")
             content = content.replace('\u2026', '...')
 
-            # 3. Find start of JSON object
+            # 3. Fix newlines inside JSON strings (invalid JSON)
+            # Replace literal newlines with spaces, preserving escaped \n
+            content = re.sub(r'(?<!\\)\n', ' ', content)
+            content = re.sub(r'\s+', ' ', content)
+
+            # 4. Find start of JSON object
             start = content.find('{')
             if start == -1:
                 raise ValueError("No JSON object found")
 
-            # 4. Parse only the first JSON object, ignoring trailing garbage
+            # 5. Parse only the first JSON object, ignoring trailing garbage
             decoder = json.JSONDecoder(strict=False)
             data, _ = decoder.raw_decode(content, start)
 
-            # 5. Validate and return
+            # 6. Validate and return
             if not isinstance(data, dict) or "response" not in data:
                 raise ValueError("Invalid JSON structure")
 

@@ -24,7 +24,7 @@ services:
         condition: service_healthy
     volumes:
       - ./src/agent/conversation:/app/src/agent/conversation
-      - ./recordings:/app/recordings
+      - ./recordings:/recordings
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"

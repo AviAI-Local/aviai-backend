@@ -96,6 +96,10 @@ async def start_conversation(session_id: str, websocket: WebSocket, db: Session 
             await websocket.send_json({"type": "error", "message": "Session not found"})
             await websocket.close(code=1008, reason="Session not found")
             return
+
+        # Send loading status before heavy initialization
+        await websocket.send_json({"type": "status", "state": "loading"})
+
         handler = ConversationHandler(session, db)
         await handler.handle_conversation(websocket)
     except Exception as e:
