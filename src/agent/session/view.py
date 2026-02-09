@@ -1,7 +1,8 @@
 import json
 from typing import Dict
-from fastapi import APIRouter, Body, Depends, WebSocket
+from fastapi import APIRouter, Body, Depends, HTTPException, WebSocket
 from agent.session.handler import ConversationHandler
+from agent.session.schema import SessionResponse, session_example
 from agent.session.service import SessionService
 from rich.console import Console
 
@@ -32,11 +33,52 @@ async def get_session_by_account_id(
     sessions = service.get_session_by_account(current_user.account_id)
     return sessions
 
+@router.patch(
+    "/update",
+    response_model=SessionResponse,
+    summary="Update any field(s) of a session",
+    description="""
+Update one or more fields of a session. Only provided fields will be updated. Returns the updated session.
+
+**Fields:**
+- `usecase_id`: ID of the usecase (must exist)
+- `account_id`: ID of the account (must exist)
+- `recording`: Recording URL or path
+""",
+    responses={
+        200: {"content": {"application/json": {"example": session_example}}},
+        404: {"description": "Session not found"}
+    }
+)
+async def update_session(
+    session_id: str,
+    update_data: Dict = Body(..., example={
+        "scenario_id": "usecase_002",
+        "account_id": "account_002",
+        "recording": "https://bucket.s3.amazonaws.com/recordings/session_001_updated.mp3"
+    }),
+    db: Session = Depends(get_db)
+):
+    """Update a session and return with histories."""
+    service = SessionService(db)
+    updated = service.update_session(session_id, update_data)
+    # enrich with histories via service helper
+    session_full = service.get_session_by_id(session_id)
+    if not session_full:
+        raise HTTPException(status_code=404, detail="Session not found")
+    return SessionResponse(**session_full)
+
 @router.websocket("/{session_id}/connect")
 async def session_connect(session_id: str, websocket: WebSocket, db: Session = Depends(get_db)):
     """Handle session connection - delegates to Session class"""
+    await websocket.accept()
     session_service = SessionService(db)
     session = session_service.get_session_by_id(session_id)
+    if not session:
+        console.print(f"[red]Session {session_id} not found in database[/red]")
+        await websocket.send_json({"type": "error", "message": "Session not found"})
+        await websocket.close(code=1008, reason="Session not found")
+        return
     handler = ConversationHandler(session, db)
     await handler.handle_connect(websocket)
     # await SessionService.handle_connect(websocket)
@@ -45,12 +87,19 @@ async def session_connect(session_id: str, websocket: WebSocket, db: Session = D
 async def start_conversation(session_id: str, websocket: WebSocket, db: Session = Depends(get_db)):
     """Handle voice conversation - delegates to Session instance"""
     await websocket.accept()
-    handler = None 
+    handler = None
     try:
         session_service = SessionService(db)
         session = session_service.get_session_by_id(session_id)
+        if not session:
+            console.print(f"[red]Session {session_id} not found in database[/red]")
+            await websocket.send_json({"type": "error", "message": "Session not found"})
+            await websocket.close(code=1008, reason="Session not found")
+            return
         handler = ConversationHandler(session, db)
         await handler.handle_conversation(websocket)
+    except Exception as e:
+        console.print(f"[red]Error in conversation for session {session_id}: {e}[/red]")
     finally:
         # Always cleanup when connection ends (normal or error)
         if handler:

@@ -17,11 +17,14 @@ services:
       SECRET_KEY: ${SECRET_KEY}
       ALGORITHM: ${ALGORITHM}
       OLLAMA_MODEL_URL: http://host.docker.internal:11434
+      OLLAMA_MODEL_NAME: gemma3
+      RECORDING_DB_URL: ${RECORDING_DB_URL}
     depends_on:
       db:
         condition: service_healthy
     volumes:
       - ./src/agent/conversation:/app/src/agent/conversation
+      - ./recordings:/app/recordings
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"

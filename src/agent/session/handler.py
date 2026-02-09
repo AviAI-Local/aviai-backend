@@ -17,7 +17,7 @@ from agent.io.stt.faster_whisper import FasterWhisperSTT
 from agent.io.tts.tts_pocket import TextToSpeechService
 from agent.llm.service import LLMService
 from agent.prompt.builder import PromptBuilder
-from agent.session.service import SessionService, load_usecase_from_api_local
+from agent.session.service import SessionService, load_usecase_from_api_local, load_scenario_from_api
 from database.model import Session as DBSession
 from langchain_core.runnables.history import RunnableWithMessageHistory
 
@@ -47,7 +47,8 @@ class ConversationHandler:
         ), db=self.db)
         self.service.create_conversation_history()
 
-        data = load_usecase_from_api_local()
+        # data = load_usecase_from_api_local()
+        data = load_scenario_from_api(self.session.scenario_id, self.db)
 
         self.scenario_data = {
             "personal_characteristics": data.get("personal_characteristics", ""),
@@ -99,7 +100,7 @@ class ConversationHandler:
 
     async def handle_connect(self, websocket: WebSocket):
         """Handle /session/connect endpoint"""
-        await websocket.accept()
+        # Note: websocket.accept() is called in view.py before this method
 
         # # Wait for initial config
         # try:
@@ -169,10 +170,14 @@ class ConversationHandler:
         """Process user text through LLM and TTS, send response back"""
         console.print(f"[yellow]{self.session.session_id} - You:[/yellow] {text}")
 
-        await websocket.send_json({
-            "type": "user_query",
-            "query": text
-        })
+        try:
+            await websocket.send_json({
+                "type": "user_query",
+                "query": text
+            })
+        except WebSocketDisconnect:
+            console.print(f"[red]Client disconnected during process_response for session {self.session.session_id}[/red]")
+            raise
 
         start = time.perf_counter()
         response = await asyncio.to_thread(
@@ -182,12 +187,16 @@ class ConversationHandler:
         llm_time = time.perf_counter() - start
 
         content = response.response
-        await websocket.send_json({
-            "type": "assistant_text",
-            "content": content,
-            "voice_instructions": response.voice_instructions,
-            "avatar_instructions": response.avatar_instructions
-        })
+        try:
+            await websocket.send_json({
+                "type": "assistant_text",
+                "content": content,
+                "voice_instructions": response.voice_instructions,
+                "avatar_instructions": response.avatar_instructions
+            })
+        except WebSocketDisconnect:
+            console.print(f"[red]Client disconnected while sending response for session {self.session.session_id}[/red]")
+            raise
 
         console.print(f"[cyan]{self.session.session_id} - Assistant:[/cyan] {content}")
 
@@ -212,20 +221,31 @@ class ConversationHandler:
         )
 
         self.is_speaking = True
-        await websocket.send_bytes(pcm_bytes)
-        await websocket.send_json({
-            "type": "status",
-            "state": "speaking"
-        })
+        try:
+            await websocket.send_bytes(pcm_bytes)
+            await websocket.send_json({
+                "type": "status",
+                "state": "speaking"
+            })
+        except WebSocketDisconnect:
+            console.print(f"[red]Client disconnected while sending audio for session {self.session.session_id}[/red]")
+            raise
 
     async def handle_conversation(self, websocket: WebSocket):
         """Handle /session/conversation endpoint - supports both voice and text input"""
         console.print(f"[green]Conversation started for session {self.session.session_id}[/green]")
 
-        await websocket.send_json({
-            "type": "status",
-            "state": "listening"
-        })
+        try:
+            await websocket.send_json({
+                "type": "status",
+                "state": "listening"
+            })
+        except WebSocketDisconnect:
+            console.print(f"[red]Client disconnected before conversation started for session {self.session.session_id}[/red]")
+            return
+        except Exception as e:
+            console.print(f"[red]Failed to send initial status for session {self.session.session_id}: {e}[/red]")
+            return
 
         try:
             while True:

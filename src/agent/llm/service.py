@@ -106,14 +106,19 @@ class LLMService:
             config={"session_id": self.session_id},
         )
 
-        # console.log(f"[cyan]Raw LLM response: {response}[/cyan]")
+        content = response.content if hasattr(response, "content") else str(response)
+        console.log(f"[cyan]Response content: {content}[/cyan]")
 
-        # if hasattr(response, "content"):
-        console.log(f"[cyan]Response content: {response.content}[/cyan]")
+        # Handle empty or invalid responses from LLM
+        if not content or content.strip() in ["", "{}", "null", "None"]:
+            console.log(f"[red]LLM returned empty/invalid response, using default[/red]")
+            return LLMResponse(
+                response="I'm sorry, could you please repeat your question?",
+                avatar_instructions="default",
+                voice_instructions="Speak with a calm, professional tone"
+            )
 
         llm_response = self.parse_response(response)
-        # console.log(f"[green]Parsed LLM response: {llm_response}[/green]")
-
         return llm_response
 
         

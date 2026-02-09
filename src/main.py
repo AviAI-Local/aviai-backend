@@ -10,6 +10,7 @@ from handlers.document_process.view import router as documents_router
 from agent.session.view import router as session_router
 from handlers.conversation_analysis.view import router as analysis_router
 from agent.history.view import router as history_router
+from agent.recording.view import router as recording_router
 
 app = FastAPI(title="Cognitive Interview API")
 
@@ -31,4 +32,5 @@ app.include_router(performance_analysis_router,prefix="/api/v1/performance-analy
 app.include_router(analysis_router, prefix="/api/v1/analysis", tags=["analysis"]) 
 app.include_router(session_router, prefix="/api/v1/session", tags=["session"]) 
 app.include_router(history_router, prefix="/api/v1/conversation", tags=["conversation"]) 
+app.include_router(recording_router, prefix="/api/v1/recording", tags=["recording"])
 

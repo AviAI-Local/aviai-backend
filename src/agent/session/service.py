@@ -1,4 +1,5 @@
 import time
+
 from agent.prompt.builder import PromptBuilder
 from agent.history.service import get_session_history
 from agent.llm.service import LLMService
@@ -22,6 +23,7 @@ from agent.history.service import ConversationHistoryService
 from agent.history.schema import ConversationHistoryResponse
 from agent.config import LLM_PROVIDER, LLM_MODEL, LLM_BASE_URL, TTS_VOICE
 from database.config import SessionLocal
+from scenario.service import ScenarioService
 
 console = Console()
 
@@ -59,22 +61,22 @@ class SessionService:
         conv_map = {c.session_id: c for c in conversations}
 
         # Build response with scenario_name and conversation_history
+        # Only include sessions that have conversation history
         result = []
         for session in sessions:
-            scenario_name = scenario_map.get(session.scenario_id, "Unknown")
             conv = conv_map.get(session.session_id)
+            if not conv:
+                continue
 
-            # Build conversation history response if exists
-            conv_response = None
-            if conv:
-                conv_response = ConversationHistoryResponse(
-                    conversation_history_id=conv.conversation_history_id,
-                    session_id=conv.session_id,
-                    llm_provider=session.llm_provider,
-                    model=session.model,
-                    content=conv.content,
-                    timestamp=conv.timestamp.isoformat() if conv.timestamp else None
-                )
+            scenario_name = scenario_map.get(session.scenario_id, "Unknown")
+            conv_response = ConversationHistoryResponse(
+                conversation_history_id=conv.conversation_history_id,
+                session_id=conv.session_id,
+                llm_provider=session.llm_provider,
+                model=session.model,
+                content=conv.content,
+                timestamp=conv.timestamp.isoformat() if conv.timestamp else None
+            )
 
             result.append(SessionResponse(
                 session_id=session.session_id,
@@ -95,7 +97,7 @@ class SessionService:
             scenario_id=session_data["scenario_id"],
             account_id=session_data["account_id"],
             created_at=get_vietnam_time(),
-            recording="123",
+            recording=None,
             llm_provider=LLM_PROVIDER,
             model=LLM_MODEL,
         )
@@ -125,204 +127,35 @@ class SessionService:
         
     def get_session_by_id(self, session_id: str) -> Optional[DBSession]:
         return self.db.query(DBSession).filter(DBSession.session_id == session_id).first()
+    
+    def update_session(self, session_id: str, update_data: Dict) -> Optional[Dict]:
+        """Update session fields and return updated session data."""
+        session = self.get_session_by_id(session_id)
+        if not session:
+            raise HTTPException(status_code=404, detail="Session not found")
 
-    # @classmethod
-    # async def handle_connect(self, websocket: WebSocket):
-    #     """Handle /session/connect endpoint"""
-    #     await websocket.accept()
+        # Validate usecase exists if usecase_id is being updated
+        if "scenario_id" in update_data:
+            usecase = self.db.query(Scenario).filter(Scenario.scenario_id == update_data["scenario_id"]).first()
+            if not usecase:
+                raise HTTPException(status_code=404, detail=f"Scenario with ID {update_data['scenario_id']} does not exist")
 
-        # Wait for initial config
-        # try:
-        #     msg = await websocket.receive()
-        #     config = json.loads(msg.get("text", "{}"))
-        #     voice = config.get("voice") or TTS_VOICE
-        #     llm_provider = config.get("llm_provider") or LLM_PROVIDER
-        #     llm_provider = LLM_PROVIDER
+        # Validate account exists if account_id is being updated
+        if "account_id" in update_data:
+            account = self.db.query(Account).filter(Account.account_id == update_data["account_id"]).first()
+            if not account:
+                raise HTTPException(status_code=404, detail=f"Account with ID {update_data['account_id']} does not exist")
 
-        #     base_url = config.get("base_url") or LLM_BASE_URL
-        #     model = config.get("model") or LLM_MODEL
-        # except:
-        #     voice = "cosette"
-        #     llm_provider = "ollama"
-        #     base_url = None
-        #     model = None
+        # Only update fields that exist in the model and are provided
+        updatable_fields = ["scenario_id", "account_id", "recording"]
+        for field in updatable_fields:
+            if field in update_data:
+                setattr(session, field, update_data[field])
 
-    #     # Create new session
-    #     # session = cls(
-    #     #     session_id=str(uuid.uuid4()), 
-    #     #     scenario_id=str(uuid.uuid4()), 
-    #     #     voice=voice, 
-    #     #     llm_provider=llm_provider, 
-    #     #     base_url=base_url, 
-    #     #     model=model
-    #     # )
+        self.db.commit()
+        self.db.refresh(session)
+        return session.to_dict() 
 
-
-    #     # Send session info to client
-    #     await websocket.send_json({
-    #         "type": "session_created",
-    #         "session_id": self.session_id,
-    #         "voice": self.voice
-    #     })
-
-    #     # Keep connection alive for session management
-    #     try:
-    #         while True:
-    #             try:
-    #                 # Timeout: if no message in 30s, check if client is alive
-    #                 msg = await asyncio.wait_for(
-    #                     websocket.receive(),
-    #                     timeout=30.0
-    #                 )
-    #                 payload = json.loads(msg.get("text", "{}"))
-
-    #                 # Handle ping from client
-    #                 if payload.get("type") == "ping":
-    #                     await websocket.send_json({"type": "pong"})
-    #                     continue
-
-    #                 if payload.get("type") == "update_voice":
-    #                     self.voice = payload["voice"]
-    #                     self.tts = TextToSpeechService(voice=payload["voice"])
-    #                     await websocket.send_json({
-    #                         "type": "voice_updated",
-    #                         "voice": self.voice
-    #                     })
-
-    #             except asyncio.TimeoutError:
-    #                 # No message received, send ping to check if client is alive
-    #                 try:
-    #                     await websocket.send_json({"type": "ping"})
-    #                 except:
-    #                     console.print(f"[red]Session {self.session_id} connection lost[/red]")
-    #                     break
-
-    #     except WebSocketDisconnect:
-    #         console.print(f"[red]Session {self.session_id} disconnected[/red]")
-    #     except Exception as e:
-    #         console.print(f"[red]Error in session connect: {e}[/red]")
-    #     finally:
-    #         self.cleanup()
-
-    # async def handle_conversation(self, websocket: WebSocket):
-    #     """Handle /session/conversation endpoint"""
-    #     console.print(f"[green]Conversation started for session {self.session_id}[/green]")
-
-    #     await websocket.send_json({
-    #         "type": "status",
-    #         "state": "listening"
-    #     })
-
-    #     try:
-    #         while True:
-    #             msg = await websocket.receive()
-
-    #             # Handle JSON messages
-    #             if "text" in msg and msg["text"]:
-    #                 payload = json.loads(msg["text"])
-
-    #                 if payload["type"] == "audio_playback_complete":
-    #                     self.is_speaking = False
-    #                     await websocket.send_json({
-    #                         "type": "status",
-    #                         "state": "listening"
-    #                     })
-    #                     continue
-
-    #                 if payload["type"] == "end_of_utterance":
-    #                     if not self.buffer:
-    #                         continue
-
-    #                     # Transcribe
-    #                     audio_np = (
-    #                         np.frombuffer(self.buffer, dtype=np.int16)
-    #                         .astype(np.float32) / 32768.0
-    #                     )
-    #                     self.buffer.clear()
-
-    #                     text = await asyncio.to_thread(
-    #                         self.stt.transcribe,
-    #                         audio_np
-    #                     )
-
-    #                     if not text:
-    #                         continue
-
-    #                     console.print(f"[yellow]{self.session_id} - You:[/yellow] {text}")
-
-    #                     start = time.perf_counter()
-    #                     # Generate response
-    #                     response = await asyncio.to_thread(
-    #                         self.llm_service.get_response,
-    #                         text
-    #                     )
-    #                     llm_time = time.perf_counter() - start
-
-    #                     content = response.response
-    #                     await websocket.send_json({
-    #                         "type": "assistant_text",
-    #                         "content": content
-    #                     })
-
-    #                     console.print(f"[cyan]{self.session_id} - Assistant:[/cyan] {content}")
-
-    #                     start = time.perf_counter()
-    #                     # Generate TTS
-    #                     sr, audio_out = await asyncio.to_thread(
-    #                         self.tts.long_form_synthesize,
-    #                         content,
-    #                         None,
-    #                         0.5,
-    #                         0.5
-    #                     )
-    #                     tts_time = time.perf_counter() - start
-
-    #                     pcm_bytes = (audio_out * 32767).astype(np.int16).tobytes()
-    #                     console.print(f"[dim]LLM time: {llm_time:.2f}s | TTS time: {tts_time:.2f}s[/dim]")
-
-    #                     # Save conversation entry to history file with timing
-    #                     self.service.add_conversation_entry(
-    #                         user_query=text,
-    #                         response_data=response,
-    #                         # user_emotion="neutral",
-    #                         llm_time=llm_time,
-    #                         tts_time=tts_time
-    #                     )
-
-    #                     self.is_speaking = True
-    #                     await websocket.send_bytes(pcm_bytes)
-    #                     await websocket.send_json({
-    #                         "type": "status",
-    #                         "state": "speaking"
-    #                     })
-    #                     continue
-
-    #             # Handle binary audio data
-    #             if self.is_speaking:
-    #                 continue
-
-    #             data = msg.get("bytes")
-    #             if data:
-    #                 self.buffer.extend(data)
-
-    #     except WebSocketDisconnect:
-    #         console.print(f"[red]Conversation ended for session {self.session_id}[/red]")
-    #     except Exception as e:
-    #         console.print(f"[red]Error in conversation for session {self.session_id}: {e}[/red]")
-
-    # def cleanup(self):
-    #     """Cleanup resources on disconnect"""
-    #     try:
-    #         self.buffer.clear()
-
-    #         if self.session_id in SessionService._registry:
-    #             del SessionService._registry[self.session_id]
-    #             self.service.save_conversation_history()
-    #             self.db.close()
-    #             console.print(f"[yellow]Session {self.session_id} cleaned up[/yellow]")
-                
-    #     except Exception as e:
-    #         console.print(f"[red]Error during cleanup: {e}[/red]")
 
 
 def load_usecase_from_api_local() -> dict:
@@ -343,3 +176,11 @@ def load_usecase_from_api_local() -> dict:
     except Exception as e:
         console.log(f"Error loading usecase from local file: {e}")
         raise
+
+def load_scenario_from_api(scenario_id: str, db: DBSession) -> dict:
+    service = ScenarioService(db)
+    scenario = service.get_scenario(scenario_id)
+    if not scenario:
+        raise HTTPException(status_code=404, detail=f"Scenario with ID {scenario_id} not found")
+    console.log(f"Loaded scenario from db: {scenario.scenario_name}")
+    return scenario.to_dict()

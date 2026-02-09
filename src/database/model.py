@@ -93,7 +93,7 @@ class Session(Base):
     scenario_id = Column(String, ForeignKey("scenario.scenario_id", ondelete="CASCADE"), nullable=False)
     account_id = Column(String, ForeignKey("account.account_id", ondelete="RESTRICT"), nullable=False)
     created_at = Column(DateTime, default=get_vietnam_time)
-    recording = Column(String)  
+    recording = Column(String, nullable=True)  
     # relationship MANY-TO-ONE with other tables
     scenario = relationship("Scenario", back_populates="sessions", passive_deletes=True) 
     account = relationship("Account", back_populates="sessions", passive_deletes=True)
