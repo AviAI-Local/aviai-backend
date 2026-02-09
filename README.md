@@ -12,16 +12,24 @@ Local LLM + STT + TTS pipeline for cognitive interview simulation.
 ```bash
 # Install Ollama: https://ollama.ai
 ollama pull gemma3
-ollama serve
+
+# Start Ollama with binding to all interfaces (required for Docker access)
+OLLAMA_HOST=0.0.0.0 ollama serve
 ```
+> **Note**: Ollama must bind to `0.0.0.0` so Docker can connect via `host.docker.internal`.
 
 ### 3. Create `.env` file
 ```env
 DB_USER=postgres
-DB_PASSWORD=postgres
-DB_NAME=aviai
+DB_PASSWORD=your_password
+DB_NAME=aviai_db
 SECRET_KEY=your_secret_key_here
 ALGORITHM=HS256
+
+OLLAMA_MODEL_URL=http://localhost:11434
+OLLAMA_MODEL_NAME=gemma3
+
+RECORDING_DB_URL=/recordings
 ```
 
 ### 4. Run
@@ -134,6 +142,7 @@ alembic upgrade head
 │   ├── handlers/            # Document & analysis handlers
 │   └── database/            # DB config & models
 ├── alembic/                 # Database migrations
+├── recordings/              # Session recordings (mounted volume)
 ├── Dockerfile
 ├── docker-compose.yml
 └── pyproject.toml
@@ -153,6 +162,8 @@ alembic upgrade head
 | `/api/v1/note` | Notes |
 | `/api/v1/document` | Document processing |
 | `/api/v1/analysis` | Conversation analysis |
+| `/api/v1/recording` | Recording upload |
+| `/recordings/*` | Static recording files |
 
 ---
 
@@ -168,3 +179,5 @@ alembic upgrade head
 | `SECRET_KEY` | JWT secret key | - |
 | `ALGORITHM` | JWT algorithm | `HS256` |
 | `OLLAMA_MODEL_URL` | Ollama API URL | `http://localhost:11434` |
+| `OLLAMA_MODEL_NAME` | Ollama model name | `gemma3` |
+| `RECORDING_DB_URL` | Path to store recordings | `/recordings` |
