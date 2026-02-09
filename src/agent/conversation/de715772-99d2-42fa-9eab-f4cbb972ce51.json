@@ -1,0 +1,31 @@
+{
+    "conversation_history_id": "55298b3a-f303-4285-8a03-ad140405d99f",
+    "session_id": "de715772-99d2-42fa-9eab-f4cbb972ce51",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1770650986.135781,
+            "datetime": "2026-02-09T22:29:46.135781+07:00",
+            "user_query": "Hello",
+            "response": "I'm not sure what you mean.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 2.57,
+            "tts_time": 0.63
+        },
+        {
+            "timestamp": 1770651002.519524,
+            "datetime": "2026-02-09T22:30:02.519524+07:00",
+            "user_query": "How are you?",
+            "response": "I'm... focused on this interview.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 1.76,
+            "tts_time": 1.57
+        }
+    ],
+    "timestamp": "2026-02-09T22:29:34.141764+07:00"
+}

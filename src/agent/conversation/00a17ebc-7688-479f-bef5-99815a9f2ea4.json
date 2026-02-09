@@ -1,0 +1,31 @@
+{
+    "conversation_history_id": "0b402a69-e011-4f72-93ae-8f570de64382",
+    "session_id": "00a17ebc-7688-479f-bef5-99815a9f2ea4",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1770651124.73398,
+            "datetime": "2026-02-09T22:32:04.733980+07:00",
+            "user_query": "Hello",
+            "response": "Hello.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 2.44,
+            "tts_time": 0.54
+        },
+        {
+            "timestamp": 1770651133.13528,
+            "datetime": "2026-02-09T22:32:13.135280+07:00",
+            "user_query": "What's up",
+            "response": "Nothing much, just here for the interview.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 1.39,
+            "tts_time": 2.02
+        }
+    ],
+    "timestamp": "2026-02-09T22:31:54.117554+07:00"
+}
