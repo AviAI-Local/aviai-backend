@@ -41,6 +41,9 @@ API available at: http://localhost:8000/docs
 
 ### Docker Commands
 ```bash
+# Start Ollama on host (required before running Docker)
+OLLAMA_HOST=0.0.0.0 ollama serve
+
 # Build and run
 docker-compose up --build
 
