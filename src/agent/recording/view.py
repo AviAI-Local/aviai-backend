@@ -5,13 +5,21 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from pydantic import BaseModel
 
 from agent.session.service import SessionService
-from agent.session.view import update_session
 from database.config import get_db
 from database.model import Session
 
 router = APIRouter()
 
 load_dotenv()
+
+def get_recordings_dir() -> str:
+    """Get recordings directory, resolving relative paths from project root."""
+    recordings_dir = os.getenv('RECORDING_DB_URL', './recordings')
+    if not os.path.isabs(recordings_dir):
+        # view.py is at src/agent/recording/view.py, so 4 levels up to project root
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+        recordings_dir = os.path.join(project_root, recordings_dir.lstrip("./"))
+    return recordings_dir
 
 class RecordingRequest(BaseModel):
     file: UploadFile
@@ -25,9 +33,7 @@ async def upload_audio(
 ):
     try:
         # Get recording directory
-        recording_dir = os.getenv('RECORDING_DB_URL', './recordings/')
-
-        # Create directory if it doesn't exist
+        recording_dir = get_recordings_dir()
         os.makedirs(recording_dir, exist_ok=True)
 
         wav_filename = f"{session_id}.wav"
@@ -75,10 +81,8 @@ async def upload_video(
 ):
     try:
         # Get recording directory
-        recording_dir = os.getenv('RECORDING_DB_URL', './recordings/')
+        recording_dir = get_recordings_dir()
         print(f"Recording directory: {recording_dir}")
-
-        # Create directory if it doesn't exist
         os.makedirs(recording_dir, exist_ok=True)
 
         # File paths
