@@ -7,6 +7,7 @@ Local LLM + STT + TTS pipeline for cognitive interview simulation.
 ### 1. Prerequisites
 - Docker & Docker Compose
 - Ollama installed on host machine
+- FFmpeg (for recording conversion): `brew install ffmpeg`
 
 ### 2. Setup Ollama (on host)
 ```bash
@@ -68,6 +69,7 @@ docker-compose down -v
 - Python 3.12+
 - PostgreSQL 16+
 - Ollama
+- FFmpeg: `brew install ffmpeg`
 
 ### 2. Install uv
 ```bash
