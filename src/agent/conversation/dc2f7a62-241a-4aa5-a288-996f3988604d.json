@@ -1,0 +1,20 @@
+{
+    "conversation_history_id": "515790e9-3d91-4e0a-aa85-e6339eb09f4e",
+    "session_id": "dc2f7a62-241a-4aa5-a288-996f3988604d",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1770697930.620886,
+            "datetime": "2026-02-10T11:32:10.620886+07:00",
+            "user_query": "Can you tell me about yourself?",
+            "response": "I'm Linh. I'm a flight engineer based in Ho Chi Minh City, and I work with VAECO. I've been doing this for over fifteen years.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 2.67,
+            "tts_time": 7.07
+        }
+    ],
+    "timestamp": "2026-02-10T11:31:50.176094+07:00"
+}

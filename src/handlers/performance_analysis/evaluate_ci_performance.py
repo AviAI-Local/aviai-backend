@@ -343,9 +343,32 @@ def run_llm(
         else:
             raise
 
+    # Sanitize behaviors to valid values
+    if "interviewer" in data and "behaviors" in data["interviewer"]:
+        behaviors = data["interviewer"]["behaviors"]
+
+        # Fix trauma_informed
+        valid_3 = {"good", "fair", "poor"}
+        if behaviors.get("trauma_informed") not in valid_3:
+            behaviors["trauma_informed"] = "fair"
+        if behaviors.get("neutral_language") not in valid_3:
+            behaviors["neutral_language"] = "fair"
+        if behaviors.get("pacing_ok") not in valid_3:
+            behaviors["pacing_ok"] = "fair"
+
+        # Fix active_listening
+        valid_4 = {"good", "fair", "poor", "absent"}
+        if behaviors.get("active_listening") not in valid_4:
+            behaviors["active_listening"] = "fair"
+
+        # Fix contamination_risk
+        valid_risk = {"low", "medium", "high"}
+        if behaviors.get("contamination_risk") not in valid_risk:
+            behaviors["contamination_risk"] = "medium"
+
     try:
         return LLMJudgement(**data)
-    except ValidationError:
+    except ValidationError as e:
         print("Validation error from Ollama output. Raw response:")
         print(raw)
         raise

@@ -49,6 +49,10 @@ app.include_router(recording_router, prefix="/api/v1/recording", tags=["recordin
 
 # Serve static recordings
 recordings_dir = os.getenv("RECORDING_DB_URL", "./recordings")
+# For relative paths, resolve from project root (parent of src/)
+if not os.path.isabs(recordings_dir):
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    recordings_dir = os.path.join(project_root, recordings_dir.lstrip("./"))
 os.makedirs(recordings_dir, exist_ok=True)
 app.mount("/recordings", StaticFiles(directory=recordings_dir), name="recordings")
 
