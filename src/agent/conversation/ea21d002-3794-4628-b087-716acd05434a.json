@@ -1,0 +1,8 @@
+{
+    "conversation_history_id": "1d54e26f-7b98-4b57-a473-70e0dabd1596",
+    "session_id": "ea21d002-3794-4628-b087-716acd05434a",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [],
+    "timestamp": "2026-02-10T11:45:37.871248+07:00"
+}

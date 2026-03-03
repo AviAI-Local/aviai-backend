@@ -1,0 +1,64 @@
+{
+    "conversation_history_id": "1d69ce91-6058-4224-808b-29d99d88d957",
+    "session_id": "f274f0a2-a0dc-4b4e-83be-0c52afeec8aa",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1772420066.55852,
+            "datetime": "2026-03-02T09:54:26.558520+07:00",
+            "user_query": "Hello",
+            "response": "Hello.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 10.45,
+            "tts_time": 13.03
+        },
+        {
+            "timestamp": 1772420088.049842,
+            "datetime": "2026-03-02T09:54:48.049842+07:00",
+            "user_query": "How are you?",
+            "response": "I'm doing okay, thank you for asking.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 3.83,
+            "tts_time": 0.79
+        },
+        {
+            "timestamp": 1772420135.2945,
+            "datetime": "2026-03-02T09:55:35.294500+07:00",
+            "user_query": "how are you today",
+            "response": "I'm alright, thank you.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 3.53,
+            "tts_time": 1.18
+        },
+        {
+            "timestamp": 1772420175.598551,
+            "datetime": "2026-03-02T09:56:15.598551+07:00",
+            "user_query": "Tell me about the crash, without any input errors",
+            "response": "I was monitoring the engine parameters, and the sudden loss of altitude was... concerning. I recall a sharp jolt, and the alarms started going off immediately.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 4.44,
+            "tts_time": 9.64
+        },
+        {
+            "timestamp": 1772420396.518315,
+            "datetime": "2026-03-02T09:59:56.518315+07:00",
+            "user_query": "Hello how are you?",
+            "response": "Hello.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 4.07,
+            "tts_time": 0.65
+        }
+    ],
+    "timestamp": "2026-03-02T09:53:31.811697+07:00"
+}

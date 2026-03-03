@@ -1,0 +1,42 @@
+{
+    "conversation_history_id": "ad42ed4c-27f0-4afd-b3c6-04289e9a4b46",
+    "session_id": "460d2ac4-63af-4c08-822e-1708e0605938",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1770700702.343447,
+            "datetime": "2026-02-10T12:18:22.343447+07:00",
+            "user_query": "Love.",
+            "response": "I understand.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 4.96,
+            "tts_time": 2.88
+        },
+        {
+            "timestamp": 1770700719.181193,
+            "datetime": "2026-02-10T12:18:39.181193+07:00",
+            "user_query": "What are you up to?",
+            "response": "Just assisting with the interview.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 3.57,
+            "tts_time": 1.97
+        },
+        {
+            "timestamp": 1770700737.228655,
+            "datetime": "2026-02-10T12:18:57.228655+07:00",
+            "user_query": "How are you?",
+            "response": "I'm functioning as intended.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 3.49,
+            "tts_time": 1.91
+        }
+    ],
+    "timestamp": "2026-02-10T12:18:01.006334+07:00"
+}

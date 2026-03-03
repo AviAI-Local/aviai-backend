@@ -1,0 +1,20 @@
+{
+    "conversation_history_id": "2da0f851-f2e7-43e7-8cb6-2aa7e40fc047",
+    "session_id": "71b3b8b4-a3f9-4f2e-a435-74d3530030d4",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1772420475.465949,
+            "datetime": "2026-03-02T10:01:15.465949+07:00",
+            "user_query": "Can you tell me about the crash?",
+            "response": "I'm sorry, I didn't quite understand that. Could you please repeat?",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "neutral",
+            "llm_time": 6.04,
+            "tts_time": 1.82
+        }
+    ],
+    "timestamp": "2026-03-02T10:00:23.175393+07:00"
+}

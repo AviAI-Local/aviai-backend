@@ -1,0 +1,53 @@
+{
+    "conversation_history_id": "683eedfb-f426-4f88-ac99-8649cb791bb4",
+    "session_id": "51de06e6-7902-4a21-8583-1c0a4590355c",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1772420066.582442,
+            "datetime": "2026-03-02T09:54:26.582442+07:00",
+            "user_query": "Hello",
+            "response": "Hello.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 13.52,
+            "tts_time": 14.29
+        },
+        {
+            "timestamp": 1772420085.003826,
+            "datetime": "2026-03-02T09:54:45.003826+07:00",
+            "user_query": "Tell me about the crash",
+            "response": "I'm sorry, I didn't quite understand that. Could you please repeat?",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "neutral",
+            "llm_time": 7.53,
+            "tts_time": 1.63
+        },
+        {
+            "timestamp": 1772420142.38363,
+            "datetime": "2026-03-02T09:55:42.383630+07:00",
+            "user_query": "Tell me about the crash, without any input errors",
+            "response": "The descent was normal, we were maintaining our altitude and speed. Then, suddenly, there was a jarring vibration, and the alarms started blaring. I saw the control surfaces moving erratically, and the Captain was shouting for me to level out the wings. It was chaotic, and then... darkness.",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "fear",
+            "llm_time": 4.89,
+            "tts_time": 5.87
+        },
+        {
+            "timestamp": 1772420180.703081,
+            "datetime": "2026-03-02T09:56:20.703081+07:00",
+            "user_query": "Tell me about the crash, without any input errors",
+            "response": "It happened incredibly quickly. The shuddering started subtly, almost like a minor turbulence, but then it intensified rapidly. The alarms went off – multiple alerts flashing across the console. I struggled to maintain control of the aircraft, fighting against the violent movements. I saw the nose drop sharply, and then... nothing. Just a jarring impact.",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "fear",
+            "llm_time": 6.33,
+            "tts_time": 11.92
+        }
+    ],
+    "timestamp": "2026-03-02T09:53:50.997294+07:00"
+}

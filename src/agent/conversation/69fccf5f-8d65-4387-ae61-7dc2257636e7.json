@@ -1,0 +1,31 @@
+{
+    "conversation_history_id": "be6ad3d6-2f58-4da6-ae18-01371b771d76",
+    "session_id": "69fccf5f-8d65-4387-ae61-7dc2257636e7",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1770699060.857025,
+            "datetime": "2026-02-10T11:51:00.857025+07:00",
+            "user_query": "No.",
+            "response": "Acknowledged.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 12.45,
+            "tts_time": 4.17
+        },
+        {
+            "timestamp": 1770699076.151526,
+            "datetime": "2026-02-10T11:51:16.151526+07:00",
+            "user_query": "How are you?",
+            "response": "I'm... alright. Just trying to focus on the questions.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 3.77,
+            "tts_time": 3.6
+        }
+    ],
+    "timestamp": "2026-02-10T11:50:23.691698+07:00"
+}

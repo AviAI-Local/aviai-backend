@@ -1,0 +1,42 @@
+{
+    "conversation_history_id": "f647b870-ae47-48b6-abe1-3929c46893f7",
+    "session_id": "43446e99-f7ad-426e-9161-ceab1c3df3d7",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1770692882.602101,
+            "datetime": "2026-02-10T10:08:02.602101+07:00",
+            "user_query": "Hello, how are you?",
+            "response": "Hello.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 13.42,
+            "tts_time": 1.57
+        },
+        {
+            "timestamp": 1770692905.040852,
+            "datetime": "2026-02-10T10:08:25.040852+07:00",
+            "user_query": "How are you doing?",
+            "response": "I'm doing okay, thank you for asking.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 3.44,
+            "tts_time": 1.45
+        },
+        {
+            "timestamp": 1770692923.261079,
+            "datetime": "2026-02-10T10:08:43.261079+07:00",
+            "user_query": "What happened?",
+            "response": "I... I was focused on the engine diagnostics. It happened very quickly.",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "fear",
+            "llm_time": 3.37,
+            "tts_time": 3.61
+        }
+    ],
+    "timestamp": "2026-02-10T10:07:12.613418+07:00"
+}
