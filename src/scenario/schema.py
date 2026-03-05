@@ -16,7 +16,7 @@ class ScenarioResponse(BaseModel):
     created_by: str
     created_at: datetime
     times_chosen: int = 0
-
+    is_deleted:bool
     class Config:
         from_attributes = True
 

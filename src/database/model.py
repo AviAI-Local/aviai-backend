@@ -64,6 +64,7 @@ class Scenario(Base):
     created_by = Column(String, ForeignKey("account.account_id", ondelete="RESTRICT"), nullable=False)
     industry = Column(String)
     scenario_text = Column(String)  
+    is_deleted = Column(Boolean, default=False, nullable=False, index=True)
     # relationship ONE-TO-MANY with other tables
     sessions = relationship("Session", back_populates="scenario", passive_deletes=True)
 
