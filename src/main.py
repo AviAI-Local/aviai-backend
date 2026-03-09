@@ -14,6 +14,7 @@ from agent.session.view import router as session_router
 from handlers.conversation_analysis.view import router as analysis_router
 from agent.history.view import router as history_router
 from agent.recording.view import router as recording_router
+from agent.prompt.view import router as prompt_router
 from agent.models import init_models
 
 
@@ -46,6 +47,7 @@ app.include_router(analysis_router, prefix="/api/v1/analysis", tags=["analysis"]
 app.include_router(session_router, prefix="/api/v1/session", tags=["session"]) 
 app.include_router(history_router, prefix="/api/v1/conversation", tags=["conversation"]) 
 app.include_router(recording_router, prefix="/api/v1/recording", tags=["recording"])
+app.include_router(prompt_router, prefix="/api/v1/prompt", tags=["prompt"])
 
 # Serve static recordings
 recordings_dir = os.getenv("RECORDING_DB_URL", "./recordings")

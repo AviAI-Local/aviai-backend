@@ -53,15 +53,18 @@ class ConversationHandler:
             "attitude_in_interview": data.get("attitude_in_interview", ""),
             "rule_interview": data.get("rule_interview", ""),
             "scenario_text": data.get("usecase_summary", ""),
-            "character_name": data.get("character_name", "")
+            "character_name": data.get("character_name", ""),
+            "prompt_id": data.get("prompt_id", "")
         }
 
         # Create session-specific LLM service with scenario data
         prompt = PromptBuilder(
+            db=self.db,
             personal_characteristics=self.scenario_data["personal_characteristics"],
             attitude_in_interview=self.scenario_data["attitude_in_interview"],
             rule_interview=self.scenario_data["rule_interview"],
-            scenario_text=self.scenario_data["scenario_text"]
+            scenario_text=self.scenario_data["scenario_text"],
+            prompt_id=self.scenario_data["prompt_id"]
         ).build()
 
         # Conditional LLM initialization based on provider
@@ -94,33 +97,6 @@ class ConversationHandler:
     async def handle_connect(self, websocket: WebSocket):
         """Handle /session/connect endpoint"""
         # Note: websocket.accept() is called in view.py before this method
-
-        # # Wait for initial config
-        # try:
-        #     msg = await websocket.receive()
-        #     config = json.loads(msg.get("text", "{}"))
-        #     voice = config.get("voice") or TTS_VOICE
-        #     llm_provider = config.get("llm_provider") or LLM_PROVIDER
-        #     llm_provider = LLM_PROVIDER
-
-        #     base_url = config.get("base_url") or LLM_BASE_URL
-        #     model = config.get("model") or LLM_MODEL
-        # except:
-        #     voice = "cosette"
-        #     llm_provider = "ollama"
-        #     base_url = None
-        #     model = None
-
-        # Create new session
-        # session = cls(
-        #     session_id=str(uuid.uuid4()), 
-        #     scenario_id=str(uuid.uuid4()), 
-        #     voice=voice, 
-        #     llm_provider=llm_provider, 
-        #     base_url=base_url, 
-        #     model=model
-        # )
-
 
         # Send session info to client
         await websocket.send_json({
