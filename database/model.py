@@ -1,4 +1,4 @@
-from sqlalchemy import JSON, Boolean, Column, Float, Integer, String, DateTime, Text, ForeignKey, Enum
+from sqlalchemy import JSON, Column, Integer, String, DateTime, Text, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from database.config import Base
@@ -6,7 +6,7 @@ import enum
 import pytz
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.sql import func
-
+from sqlalchemy import Float,Boolean
 def get_vietnam_timezone():
     """Get Vietnam timezone object."""
     return pytz.timezone('Asia/Ho_Chi_Minh')
@@ -14,7 +14,7 @@ def get_vietnam_timezone():
 def get_vietnam_time():
     """Get current time in Vietnam timezone."""
     vietnam_tz = get_vietnam_timezone()
-    return datetime.datetime.now(vietnam_tz)
+    return datetime.now(vietnam_tz)
 
 class RoleEnum(enum.Enum):
     ADMIN = "admin"
@@ -64,6 +64,8 @@ class Scenario(Base):
     created_by = Column(String, ForeignKey("account.account_id", ondelete="RESTRICT"), nullable=False)
     industry = Column(String)
     scenario_text = Column(String)  
+    is_deleted = Column(Boolean, default=False, nullable=False, index=True)
+ 
     # relationship ONE-TO-MANY with other tables
     sessions = relationship("Session", back_populates="scenario", passive_deletes=True)
 
@@ -100,10 +102,10 @@ class Session(Base):
     # relationship ONE-TO-ONE with other tables
     # conversation_histories = relationship("ConversationHistory", back_populates="session", passive_deletes=True)
     notes = relationship("Note", back_populates="session", passive_deletes=True)
-
+    
     llm_provider = Column(String, nullable=True)  # "ollama", "lmstudio"
     model = Column(String, nullable=True)         # "llama3", "gpt-4"
-    
+
     def to_dict(self):
         return {
             "session_id": self.session_id,
@@ -153,7 +155,6 @@ class Note(Base):
             "note_content": self.note_content,
             "timestamp": self.timestamp.isoformat() if self.timestamp else None
         }
-
 class ConversationAnalysis(Base):
     __tablename__ = "conversation_analysis"
 
@@ -196,8 +197,6 @@ class ConversationAnalysis(Base):
             "filename": self.filename,
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }
-
-
 class CIPerformanceEvaluation(Base):
     __tablename__ = "ci_performance_evaluation"
     evaluation_id = Column(String, primary_key=True, index=True)

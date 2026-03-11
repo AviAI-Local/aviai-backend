@@ -1,0 +1,114 @@
+{
+  "evaluation_id": "e29d4769-c7a7-416c-9dd6-dafb3c7b9df3",
+  "session_id": "51de06e6-7902-4a21-8583-1c0a4590355c",
+  "user_id": "6cfb04f7-26e1-46de-a215-819ad311242a",
+  "conversation_id": "683eedfb-f426-4f88-ac99-8649cb791bb4",
+  "summary": {
+    "session_id": "51de06e6-7902-4a21-8583-1c0a4590355c",
+    "overall_score": 64.72,
+    "verdict": "PASS",
+    "metrics_passed": 5,
+    "total_metrics": 10,
+    "coaching_areas": 5,
+    "key_strengths": [
+      "A1",
+      "A2",
+      "A5",
+      "B8",
+      "C10"
+    ],
+    "improvement_areas": [
+      "Establish Rapport and Safety",
+      "Context Reinstatement",
+      "Varied Retrieval Techniques"
+    ],
+    "question_analysis": {
+      "total_questions": 2,
+      "open_rate": 0.5,
+      "leading_rate": 0.0
+    },
+    "ci_phases_completed": 1,
+    "analysis_timestamp": "2026-03-08T23:23:48.168527"
+  },
+  "detailed_result": {
+    "evaluation": {
+      "questions": [
+        {
+          "text": "Tell me about the crash",
+          "label": "open_ended"
+        },
+        {
+          "text": "Tell me about the crash, without any input errors",
+          "label": "open_ended"
+        }
+      ],
+      "ci_phases": {
+        "rapport_safety": false,
+        "context_reinstatement": false,
+        "free_recall": true,
+        "varied_focused_retrieval": false,
+        "closure": false
+      },
+      "behaviors": {
+        "active_listening": "fair",
+        "neutral_language": "good",
+        "contamination_risk": "low",
+        "pacing_ok": "fair",
+        "trauma_informed": "fair"
+      },
+      "quantitative_metrics": {
+        "open_rate": 0.5,
+        "leading_rate": 0.0,
+        "emotion_regulation": 1.0
+      }
+    },
+    "scoring": {
+      "scores": {
+        "A1": 10.0,
+        "A2": 10.0,
+        "A3": 4.0,
+        "A4": 3.0,
+        "A5": 10.0,
+        "B6": 7.92,
+        "B7": 4.8,
+        "B8": 10.0,
+        "C9": 0.0,
+        "C10": 5.0
+      },
+      "total": 64.72,
+      "metrics_passed": [
+        "A1",
+        "A2",
+        "A5",
+        "B8",
+        "C10"
+      ],
+      "verdict": "PASS"
+    },
+    "coaching": [
+      {
+        "area": "Establish Rapport and Safety",
+        "tip": "Begin interviews by explicitly establishing psychological safety. Say something like: 'This is a safe space to share your experience. There are no right or wrong answers, and we can pause or stop anytime you need.' This helps witnesses feel comfortable sharing difficult memories."
+      },
+      {
+        "area": "Context Reinstatement",
+        "tip": "Help the witness mentally return to the event by asking about environmental details: 'What did you see/hear/smell/feel?' 'What was the lighting like?' 'Describe the sounds around you.' This technique enhances memory retrieval by recreating the original encoding context."
+      },
+      {
+        "area": "Varied Retrieval Techniques",
+        "tip": "After free recall, use different approaches to retrieve additional details: ask them to recall events in reverse order, change perspective ('What would someone else have seen?'), or focus on different senses. This accesses memory through multiple pathways."
+      },
+      {
+        "area": "Interview Closure",
+        "tip": "End interviews properly by asking 'Is there anything else you'd like to add?' and summarizing key points. Thank the witness for their time and provide information about next steps if appropriate. This ensures completeness and maintains rapport."
+      },
+      {
+        "area": "Trauma-Informed Approach",
+        "tip": "Show greater empathy and sensitivity to the emotional impact of the event. Acknowledge the difficulty: 'I know this is difficult to discuss.' Offer control: 'We can take breaks whenever you need.' Watch for signs of distress and respond appropriately."
+      }
+    ],
+    "analysis_timestamp": "2026-03-08T23:23:48.168527"
+  },
+  "pdf_base64": "JVBERi0xLjQKJZOMi54gUmVwb3J0TGFiIEdlbmVyYXRlZCBQREYgZG9jdW1lbnQgKG9wZW5zb3VyY2UpCjEgMCBvYmoKPDwKL0YxIDIgMCBSIC9GMiAzIDAgUiAvRjMgNSAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL0Jhc2VGb250IC9IZWx2ZXRpY2EgL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcgL05hbWUgL0YxIC9TdWJ0eXBlIC9UeXBlMSAvVHlwZSAvRm9udAo+PgplbmRvYmoKMyAwIG9iago8PAovQmFzZUZvbnQgL0hlbHZldGljYS1Cb2xkIC9FbmNvZGluZyAvV2luQW5zaUVuY29kaW5nIC9OYW1lIC9GMiAvU3VidHlwZSAvVHlwZTEgL1R5cGUgL0ZvbnQKPj4KZW5kb2JqCjQgMCBvYmoKPDwKL0NvbnRlbnRzIDEwIDAgUiAvTWVkaWFCb3ggWyAwIDAgNjEyIDc5MiBdIC9QYXJlbnQgOSAwIFIgL1Jlc291cmNlcyA8PAovRm9udCAxIDAgUiAvUHJvY1NldCBbIC9QREYgL1RleHQgL0ltYWdlQiAvSW1hZ2VDIC9JbWFnZUkgXQo+PiAvUm90YXRlIDAgL1RyYW5zIDw8Cgo+PiAKICAvVHlwZSAvUGFnZQo+PgplbmRvYmoKNSAwIG9iago8PAovQmFzZUZvbnQgL0hlbHZldGljYS1PYmxpcXVlIC9FbmNvZGluZyAvV2luQW5zaUVuY29kaW5nIC9OYW1lIC9GMyAvU3VidHlwZSAvVHlwZTEgL1R5cGUgL0ZvbnQKPj4KZW5kb2JqCjYgMCBvYmoKPDwKL0NvbnRlbnRzIDExIDAgUiAvTWVkaWFCb3ggWyAwIDAgNjEyIDc5MiBdIC9QYXJlbnQgOSAwIFIgL1Jlc291cmNlcyA8PAovRm9udCAxIDAgUiAvUHJvY1NldCBbIC9QREYgL1RleHQgL0ltYWdlQiAvSW1hZ2VDIC9JbWFnZUkgXQo+PiAvUm90YXRlIDAgL1RyYW5zIDw8Cgo+PiAKICAvVHlwZSAvUGFnZQo+PgplbmRvYmoKNyAwIG9iago8PAovUGFnZU1vZGUgL1VzZU5vbmUgL1BhZ2VzIDkgMCBSIC9UeXBlIC9DYXRhbG9nCj4+CmVuZG9iago4IDAgb2JqCjw8Ci9BdXRob3IgKFwoYW5vbnltb3VzXCkpIC9DcmVhdGlvbkRhdGUgKEQ6MjAyNjAzMDgyMzIzNDgrMDcnMDAnKSAvQ3JlYXRvciAoXCh1bnNwZWNpZmllZFwpKSAvS2V5d29yZHMgKCkgL01vZERhdGUgKEQ6MjAyNjAzMDgyMzIzNDgrMDcnMDAnKSAvUHJvZHVjZXIgKFJlcG9ydExhYiBQREYgTGlicmFyeSAtIFwob3BlbnNvdXJjZVwpKSAKICAvU3ViamVjdCAoXCh1bnNwZWNpZmllZFwpKSAvVGl0bGUgKFwoYW5vbnltb3VzXCkpIC9UcmFwcGVkIC9GYWxzZQo+PgplbmRvYmoKOSAwIG9iago8PAovQ291bnQgMiAvS2lkcyBbIDQgMCBSIDYgMCBSIF0gL1R5cGUgL1BhZ2VzCj4+CmVuZG9iagoxMCAwIG9iago8PAovRmlsdGVyIFsgL0FTQ0lJODVEZWNvZGUgL0ZsYXRlRGVjb2RlIF0gL0xlbmd0aCA5MzcKPj4Kc3RyZWFtCkdhdFVzOy9iL0ImQkVdKCdfYUdoV00tYjEtT3QoMTxpSyFLWW5DJ2pVUk4rYzInY0hJa2thW244XzooXVcyIllHKzouTjlycjoxIzQiKFkmQl9SczQhVGtnTlQyOzBoZFBYaWJpSzBZSVFaVms4Ny9wTjYpOG81LmBIXE9LMUQqbFI2cGVSKWlGO1hCKmo0Oi0vLV0oXllvJTckLSNDRkNyJWNOKl1WbWBiQyE5byRDIl9dckR0RyYkRmhPc0NYWForOShdKFM/UnVgWzFLXyxvXGNeKDtzbXMpTGwnTTZrakhANlFxXUwrLjo+ZyQxNHBeclNAM15KYilhc1NWQ25WZlNecU41S1lfXyssZWotL28wMl9cUVBDR0BIM0lcKF9mXT9HS05OJ1lmcVA9UzIwUy5ISFRgRnBCSiRqMnExYEMzKlsrWW9yPF9WUXFaPGlZMDkpTEc6WCooRHMlaVxKa0lQKDteZShnUEg+JDBbWjhSRWZLO1oudTBIOEgnXWc7Uj1vXjs7OWo+MExmLllPPiVlNEFgND1GPllcclgiY0pwbEBXSixMNyonY2FrMWE0b1dbUClobUIxLG1CSGw/K002cSJzIU5XPCVGWyQkQVQ+Vi51bk0+MDlIL19cdFFiKEk6Zig+Wlpma1RXRWA/JD8jPEIlPi0vMWQnbzNxI0ZLb0VdJTtUQWcuPW5kJCNcbTVYYXAhODpEQUVXYm86WC4tYzVGOGwvIVYqMiNsLSVxaUJuQkw2cVlQaDJjYyw+I0RfXitlPTBjdVlQRVlcOkZJIyZKXlJHcldtMygrQmNTcUtvOTY2Qi50Vy9sZmAkJDI4c08vW0RQa1hKLlEtZlg1WkhESFRKNSxLKWUrI1FUSEk3dWVANFlLV0AjZlZZaEw5cnBvamdEREozb2EtbkJTSC9dPmM/Q3BnQShfIVtGV1YkJ1tBM1ZLZmpFQj9LbHNWcjwjMzdFVDRsJW1yc0MpZFppRC0pbmpkNTFQREsjR2JAZkhoK2olTDJXUT1iRTJTWjc1JVpFSUQwLTc4PE9UZTdLZTJScEhFVzJsNUprSWVVOFtEZzQ5JixyUmVUcTg+W09QRldHbU5BKTdFamVnUkk1NC0vP0RZL0YrWV4xTGhBMEBYIkJbPisrKXVNJV5FRFxfXTNHUDs/M1ZHJXVZVGdKakdaM2ZTT0JaaiFTP1ZYNDonXmtLJFA7XmVZLXBCXW90PWZVaGo+ZiNWKSRGQzU6fj5lbmRzdHJlYW0KZW5kb2JqCjExIDAgb2JqCjw8Ci9GaWx0ZXIgWyAvQVNDSUk4NURlY29kZSAvRmxhdGVEZWNvZGUgXSAvTGVuZ3RoIDE2MzQKPj4Kc3RyZWFtCkdhdD0rPkFyN1MnUm5CMzMlbVhoK2Epak1ERCtHSVYtJjZgNzhkV0Q9R0RCaE5cKWpyV0tOS09tRlVlZ1BWOSJ1V2dUIkUmc0Q3YkhsIk8/OSg0V21tcUdBY0RGdTtGIztkOkdGQExuJkluXDwlRj5IKVRIOCZJJyoiVjpNRkdAYU85Qik+Lis1akVzciVPZlY6ITdeTCxdNUUkOW1UYTlsO0c9Q0FuRz5qZmQ0bi1HIjRDZkxTaGdZTGNiTl4rIXFrQV90NT46OFRKZ2InLmZocylmKDc/QSQjOD1sYE84OGtiKk42MFJgJD9GUiRKKVNYdUQ/OzoyOyElR2ZTJEs9Nk8mPFQkTj0sbEsiYVYpLV1lQCNuRDM9Q3A0MUdKakFBZzNCNzRERyZYZmlIXF1XcTBJbCQ1N11ZQ3AuJnEhZjYqZSJmLyZ1O1lrNjpAN0liP0gnbTRPXEJxckM9PV4wNFxeMyg2ajJzQV9UTWg0UEpvazxZVitfT0U8bmk9WnMtZ3NSK0I2byYyITwiakdOM2c4WycwL19aODdfTTU3I2t1XDZTOmFLMW8qaiJEc1ghOklmQypQaipfTk5bT1RPVUsoa2VoWjooZE06b0NKI3JHMSVFZ2dRZmNsRVNdJGlhLFdNRl0qXVlUQEpsZmRoUV9JSEpUTlZHayEhMmhzanFqWm8+M25CTzYiMkNsI2krS2hjYj1uOSg6XWU2X3F0YyMkblBpK0c+PlZVUytOJT0pL3VMaGRAciJEJldMRjZzOksuUDtyUVdLXGk2byFyZVIvdS4lTmcuPSxFUlNDcl82SSQnN15yb2kjSENiQUlOZ0B0IkI0XyIoU05pLzU9RnFqQTpvLnBRWkdadVAjdVE5WVBIWlZWayxhJicwb3FpX0M0ZklyWm5ndTJIXlpaKiI/PkFeO0MwQk1Va2healRZXDJGaSs2VmJTRjpbMUlQVFVaa1xIKlJJZ11ZSzJYIzBoWVVYYUxfODNKYF9TO2xCLickQSwsXVZgbSU2NHArMUJOSi5vKWRxUl5bYjFLS049Lk0oKWxSWVQ6cTNyZFkucUE/WkhuLlZiRVBtQnJ1IzNhXVouZj9VRTZpZGJoTmhYMGtVXkEhZlNaPnIrb11JcSwqM3JRJyEwZ1ktMjJOS1sva0hdO0lsMWNQOEhOQkJxPDVhRiFwJllpRztPQk5kTTgsNEJQWEM8MSYoKVZZY1FpYk5LNEErJjFxams2Vy9tYFxNbik0JEkzNWNcQj8pS0phVnIkWVJVSWsyX29gSzw+QWwoLCkqNCstJz1IPyQhK1VqKmkhJTpPWk0wWFtAIS4qMEBCSXE/NjM3cjpLIVBFTlRDX3Q2Ky9MZD8nSzdPM1UtYHRWRipILkM9IWZULFEsalskVmotQVl1W21KbSQ3MkUjQSlTZkQzaUVUZTQvMjsmUistKUBNXDIwVypTb0U3dDFcUFhYY0AxXGA5JS1oQi9dc1FtK1U6SHUzTCpGP1krWFRDS21da2dEUGBCNVlJXTJMK0Y6WUM4IkBvVmYzOD8oMGdxMmtLQiFGKXJsZyhJKS1SQixEWTg3ISlbLk1kI2JSI2UpZ19wUyoraSZCSmZBWl9XNUttLj8nXy9DXlUhP2MpbGJJX08pN2xEaWs0VDVeciI0J2BrMG0lQ2s9YmIzYiluWFkzaT9lMiRQO15qVEFSbGEvaWlUallVZGkiV1RjcVZuRGRUaSFDQUpAKj5aZyglVDJhUEE6XT86PzcvcUhkO1hYREtZP1w/IVkpLEMqZVZbOEU5NSghLk41XFAzLTQ3Y20rbERhLzZmVlNVZjMqM10lZVZEL1lmZ1QjU1ZdTFlRXV1fMHJtZVQ4WyVrU0JZODpnYC9mbk47JldLJyciPChKOCJdTmE/a2haSGA1Kik0JFNTI1U9aFAyTGknV2FBbCltWSxFZEtHWyo0KDFbL0twVHIxWk5IN207L1wjPT9LQkhOcHM7K1UwRVMpUD1pUTF1MSwkaXV0aW1dIlU5Iy1jdDlKcyEtbFptYlpBTTJ0cjQ5XywpNzY6XHMsMUUuWmJXIzNeYm9kSCtkY1xnPWlHQkpJI1M9QXEmc0U9QiJlaVxJby9vJEE7ZmBsaSdkQCcsJG5BLipyOlNtPzpwT1A0UCRJLkxYZjxQPE1EKy4qVE0qPH4+ZW5kc3RyZWFtCmVuZG9iagp4cmVmCjAgMTIKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDYxIDAwMDAwIG4gCjAwMDAwMDAxMTIgMDAwMDAgbiAKMDAwMDAwMDIxOSAwMDAwMCBuIAowMDAwMDAwMzMxIDAwMDAwIG4gCjAwMDAwMDA1MjUgMDAwMDAgbiAKMDAwMDAwMDY0MCAwMDAwMCBuIAowMDAwMDAwODM0IDAwMDAwIG4gCjAwMDAwMDA5MDIgMDAwMDAgbiAKMDAwMDAwMTE4MiAwMDAwMCBuIAowMDAwMDAxMjQ3IDAwMDAwIG4gCjAwMDAwMDIyNzUgMDAwMDAgbiAKdHJhaWxlcgo8PAovSUQgCls8NGFjYzA1MTYzYjc5ODJjYmZhYTZmMTYyMjcwNmVjOTU+PDRhY2MwNTE2M2I3OTgyY2JmYWE2ZjE2MjI3MDZlYzk1Pl0KJSBSZXBvcnRMYWIgZ2VuZXJhdGVkIFBERiBkb2N1bWVudCAtLSBkaWdlc3QgKG9wZW5zb3VyY2UpCgovSW5mbyA4IDAgUgovUm9vdCA3IDAgUgovU2l6ZSAxMgo+PgpzdGFydHhyZWYKNDAwMQolJUVPRgo=",
+  "filename": "performance_analysis_51de06e6-7902-4a21-8583-1c0a4590355c.pdf"
+}

@@ -1,0 +1,118 @@
+{
+  "evaluation_id": "b9b6461c-d67c-4a67-9b3d-e9f5c85934c0",
+  "session_id": "3c5b9ab0-7be9-4e23-ab75-49d43d4d46cb",
+  "user_id": "6cfb04f7-26e1-46de-a215-819ad311242a",
+  "conversation_id": "d4e85651-f833-4b6d-965a-a6a741a1bdf3",
+  "summary": {
+    "session_id": "3c5b9ab0-7be9-4e23-ab75-49d43d4d46cb",
+    "overall_score": 52.72,
+    "verdict": "BORDERLINE",
+    "metrics_passed": 5,
+    "total_metrics": 10,
+    "coaching_areas": 7,
+    "key_strengths": [
+      "A2",
+      "A4",
+      "A5",
+      "B8",
+      "C10"
+    ],
+    "improvement_areas": [
+      "Increase Open-Ended Questions",
+      "Establish Rapport and Safety",
+      "Context Reinstatement"
+    ],
+    "question_analysis": {
+      "total_questions": 1,
+      "open_rate": 0.11,
+      "leading_rate": 0.0
+    },
+    "ci_phases_completed": 0,
+    "analysis_timestamp": "2026-03-08T23:24:19.955401"
+  },
+  "detailed_result": {
+    "evaluation": {
+      "questions": [
+        {
+          "text": "Hello",
+          "label": "open_ended"
+        }
+      ],
+      "ci_phases": {
+        "rapport_safety": false,
+        "context_reinstatement": false,
+        "free_recall": false,
+        "varied_focused_retrieval": false,
+        "closure": false
+      },
+      "behaviors": {
+        "active_listening": "fair",
+        "neutral_language": "good",
+        "contamination_risk": "low",
+        "pacing_ok": "good",
+        "trauma_informed": "fair"
+      },
+      "quantitative_metrics": {
+        "open_rate": 0.11,
+        "leading_rate": 0.0,
+        "emotion_regulation": 1.0
+      }
+    },
+    "scoring": {
+      "scores": {
+        "A1": 0.0,
+        "A2": 10.0,
+        "A3": 0.0,
+        "A4": 5.0,
+        "A5": 10.0,
+        "B6": 7.92,
+        "B7": 4.8,
+        "B8": 10.0,
+        "C9": 0.0,
+        "C10": 5.0
+      },
+      "total": 52.72,
+      "metrics_passed": [
+        "A2",
+        "A4",
+        "A5",
+        "B8",
+        "C10"
+      ],
+      "verdict": "BORDERLINE"
+    },
+    "coaching": [
+      {
+        "area": "Increase Open-Ended Questions",
+        "tip": "Prioritize questions that invite free narrative responses. Use phrases like 'Tell me about...', 'Describe what happened...', 'Can you walk me through...'. Aim for at least 60% of your questions to be open-ended to allow witnesses to provide rich, uncontaminated accounts."
+      },
+      {
+        "area": "Establish Rapport and Safety",
+        "tip": "Begin interviews by explicitly establishing psychological safety. Say something like: 'This is a safe space to share your experience. There are no right or wrong answers, and we can pause or stop anytime you need.' This helps witnesses feel comfortable sharing difficult memories."
+      },
+      {
+        "area": "Context Reinstatement",
+        "tip": "Help the witness mentally return to the event by asking about environmental details: 'What did you see/hear/smell/feel?' 'What was the lighting like?' 'Describe the sounds around you.' This technique enhances memory retrieval by recreating the original encoding context."
+      },
+      {
+        "area": "Free Recall Phase",
+        "tip": "After establishing context, invite an uninterrupted narrative: 'Please tell me everything you remember from start to finish, even small details that might seem unimportant.' Allow the witness to speak without interruption to get their complete account first."
+      },
+      {
+        "area": "Varied Retrieval Techniques",
+        "tip": "After free recall, use different approaches to retrieve additional details: ask them to recall events in reverse order, change perspective ('What would someone else have seen?'), or focus on different senses. This accesses memory through multiple pathways."
+      },
+      {
+        "area": "Interview Closure",
+        "tip": "End interviews properly by asking 'Is there anything else you'd like to add?' and summarizing key points. Thank the witness for their time and provide information about next steps if appropriate. This ensures completeness and maintains rapport."
+      },
+      {
+        "area": "Trauma-Informed Approach",
+        "tip": "Show greater empathy and sensitivity to the emotional impact of the event. Acknowledge the difficulty: 'I know this is difficult to discuss.' Offer control: 'We can take breaks whenever you need.' Watch for signs of distress and respond appropriately."
+      }
+    ],
+    "analysis_timestamp": "2026-03-08T23:24:19.955401"
+  },
+  "pdf_base64": "JVBERi0xLjQKJZOMi54gUmVwb3J0TGFiIEdlbmVyYXRlZCBQREYgZG9jdW1lbnQgKG9wZW5zb3VyY2UpCjEgMCBvYmoKPDwKL0YxIDIgMCBSIC9GMiAzIDAgUiAvRjMgNSAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL0Jhc2VGb250IC9IZWx2ZXRpY2EgL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcgL05hbWUgL0YxIC9TdWJ0eXBlIC9UeXBlMSAvVHlwZSAvRm9udAo+PgplbmRvYmoKMyAwIG9iago8PAovQmFzZUZvbnQgL0hlbHZldGljYS1Cb2xkIC9FbmNvZGluZyAvV2luQW5zaUVuY29kaW5nIC9OYW1lIC9GMiAvU3VidHlwZSAvVHlwZTEgL1R5cGUgL0ZvbnQKPj4KZW5kb2JqCjQgMCBvYmoKPDwKL0NvbnRlbnRzIDEwIDAgUiAvTWVkaWFCb3ggWyAwIDAgNjEyIDc5MiBdIC9QYXJlbnQgOSAwIFIgL1Jlc291cmNlcyA8PAovRm9udCAxIDAgUiAvUHJvY1NldCBbIC9QREYgL1RleHQgL0ltYWdlQiAvSW1hZ2VDIC9JbWFnZUkgXQo+PiAvUm90YXRlIDAgL1RyYW5zIDw8Cgo+PiAKICAvVHlwZSAvUGFnZQo+PgplbmRvYmoKNSAwIG9iago8PAovQmFzZUZvbnQgL0hlbHZldGljYS1PYmxpcXVlIC9FbmNvZGluZyAvV2luQW5zaUVuY29kaW5nIC9OYW1lIC9GMyAvU3VidHlwZSAvVHlwZTEgL1R5cGUgL0ZvbnQKPj4KZW5kb2JqCjYgMCBvYmoKPDwKL0NvbnRlbnRzIDExIDAgUiAvTWVkaWFCb3ggWyAwIDAgNjEyIDc5MiBdIC9QYXJlbnQgOSAwIFIgL1Jlc291cmNlcyA8PAovRm9udCAxIDAgUiAvUHJvY1NldCBbIC9QREYgL1RleHQgL0ltYWdlQiAvSW1hZ2VDIC9JbWFnZUkgXQo+PiAvUm90YXRlIDAgL1RyYW5zIDw8Cgo+PiAKICAvVHlwZSAvUGFnZQo+PgplbmRvYmoKNyAwIG9iago8PAovUGFnZU1vZGUgL1VzZU5vbmUgL1BhZ2VzIDkgMCBSIC9UeXBlIC9DYXRhbG9nCj4+CmVuZG9iago4IDAgb2JqCjw8Ci9BdXRob3IgKFwoYW5vbnltb3VzXCkpIC9DcmVhdGlvbkRhdGUgKEQ6MjAyNjAzMDgyMzI0MTkrMDcnMDAnKSAvQ3JlYXRvciAoXCh1bnNwZWNpZmllZFwpKSAvS2V5d29yZHMgKCkgL01vZERhdGUgKEQ6MjAyNjAzMDgyMzI0MTkrMDcnMDAnKSAvUHJvZHVjZXIgKFJlcG9ydExhYiBQREYgTGlicmFyeSAtIFwob3BlbnNvdXJjZVwpKSAKICAvU3ViamVjdCAoXCh1bnNwZWNpZmllZFwpKSAvVGl0bGUgKFwoYW5vbnltb3VzXCkpIC9UcmFwcGVkIC9GYWxzZQo+PgplbmRvYmoKOSAwIG9iago8PAovQ291bnQgMiAvS2lkcyBbIDQgMCBSIDYgMCBSIF0gL1R5cGUgL1BhZ2VzCj4+CmVuZG9iagoxMCAwIG9iago8PAovRmlsdGVyIFsgL0FTQ0lJODVEZWNvZGUgL0ZsYXRlRGVjb2RlIF0gL0xlbmd0aCA5NDAKPj4Kc3RyZWFtCkdhdFVzPyNTRk4nU2MpUCgkQj1AO2o3JjYrNT9tNixwXyVzKVlNcjQlZVUwIyhFOXNicWA8dVFGVV4uRDtabV5bNTBzK3QqO1ErNDVrYChOR0o0NkpBOG0hTyE+RU9IXmFzI1hjL0NEc3IjIkAhRzs5NFM4YU9dRlheKTVuaiFbV3A9VidrMnImXk0rXFtBW0ppMXU/JDgvaiEoK2NHXVo9VFFFU11ybVNzSE83JSRhQ19YOicuZFptZiQuNXBcVi1mLFg7Z2FLWkw8bSdKYCw/Ylg2NXRjcm1ESyxVdCwqV2VTW0I1LkkxNGRYalovWWhKMj9aKS0nYVY7QF9bbUgzTnNkaiI/Km1JKzYvK2g6OFQ4R1VwMjFFRkYjRmw9K3QqbipWJXBjMXJoKC5ob29QUjBIPXQpTWhEOyItc15dKDlDbkBeMmFRSWpFKl1KOG8xKixkWUFSMicmcyY2NiE5S3Q/cG9rcD1WMlhsWmsuTUEuI29dcS5IMVsyJW4ybz84bztOP1lxTSVZJmQ9J3EuKjJgOCZON0w/UXVeSWBHMDVaaEpWKWpGcSVoMyE/OGM5IVokISprKXJqPl1qUmMsVlsxT0BmYzBJam07bnRzQScwKko5T1VLQjJPIi5pLDlxY1VWTEpEYFEoUk4+QG0vIy9QTicuTzxYIyxnWTIoWEYzWktTKChqOicmUEllWGRTT3UmSjdbcjpQWyUoJD1CZUpdY28nRyFZMmo/KlNfYF1eTyFAJWEmbnFUZykjKzhxMCFMJGc8W2UmWzs0cUJVRyZRJEFeayppOiw3O2xpZFNhJTUiLydERyc/b2VBPVxxUFpBSVNIZ1xsNSxLWkhUPlxVYm0wUyZgOGooTmw7QkppZG9ecURuWiZibG5QTlNiNCw3T0M+OCgvPixtWS10XCknQUlGPGNIQy07RVQrSWNSNjQ7Vik2TENcPztBOm9aZFg6VGA1SnEjUDhBM0EiVD1jSU4kcmY8Rm0sXE9ddHRWQGptamQmKEZUKGdHKEltPzI1bGtwQDMvTilDNWQkV3EyY3U7XGlyVlFKQERZMiIiamRcdUdBSkc1bCdnRVUkYjUnNnU4KVdqWkNHTixAVipccFpJaDxtIU9QTjpVclBULj1iaEFVRV9LOHRkLj4tO0hdWGY1Yk0tLVpgLmVHQEdGXFtdXHI1M0FeUUJDJFNvPDxSbmMsXmYnRVAmVCRfW3BERSYvPWJzYDZlSCQ9O0dRQl5iJV9ffj5lbmRzdHJlYW0KZW5kb2JqCjExIDAgb2JqCjw8Ci9GaWx0ZXIgWyAvQVNDSUk4NURlY29kZSAvRmxhdGVEZWNvZGUgXSAvTGVuZ3RoIDE5NzkKPj4Kc3RyZWFtCkdhdD0rZ04pJSwmOk86U2xxOWZDOCFaX0xuZyxxLGEqIjhJOExISSlIKU5lRlFzPktIOFVwaCwvJz9LPC80YEBALUQ9QHRqJUJYYE1xckktQVAqOUNkZUdXIUxnSj9pcGlUM25RdENEMy1faCFtaFU7KWBpNitGP21AOS4ibSxTU0VuTFRPQ2d1ODtVPkhhKSQzaF1eLCpnPU5QOj83TVNSOFpoVk5qUDNZPSluNGtrIjw4SzIjRVZPXklYLmtwaipvLDhbaSt0ZSZhR1czOFklLmQlbFhZYGFyWV1vLC1kXFVKMCQjImIiX2gzc1ZaPmhcWVNNbHVcO0loVVFIKzZjMiokQ1pxTiNyLjxAPVBVK1MkQSJCS0RgLVRUVmY0TTksL3BUNStBPXEpSy8pKDllNzhrXTMnOkMuQiM+OjlaJmFUIyEuW0JhU1ktU3QyREBUWkxoRTo3YjNeJytEOzg4O3RTJ08iLUZWWCpvKlJTZTFRQnBPWGEwLzpNKkpdLElfIm5TMlNGYUxCX2JNaVg6JWxgMFg6UjNRRWI7P1paIXQjUCdWMTczNTZMIUEwcCQ8SWsjY21VaVRlZ3UsZGo9QkRuKnBiOFQyLS9gSFIxMWhKKTp0ZCwxNSlYTVtqXzwkNiZHRl5VWSJBaHFOPjxoIyt0TkBqS2VvRVQ4OihDbGYpPDljUUJfJHAqOGBNQEJnJzFTYkU/cT5vV2ZrNCg7MStkTTAzZT4xOGVdPGdDRFVYaytbJ0MsbTxJI3FzS1lsRFM7OTgkWS9wMFVlK01zW0FQVT1ha25yMnA/NTJbSmdnKEwrYyhRS1tVajhsMm1RXmFYQCo9UjsqL3NeNmJtcmFZREZCL2dMMHBzbWI8U0JeNzNONFI5Tjx0J2A+T2cyNjRUTjRpNi9AalwoR0xOUltQIVhzM0lPZUglXWVIImoqaE89IVBZYV5UYWU0N20tWl9hNGwqOHNeWGY3LEY9P1xCcURMXC5nOTdnIVE/RTlcUWZSMWw3XyUwMF1XRjAzNFRiNmArQy9ZVnBvISswbyFRVkJXcDB1UkdaNCpmJj5IR1lDYmQnWlhDKTlaaTdoQDVJU2c0TFlZL1ZLWjgtbU5jND1ESlE6ci9VOzYnbUhfXE8+MU5KMUJaQCMkR1QwWlomQ0dgUkkiZzQnQGgzSElkPS8nJnI8RWtJcWdPbT4lKldbUyVbPGU6OEoiT1FBOHJ1XkdUJjtuNCw9R0FgNEVhW05oa1IySFBmJigraEoxc1slTDB1Li4ySz1tPitUO15PJT8zLkZNXytIX1NkWUo9aGFuRVM4O1gkXFBlWy8qalcnTDs0VFBJNCg2SWllTVMxSUBCMElxTVxSU3U0bCxRXVpRXDAyRTtZXzAsJ05FW1hPayNFbGFKdCNzRW1WaEpEYE4wKEBHbjRAKUpbOU8kM2RfTyFLQHI4Q2sxInVETCFjNCZZImAhakIsZHFSVVpYXFphJm4wRD1yNnE0ZGw6S1g1MVZiWzI6K2EhKG9yUiRiMFBeTGlnMz1WTylBZm9zJEtnS1NGOExMLHA0ZEZtWVckNERYISk1anMrPUhWIUF1KHNvbHBYJ2E4NyF1N2tAIklNOFQ2IT1VQideVl5SRik7SjAoXldSRE91dGc0WyNMYzpcY2ltIlxOcU1fTD5gUyw/QWRLJFU3c1Y2YzBBJUYnTEs6UktrNDYhbEBPWTk/b3FGMjZFYk9SUCRtVWwxdFUjO0pSYWwwSmBFQmwhZ04qNEwvdFc8ImFnLjVHXj9WWlU5VSx0YTtzbW0rPSdcYjkxNTReIyM7JVNbUUFWQjdodFQiOTxmT3EnKj1KbzxVSWRzYCRmTF9aRz9XbipESj4mMnInXTZVMD0zc0EkK2xFW2RvcCo6OltlXm80W1tGSjFEcDA+VVpaVUBJbk1ZbzZfcWo0TFxKUiQodS1SbSgmWWhVNC5Zb0NWJFdPMmZaSCk6KTJQYiInQVpPLiRlVnVuJHFFIkleO3UpalkybSVobWQhKE5nJTA9LHRxaFtdLiNGJDhgQCddP1FIZTk3T1ddMUZKPVtOTCU1Rm40Ii8zXVAzNE1oQm0lLmguVCNaKUNxU2RDZVEwbFNKWy1hPUVTZykhRT5YUy1VIkJrOk9TKEhaXjkiYCtHXGNlPEhCOFlCSyxzUUxBW1UhIzdpY09LJlhEcG9lbTQ1YixJZEJJRSQnSVNFcF5aak1kMVNCY1ZXLSlDOy9xPTI8aENbNlo4ZEI/M0FUUSFabmIyanJrND0jcCEpISVdQk4rIyc0J2U+JVtZNCJtcy5nPCMwJDBncEJyZlZWLk5GYkVESGNnWT1cc2A8bUNZTDFDbkJvc1UnWGd0VTNZMGxsWlQuTShpbS1fY0o+bXFhSD9cIi8jIyFhQlBeZmZQOGopOyU0LyYnKDxnLlYpIS9LQF5KUktfc2BQaS0kaGtWdFUkM3I4anEjYSlQcCNdMi1tTjFvImNKP0pyTUFwXDQrQWVFMVdALCFtdCEjZ1NYXUE7b1EiOGUxJz1LWCYpKDtLUFFMYTNlP007SGQjJUxASC1kLTIpdXI5YilaL2Y2RV1lVyw/cmZTRFVbImM2LidjT1A0UCw0Ri5eSmJFaV88IiNnJk87I34+ZW5kc3RyZWFtCmVuZG9iagp4cmVmCjAgMTIKMDAwMDAwMDAwMCA2NTUzNSBmIAowMDAwMDAwMDYxIDAwMDAwIG4gCjAwMDAwMDAxMTIgMDAwMDAgbiAKMDAwMDAwMDIxOSAwMDAwMCBuIAowMDAwMDAwMzMxIDAwMDAwIG4gCjAwMDAwMDA1MjUgMDAwMDAgbiAKMDAwMDAwMDY0MCAwMDAwMCBuIAowMDAwMDAwODM0IDAwMDAwIG4gCjAwMDAwMDA5MDIgMDAwMDAgbiAKMDAwMDAwMTE4MiAwMDAwMCBuIAowMDAwMDAxMjQ3IDAwMDAwIG4gCjAwMDAwMDIyNzggMDAwMDAgbiAKdHJhaWxlcgo8PAovSUQgCls8MGRhNzgwMmYwMTBjZWQzMTEzZGI2NjdmMmI3NTFhODU+PDBkYTc4MDJmMDEwY2VkMzExM2RiNjY3ZjJiNzUxYTg1Pl0KJSBSZXBvcnRMYWIgZ2VuZXJhdGVkIFBERiBkb2N1bWVudCAtLSBkaWdlc3QgKG9wZW5zb3VyY2UpCgovSW5mbyA4IDAgUgovUm9vdCA3IDAgUgovU2l6ZSAxMgo+PgpzdGFydHhyZWYKNDM0OQolJUVPRgo=",
+  "filename": "performance_analysis_3c5b9ab0-7be9-4e23-ab75-49d43d4d46cb.pdf"
+}
