@@ -17,9 +17,114 @@ echo "Current time: $(date)"
 echo ""
 
 # ────────────────────────────────────────────────
-# 1. Python 3.12+
+# 1. Git
 # ────────────────────────────────────────────────
-echo -e "${YELLOW}1. Checking Python 3.12+ ...${NC}"
+echo -e "${YELLOW}1. Checking Git ...${NC}"
+if command -v git >/dev/null 2>&1; then
+    GIT_VERSION=$(git --version | awk '{print $3}')
+    echo -e "${GREEN}✓ git ${GIT_VERSION} found${NC}"
+else
+    echo -e "${YELLOW}git not found → installing ...${NC}"
+    if [[ "$OSTYPE" == "darwin"* ]] && command -v brew >/dev/null 2>&1; then
+        brew install git
+    elif command -v apt-get >/dev/null 2>&1; then
+        sudo apt-get update -q && sudo apt-get install -y git
+    elif command -v dnf >/dev/null 2>&1; then
+        sudo dnf install -y git
+    elif command -v pacman >/dev/null 2>&1; then
+        sudo pacman -S --noconfirm git
+    else
+        echo -e "${RED}✗ Could not install git automatically${NC}"
+        echo "Please install git manually: https://git-scm.com/downloads"
+        exit 1
+    fi
+
+    if ! command -v git >/dev/null 2>&1; then
+        echo -e "${RED}Failed to install git${NC}"
+        exit 1
+    fi
+    echo -e "${GREEN}✓ git installed${NC}"
+fi
+
+# ────────────────────────────────────────────────
+# 1b. Clone repository
+# ────────────────────────────────────────────────
+REPO_URL="https://github.com/AviAI-Local/aviai-backend.git"
+REPO_DIR="aviai-backend"
+
+echo -e "${YELLOW}1b. Checking repository ...${NC}"
+if [ -d "${REPO_DIR}/.git" ]; then
+    echo -e "${GREEN}✓ Repository already exists at ./${REPO_DIR}${NC}"
+elif [ -d ".git" ] && git remote get-url origin 2>/dev/null | grep -q "aviai-backend"; then
+    echo -e "${GREEN}✓ Already inside the aviai-backend repository${NC}"
+    REPO_DIR="."
+else
+    echo "Cloning ${REPO_URL} ..."
+    git clone "${REPO_URL}" "${REPO_DIR}" && \
+        echo -e "${GREEN}✓ Repository cloned to ./${REPO_DIR}${NC}" || {
+        echo -e "${RED}✗ Failed to clone repository${NC}"
+        echo "Check your internet connection or access to: ${REPO_URL}"
+        exit 1
+    }
+fi
+
+# ────────────────────────────────────────────────
+# 2. VS Code
+# ────────────────────────────────────────────────
+echo -e "${YELLOW}2. Checking VS Code (code) ...${NC}"
+if command -v code >/dev/null 2>&1; then
+    CODE_VERSION=$(code --version 2>/dev/null | head -1 || echo "unknown")
+    echo -e "${GREEN}✓ VS Code ${CODE_VERSION} found${NC}"
+else
+    echo -e "${YELLOW}VS Code not found → attempting install ...${NC}"
+    if [[ "$OSTYPE" == "darwin"* ]] && command -v brew >/dev/null 2>&1; then
+        brew install --cask visual-studio-code
+    elif command -v apt-get >/dev/null 2>&1; then
+        # Add Microsoft's apt repository and install
+        sudo apt-get install -y wget gpg apt-transport-https
+        wget -qO- https://packages.microsoft.com/keys/microsoft.asc \
+            | gpg --dearmor | sudo tee /usr/share/keyrings/packages.microsoft.gpg >/dev/null
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/packages.microsoft.gpg] \
+https://packages.microsoft.com/repos/code stable main" \
+            | sudo tee /etc/apt/sources.list.d/vscode.list >/dev/null
+        sudo apt-get update -q && sudo apt-get install -y code
+    elif command -v dnf >/dev/null 2>&1; then
+        sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+        sudo tee /etc/yum.repos.d/vscode.repo >/dev/null <<'REPO'
+[code]
+name=Visual Studio Code
+baseurl=https://packages.microsoft.com/yumrepos/vscode
+enabled=1
+gpgcheck=1
+gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+REPO
+        sudo dnf install -y code
+    elif command -v pacman >/dev/null 2>&1; then
+        # code is in the AUR; try yay/paru if available
+        if command -v yay >/dev/null 2>&1; then
+            yay -S --noconfirm visual-studio-code-bin
+        elif command -v paru >/dev/null 2>&1; then
+            paru -S --noconfirm visual-studio-code-bin
+        else
+            echo -e "${YELLOW}Arch: install VS Code via AUR (yay -S visual-studio-code-bin)${NC}"
+        fi
+    else
+        echo -e "${YELLOW}Could not install VS Code automatically${NC}"
+        echo "Please download it from: https://code.visualstudio.com/download"
+    fi
+
+    if command -v code >/dev/null 2>&1; then
+        echo -e "${GREEN}✓ VS Code installed${NC}"
+    else
+        echo -e "${YELLOW}⚠ VS Code not detected in PATH after install attempt${NC}"
+        echo "  You may need to restart your terminal or install manually."
+    fi
+fi
+
+# ────────────────────────────────────────────────
+# 3. Python 3.12+
+# ────────────────────────────────────────────────
+echo -e "${YELLOW}3. Checking Python 3.12+ ...${NC}"
 
 PYTHON_CMD=""
 if command -v python3.12 >/dev/null 2>&1; then
@@ -44,9 +149,9 @@ else
 fi
 
 # ────────────────────────────────────────────────
-# 2. uv (Astral)
+# 4. uv (Astral)
 # ────────────────────────────────────────────────
-echo -e "${YELLOW}2. Checking uv ...${NC}"
+echo -e "${YELLOW}4. Checking uv ...${NC}"
 if command -v uv >/dev/null 2>&1; then
     UV_VERSION=$(uv --version 2>/dev/null | head -1 || echo "unknown")
     echo -e "${GREEN}✓ uv is installed (${UV_VERSION})${NC}"
@@ -69,9 +174,9 @@ else
 fi
 
 # ────────────────────────────────────────────────
-# 3. PostgreSQL 16+ client tools (psql)
+# 5. PostgreSQL 16+ client tools (psql)
 # ────────────────────────────────────────────────
-echo -e "${YELLOW}3. Checking PostgreSQL client (psql) 16+ ...${NC}"
+echo -e "${YELLOW}5. Checking PostgreSQL client (psql) 16+ ...${NC}"
 if command -v psql >/dev/null 2>&1; then
     PG_VERSION=$(psql --version 2>&1 | grep -oE '[0-9]+\.[0-9]+' | head -1)
     if [[ "${PG_VERSION%%.*}" -ge 16 ]]; then
@@ -100,9 +205,9 @@ else
 fi
 
 # ────────────────────────────────────────────────
-# 4. FFmpeg
+# 6. FFmpeg
 # ────────────────────────────────────────────────
-echo -e "${YELLOW}4. Checking FFmpeg ...${NC}"
+echo -e "${YELLOW}6. Checking FFmpeg ...${NC}"
 if command -v ffmpeg >/dev/null 2>&1; then
     FFMPEG_VERSION=$(ffmpeg -version 2>&1 | head -1 | awk '{print $3}' || echo "unknown")
     echo -e "${GREEN}✓ ffmpeg ${FFMPEG_VERSION} found${NC}"
@@ -122,9 +227,9 @@ else
 fi
 
 # ────────────────────────────────────────────────
-# 5. Ollama
+# 7. Ollama
 # ────────────────────────────────────────────────
-echo -e "${YELLOW}5. Checking Ollama ...${NC}"
+echo -e "${YELLOW}7. Checking Ollama ...${NC}"
 if command -v ollama >/dev/null 2>&1; then
     OLLAMA_VERSION=$(ollama -v 2>/dev/null || echo "unknown")
     echo -e "${GREEN}✓ ollama ${OLLAMA_VERSION} found${NC}"
@@ -148,9 +253,9 @@ else
 fi
 
 # ────────────────────────────────────────────────
-# 6. Create virtual environment + sync dependencies
+# 8. Create virtual environment + sync dependencies
 # ────────────────────────────────────────────────
-echo -e "${YELLOW}6. Setting up Python virtual environment ...${NC}"
+echo -e "${YELLOW}8. Setting up Python virtual environment ...${NC}"
 
 if [ -d ".venv" ] && [ -f ".venv/bin/python" ] || [ -f ".venv/Scripts/python.exe" ]; then
     echo -e "${GREEN}✓ .venv already exists${NC}"
@@ -169,17 +274,17 @@ echo "Running uv sync ..."
 uv sync
 
 # ────────────────────────────────────────────────
-# 7. NLTK data
+# 9. NLTK data
 # ────────────────────────────────────────────────
-echo -e "${YELLOW}7. Downloading NLTK punkt_tab ...${NC}"
+echo -e "${YELLOW}9. Downloading NLTK punkt_tab ...${NC}"
 python -c "import nltk; nltk.download('punkt_tab', quiet=True)" && \
     echo -e "${GREEN}✓ NLTK data ready${NC}" || \
     echo -e "${RED}NLTK download failed${NC}"
 
 # ────────────────────────────────────────────────
-# 8. .env file reminder
+# 10. .env file reminder
 # ────────────────────────────────────────────────
-echo -e "${YELLOW}8. .env file${NC}"
+echo -e "${YELLOW}10. .env file${NC}"
 if [ -f ".env" ]; then
     echo -e "${GREEN}✓ .env already exists${NC}"
 else
@@ -198,9 +303,9 @@ EOF
 fi
 
 # ────────────────────────────────────────────────
-# 9. Database
+# 11. Database
 # ────────────────────────────────────────────────
-echo -e "${YELLOW}9. Checking/creating database 'aviai' ...${NC}"
+echo -e "${YELLOW}11. Checking/creating database 'aviai' ...${NC}"
 if psql -lqt | cut -d \| -f 1 | grep -qw "aviai"; then
     echo -e "${GREEN}✓ Database 'aviai' already exists${NC}"
 else
@@ -214,9 +319,9 @@ else
 fi
 
 # ────────────────────────────────────────────────
-# 10. Alembic migrations
+# 12. Alembic migrations
 # ────────────────────────────────────────────────
-echo -e "${YELLOW}10. Running Alembic migrations ...${NC}"
+echo -e "${YELLOW}12. Running Alembic migrations ...${NC}"
 if [ -f "alembic.ini" ] || [ -d "alembic" ]; then
     alembic upgrade head && echo -e "${GREEN}✓ Migrations applied${NC}" || {
         echo -e "${RED}Alembic failed — check alembic.ini and .env${NC}"
