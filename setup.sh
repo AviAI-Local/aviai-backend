@@ -295,7 +295,7 @@ DB_PASSWORD=your_password
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=aviai
-SECRET_KEY=change_me_to_a_very_long_random_string
+SECRET_KEY=change_me_to_the_correct_key
 ALGORITHM=HS256
 OLLAMA_MODEL_URL=http://localhost:11434
 EOF
