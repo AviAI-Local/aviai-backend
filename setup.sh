@@ -68,6 +68,12 @@ else
     }
 fi
 
+# Change into the repository directory
+if [ "$REPO_DIR" != "." ]; then
+    echo -e "${CYAN}Changing to ${REPO_DIR} directory ...${NC}"
+    cd "$REPO_DIR"
+fi
+
 # ────────────────────────────────────────────────
 # 2. VS Code
 # ────────────────────────────────────────────────
@@ -75,6 +81,10 @@ echo -e "${YELLOW}2. Checking VS Code (code) ...${NC}"
 if command -v code >/dev/null 2>&1; then
     CODE_VERSION=$(code --version 2>/dev/null | head -1 || echo "unknown")
     echo -e "${GREEN}✓ VS Code ${CODE_VERSION} found${NC}"
+elif [[ "$OSTYPE" == "darwin"* ]] && [ -d "/Applications/Visual Studio Code.app" ]; then
+    echo -e "${GREEN}✓ VS Code app found at /Applications/Visual Studio Code.app${NC}"
+    echo -e "${YELLOW}  'code' CLI not in PATH. To add it:${NC}"
+    echo "    Open VS Code → Cmd+Shift+P → 'Shell Command: Install code command in PATH'"
 else
     echo -e "${YELLOW}VS Code not found → attempting install ...${NC}"
     if [[ "$OSTYPE" == "darwin"* ]] && command -v brew >/dev/null 2>&1; then
@@ -291,7 +301,7 @@ else
     echo -e "${YELLOW}→ .env not found — creating template ...${NC}"
     cat > .env << 'EOF'
 DB_USER=postgres
-DB_PASSWORD=your_password
+DB_PASSWORD=
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=aviai
@@ -303,18 +313,47 @@ EOF
 fi
 
 # ────────────────────────────────────────────────
-# 11. Database
+# 11. Database setup (user + database)
 # ────────────────────────────────────────────────
-echo -e "${YELLOW}11. Checking/creating database 'aviai' ...${NC}"
-if psql -lqt | cut -d \| -f 1 | grep -qw "aviai"; then
-    echo -e "${GREEN}✓ Database 'aviai' already exists${NC}"
-else
-    echo -e "${YELLOW}Creating database aviai ...${NC}"
-    createdb aviai 2>/dev/null || sudo -u postgres createdb aviai || {
+echo -e "${YELLOW}11. Setting up PostgreSQL user and database ...${NC}"
+
+# Read credentials from env or .env file
+ENV_FILE=""
+if [ -f "env" ]; then
+    ENV_FILE="env"
+elif [ -f ".env" ]; then
+    ENV_FILE=".env"
+fi
+
+if [ -n "$ENV_FILE" ]; then
+    DB_USER=$(grep -E '^DB_USER=' "$ENV_FILE" | cut -d'=' -f2)
+    DB_NAME=$(grep -E '^DB_NAME=' "$ENV_FILE" | cut -d'=' -f2)
+    echo -e "${CYAN}Using ${ENV_FILE}: DB_USER=${DB_USER}, DB_NAME=${DB_NAME}${NC}"
+fi
+DB_USER=${DB_USER:-postgres}
+DB_NAME=${DB_NAME:-aviai}
+
+# Create DB_USER superuser if it doesn't exist
+# Use Unix socket (-h /tmp) for trust authentication on Homebrew PostgreSQL
+echo -e "${YELLOW}Creating PostgreSQL superuser '${DB_USER}' ...${NC}"
+createuser -h /tmp -s "${DB_USER}" 2>/dev/null && echo -e "${GREEN}✓ Role '${DB_USER}' created${NC}" || {
+    # Role might already exist, check it
+    # if psql -h /tmp -tAc "SELECT 1 FROM pg_roles WHERE rolname='${DB_USER}'" 2>/dev/null | grep -q 1; then
+    #     echo -e "${GREEN}✓ PostgreSQL role '${DB_USER}' already exists${NC}"
+    # else
+        echo -e "${RED}Failed to create ${DB_USER} role${NC}"
+        echo "Try manually: createuser -h /tmp -s ${DB_USER}"
+    fi
+}
+
+# # Create database using Unix socket
+# if psql -h /tmp -lqt 2>/dev/null | cut -d \| -f 1 | grep -qw "${DB_NAME}"; then
+#     echo -e "${GREEN}✓ Database '${DB_NAME}' already exists${NC}"
+# else
+    echo -e "${YELLOW}Creating database '${DB_NAME}' owned by '${DB_USER}' ...${NC}"
+    createdb -h /tmp -O "${DB_USER}" "${DB_NAME}" 2>/dev/null && echo -e "${GREEN}✓ Database '${DB_NAME}' created${NC}" || {
         echo -e "${RED}Failed to create database${NC}"
-        echo "Try manually:"
-        echo "  createdb aviai"
-        echo "  or  sudo -u postgres createdb aviai"
+        echo "Try manually: createdb -h /tmp -O ${DB_USER} ${DB_NAME}"
     }
 fi
 
