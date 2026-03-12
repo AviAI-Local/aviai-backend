@@ -4,7 +4,7 @@
 # Supports macOS (brew) + common Linux (apt/dnf/pacman)
 
 set -u   # treat unset variables as error
-set -e   # exit on error
+# set -e intentionally disabled so the script runs to completion even on errors
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -15,6 +15,64 @@ NC='\033[0m'  # No Color
 echo -e "${CYAN}=== Aviai project setup checker / installer helper ===${NC}"
 echo "Current time: $(date)"
 echo ""
+
+# ────────────────────────────────────────────────
+# 1. Git
+# ────────────────────────────────────────────────
+echo -e "${YELLOW}1. Checking Git ...${NC}"
+if command -v git >/dev/null 2>&1; then
+    GIT_VERSION=$(git --version | awk '{print $3}')
+    echo -e "${GREEN}✓ git ${GIT_VERSION} found${NC}"
+else
+    echo -e "${YELLOW}git not found → installing ...${NC}"
+    if [[ "$OSTYPE" == "darwin"* ]] && command -v brew >/dev/null 2>&1; then
+        brew install git
+    elif command -v apt-get >/dev/null 2>&1; then
+        sudo apt-get update -q && sudo apt-get install -y git
+    elif command -v dnf >/dev/null 2>&1; then
+        sudo dnf install -y git
+    elif command -v pacman >/dev/null 2>&1; then
+        sudo pacman -S --noconfirm git
+    else
+        echo -e "${RED}✗ Could not install git automatically${NC}"
+        echo "Please install git manually: https://git-scm.com/downloads"
+        exit 1
+    fi
+
+    if ! command -v git >/dev/null 2>&1; then
+        echo -e "${RED}Failed to install git${NC}"
+        exit 1
+    fi
+    echo -e "${GREEN}✓ git installed${NC}"
+fi
+
+# ────────────────────────────────────────────────
+# 1b. Clone repository
+# ────────────────────────────────────────────────
+REPO_URL="https://github.com/AviAI-Local/aviai-backend.git"
+REPO_DIR="aviai-backend"
+
+echo -e "${YELLOW}1b. Checking repository ...${NC}"
+if [ -d "${REPO_DIR}/.git" ]; then
+    echo -e "${GREEN}✓ Repository already exists at ./${REPO_DIR}${NC}"
+elif [ -d ".git" ] && git remote get-url origin 2>/dev/null | grep -q "aviai-backend"; then
+    echo -e "${GREEN}✓ Already inside the aviai-backend repository${NC}"
+    REPO_DIR="."
+else
+    echo "Cloning ${REPO_URL} ..."
+    git clone "${REPO_URL}" "${REPO_DIR}" && \
+        echo -e "${GREEN}✓ Repository cloned to ./${REPO_DIR}${NC}" || {
+        echo -e "${RED}✗ Failed to clone repository${NC}"
+        echo "Check your internet connection or access to: ${REPO_URL}"
+        exit 1
+    }
+fi
+
+# Change into the repository directory
+if [ "$REPO_DIR" != "." ]; then
+    echo -e "${CYAN}Changing to ${REPO_DIR} directory ...${NC}"
+    cd "$REPO_DIR"
+fi
 
 # ────────────────────────────────────────────────
 # 1. Python 3.12+
@@ -190,25 +248,66 @@ DB_PASSWORD=
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=aviai
-SECRET_KEY=change_me_to_the_correct_key
+SECRET_KEY="09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
 ALGORITHM=HS256
 OLLAMA_MODEL_URL=http://localhost:11434
 EOF
     echo -e "${CYAN}Please edit .env now (especially password, secret key)${NC}"
 fi
 
+# Load .env variables into the shell — parse manually to avoid CRLF issues on Windows
+while IFS='=' read -r key value; do
+    # Skip comments and blank lines
+    [[ "$key" =~ ^[[:space:]]*# ]] && continue
+    [[ -z "$key" ]] && continue
+    # Strip carriage return (\r) from key and value
+    key="${key//$'\r'/}"
+    value="${value//$'\r'/}"
+    key="${key// /}"   # strip spaces from key
+    # Only export valid shell variable names
+    [[ "$key" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] && export "$key=$value"
+done < .env
+
+# Provide defaults in case .env is missing keys
+DB_USER="${DB_USER:-postgres}"
+DB_PASSWORD="${DB_PASSWORD:-}"
+DB_HOST="${DB_HOST:-localhost}"
+DB_PORT="${DB_PORT:-5432}"
+DB_NAME="${DB_NAME:-aviai}"
+
 # ────────────────────────────────────────────────
-# 9. Database
+# 11. Database role + database
 # ────────────────────────────────────────────────
-echo -e "${YELLOW}9. Checking/creating database 'aviai' ...${NC}"
-if psql -lqt | cut -d \| -f 1 | grep -qw "aviai"; then
-    echo -e "${GREEN}✓ Database 'aviai' already exists${NC}"
+echo -e "${YELLOW}11. Checking/creating database '${DB_NAME}' ...${NC}"
+
+PG_SUPER="-h ${DB_HOST} -p ${DB_PORT} -U postgres"
+PG_OPTS="-h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER}"
+
+# Create the role if it doesn't exist (requires postgres superuser)
+if psql ${PG_SUPER} -tAc "SELECT 1 FROM pg_roles WHERE rolname='${DB_USER}'" 2>/dev/null | grep -q 1; then
+    echo -e "${GREEN}✓ Role '${DB_USER}' already exists${NC}"
 else
-    echo -e "${YELLOW}Creating database aviai ...${NC}"
-    createdb aviai 2>/dev/null || sudo -u postgres createdb aviai || {
-        echo -e "${RED}Failed to create database${NC}"
-        echo "Try manually: createdb -h /tmp -O ${DB_USER} ${DB_NAME}"
-    }
+    echo -e "${YELLOW}Creating role '${DB_USER}' ...${NC}"
+    if psql ${PG_SUPER} -c "CREATE ROLE \"${DB_USER}\" WITH LOGIN PASSWORD '${DB_PASSWORD}';" 2>/dev/null; then
+        echo -e "${GREEN}✓ Role '${DB_USER}' created${NC}"
+    else
+        echo -e "${RED}Failed to create role '${DB_USER}' — you may need to run manually:${NC}"
+        echo "  psql -h ${DB_HOST} -p ${DB_PORT} -U postgres -c \"CREATE ROLE ${DB_USER} WITH LOGIN PASSWORD 'yourpassword';\""
+    fi
+fi
+
+# Create the database if it doesn't exist
+if psql ${PG_SUPER} -lqt 2>/dev/null | cut -d \| -f 1 | grep -qw "${DB_NAME}"; then
+    echo -e "${GREEN}✓ Database '${DB_NAME}' already exists${NC}"
+else
+    echo -e "${YELLOW}Creating database '${DB_NAME}' ...${NC}"
+    if psql ${PG_SUPER} -c "CREATE DATABASE \"${DB_NAME}\" OWNER \"${DB_USER}\";" 2>/dev/null; then
+        echo -e "${GREEN}✓ Database '${DB_NAME}' created${NC}"
+    else
+        echo -e "${RED}Failed to create database '${DB_NAME}'${NC}"
+        echo "Try manually:"
+        echo "  psql -h ${DB_HOST} -p ${DB_PORT} -U postgres -c \"CREATE DATABASE ${DB_NAME} OWNER ${DB_USER};\""
+    fi
 fi
 
 # ────────────────────────────────────────────────
@@ -216,7 +315,7 @@ fi
 # ────────────────────────────────────────────────
 echo -e "${YELLOW}12. Running Alembic migrations ...${NC}"
 if [ -f "alembic.ini" ] || [ -d "alembic" ]; then
-    alembic upgrade head && echo -e "${GREEN}✓ Migrations applied${NC}" || {
+    alembic upgrade heads && echo -e "${GREEN}✓ Migrations applied${NC}" || {
         echo -e "${RED}Alembic failed — check alembic.ini and .env${NC}"
     }
 else
@@ -239,4 +338,4 @@ echo "  • Make sure Ollama is running + desired model is pulled"
 echo "  • Start PostgreSQL if not running"
 echo ""
 
-read
+read -rp "Press Enter to close..."
