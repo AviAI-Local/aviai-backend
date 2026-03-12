@@ -17,112 +17,7 @@ echo "Current time: $(date)"
 echo ""
 
 # ────────────────────────────────────────────────
-# 1. Git
-# ────────────────────────────────────────────────
-echo -e "${YELLOW}1. Checking Git ...${NC}"
-if command -v git >/dev/null 2>&1; then
-    GIT_VERSION=$(git --version | awk '{print $3}')
-    echo -e "${GREEN}✓ git ${GIT_VERSION} found${NC}"
-else
-    echo -e "${YELLOW}git not found → installing ...${NC}"
-    if [[ "$OSTYPE" == "darwin"* ]] && command -v brew >/dev/null 2>&1; then
-        brew install git
-    elif command -v apt-get >/dev/null 2>&1; then
-        sudo apt-get update -q && sudo apt-get install -y git
-    elif command -v dnf >/dev/null 2>&1; then
-        sudo dnf install -y git
-    elif command -v pacman >/dev/null 2>&1; then
-        sudo pacman -S --noconfirm git
-    else
-        echo -e "${RED}✗ Could not install git automatically${NC}"
-        echo "Please install git manually: https://git-scm.com/downloads"
-        exit 1
-    fi
-
-    if ! command -v git >/dev/null 2>&1; then
-        echo -e "${RED}Failed to install git${NC}"
-        exit 1
-    fi
-    echo -e "${GREEN}✓ git installed${NC}"
-fi
-
-# ────────────────────────────────────────────────
-# 1b. Clone repository
-# ────────────────────────────────────────────────
-REPO_URL="https://github.com/AviAI-Local/aviai-backend.git"
-REPO_DIR="aviai-backend"
-
-echo -e "${YELLOW}1b. Checking repository ...${NC}"
-if [ -d "${REPO_DIR}/.git" ]; then
-    echo -e "${GREEN}✓ Repository already exists at ./${REPO_DIR}${NC}"
-elif [ -d ".git" ] && git remote get-url origin 2>/dev/null | grep -q "aviai-backend"; then
-    echo -e "${GREEN}✓ Already inside the aviai-backend repository${NC}"
-    REPO_DIR="."
-else
-    echo "Cloning ${REPO_URL} ..."
-    git clone "${REPO_URL}" "${REPO_DIR}" && \
-        echo -e "${GREEN}✓ Repository cloned to ./${REPO_DIR}${NC}" || {
-        echo -e "${RED}✗ Failed to clone repository${NC}"
-        echo "Check your internet connection or access to: ${REPO_URL}"
-        exit 1
-    }
-fi
-
-# ────────────────────────────────────────────────
-# 2. VS Code
-# ────────────────────────────────────────────────
-echo -e "${YELLOW}2. Checking VS Code (code) ...${NC}"
-if command -v code >/dev/null 2>&1; then
-    CODE_VERSION=$(code --version 2>/dev/null | head -1 || echo "unknown")
-    echo -e "${GREEN}✓ VS Code ${CODE_VERSION} found${NC}"
-else
-    echo -e "${YELLOW}VS Code not found → attempting install ...${NC}"
-    if [[ "$OSTYPE" == "darwin"* ]] && command -v brew >/dev/null 2>&1; then
-        brew install --cask visual-studio-code
-    elif command -v apt-get >/dev/null 2>&1; then
-        # Add Microsoft's apt repository and install
-        sudo apt-get install -y wget gpg apt-transport-https
-        wget -qO- https://packages.microsoft.com/keys/microsoft.asc \
-            | gpg --dearmor | sudo tee /usr/share/keyrings/packages.microsoft.gpg >/dev/null
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/packages.microsoft.gpg] \
-https://packages.microsoft.com/repos/code stable main" \
-            | sudo tee /etc/apt/sources.list.d/vscode.list >/dev/null
-        sudo apt-get update -q && sudo apt-get install -y code
-    elif command -v dnf >/dev/null 2>&1; then
-        sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-        sudo tee /etc/yum.repos.d/vscode.repo >/dev/null <<'REPO'
-[code]
-name=Visual Studio Code
-baseurl=https://packages.microsoft.com/yumrepos/vscode
-enabled=1
-gpgcheck=1
-gpgkey=https://packages.microsoft.com/keys/microsoft.asc
-REPO
-        sudo dnf install -y code
-    elif command -v pacman >/dev/null 2>&1; then
-        # code is in the AUR; try yay/paru if available
-        if command -v yay >/dev/null 2>&1; then
-            yay -S --noconfirm visual-studio-code-bin
-        elif command -v paru >/dev/null 2>&1; then
-            paru -S --noconfirm visual-studio-code-bin
-        else
-            echo -e "${YELLOW}Arch: install VS Code via AUR (yay -S visual-studio-code-bin)${NC}"
-        fi
-    else
-        echo -e "${YELLOW}Could not install VS Code automatically${NC}"
-        echo "Please download it from: https://code.visualstudio.com/download"
-    fi
-
-    if command -v code >/dev/null 2>&1; then
-        echo -e "${GREEN}✓ VS Code installed${NC}"
-    else
-        echo -e "${YELLOW}⚠ VS Code not detected in PATH after install attempt${NC}"
-        echo "  You may need to restart your terminal or install manually."
-    fi
-fi
-
-# ────────────────────────────────────────────────
-# 3. Python 3.12+
+# 1. Python 3.12+
 # ────────────────────────────────────────────────
 echo -e "${YELLOW}3. Checking Python 3.12+ ...${NC}"
 
@@ -291,7 +186,7 @@ else
     echo -e "${YELLOW}→ .env not found — creating template ...${NC}"
     cat > .env << 'EOF'
 DB_USER=postgres
-DB_PASSWORD=your_password
+DB_PASSWORD=
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=aviai
@@ -303,18 +198,16 @@ EOF
 fi
 
 # ────────────────────────────────────────────────
-# 11. Database
+# 9. Database
 # ────────────────────────────────────────────────
-echo -e "${YELLOW}11. Checking/creating database 'aviai' ...${NC}"
+echo -e "${YELLOW}9. Checking/creating database 'aviai' ...${NC}"
 if psql -lqt | cut -d \| -f 1 | grep -qw "aviai"; then
     echo -e "${GREEN}✓ Database 'aviai' already exists${NC}"
 else
     echo -e "${YELLOW}Creating database aviai ...${NC}"
     createdb aviai 2>/dev/null || sudo -u postgres createdb aviai || {
         echo -e "${RED}Failed to create database${NC}"
-        echo "Try manually:"
-        echo "  createdb aviai"
-        echo "  or  sudo -u postgres createdb aviai"
+        echo "Try manually: createdb -h /tmp -O ${DB_USER} ${DB_NAME}"
     }
 fi
 
