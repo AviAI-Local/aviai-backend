@@ -240,14 +240,20 @@ python -c "import nltk; nltk.download('punkt_tab', quiet=True)" && \
 echo -e "${YELLOW}10. .env file${NC}"
 if [ -f ".env" ]; then
     echo -e "${GREEN}✓ .env already exists${NC}"
+    # Check if DB_PASSWORD is empty and update it
+    if grep -q "^DB_PASSWORD=$" .env; then
+        echo -e "${YELLOW}→ DB_PASSWORD is empty, setting default password...${NC}"
+        sed -i.bak "s/^DB_PASSWORD=$/DB_PASSWORD=aviai/" .env && rm -f .env.bak
+        echo -e "${GREEN}✓ DB_PASSWORD set to: aviai${NC}"
+    fi
 else
     echo -e "${YELLOW}→ .env not found — creating template ...${NC}"
     cat > .env << 'EOF'
-DB_USER=postgres
-DB_PASSWORD=
+DB_USER=postgres1
+DB_PASSWORD=aviai
 DB_HOST=localhost
 DB_PORT=5432
-DB_NAME=aviai
+DB_NAME=aviai1
 SECRET_KEY="09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
 ALGORITHM=HS256
 OLLAMA_MODEL_URL=http://localhost:11434
@@ -269,11 +275,11 @@ while IFS='=' read -r key value; do
 done < .env
 
 # Provide defaults in case .env is missing keys
-DB_USER="${DB_USER:-postgres}"
+DB_USER="${DB_USER:-postgres1}"
 DB_PASSWORD="${DB_PASSWORD:-}"
 DB_HOST="${DB_HOST:-localhost}"
 DB_PORT="${DB_PORT:-5432}"
-DB_NAME="${DB_NAME:-aviai}"
+DB_NAME="${DB_NAME:-aviai1}"
 
 # ────────────────────────────────────────────────
 # 11. Database role + database
@@ -284,12 +290,25 @@ PG_SUPER="-h ${DB_HOST} -p ${DB_PORT} -U postgres"
 PG_OPTS="-h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER}"
 
 # Create the role if it doesn't exist (requires postgres superuser)
-if psql ${PG_SUPER} -tAc "SELECT 1 FROM pg_roles WHERE rolname='${DB_USER}'" 2>/dev/null | grep -q 1; then
+ROLE_EXISTS=$(psql ${PG_SUPER} -tAc "SELECT 1 FROM pg_roles WHERE rolname='${DB_USER}'" 2>/dev/null)
+if [ "$ROLE_EXISTS" = "1" ]; then
     echo -e "${GREEN}✓ Role '${DB_USER}' already exists${NC}"
+    # Update password to match .env
+    echo -e "${YELLOW}Updating password for role '${DB_USER}' ...${NC}"
+    if psql ${PG_SUPER} -c "ALTER ROLE \"${DB_USER}\" WITH PASSWORD '${DB_PASSWORD}';" 2>/dev/null; then
+        echo -e "${GREEN}✓ Password updated${NC}"
+    else
+        echo -e "${YELLOW}Could not update password — continuing anyway${NC}"
+    fi
 else
     echo -e "${YELLOW}Creating role '${DB_USER}' ...${NC}"
-    if psql ${PG_SUPER} -c "CREATE ROLE \"${DB_USER}\" WITH LOGIN PASSWORD '${DB_PASSWORD}';" 2>/dev/null; then
+    CREATE_ROLE_RESULT=$(psql ${PG_SUPER} -c "CREATE ROLE \"${DB_USER}\" WITH LOGIN PASSWORD '${DB_PASSWORD}';" 2>&1)
+    if [ $? -eq 0 ]; then
         echo -e "${GREEN}✓ Role '${DB_USER}' created${NC}"
+    elif echo "$CREATE_ROLE_RESULT" | grep -q "already exists"; then
+        echo -e "${GREEN}✓ Role '${DB_USER}' already exists${NC}"
+        # Update password to match .env
+        psql ${PG_SUPER} -c "ALTER ROLE \"${DB_USER}\" WITH PASSWORD '${DB_PASSWORD}';" 2>/dev/null
     else
         echo -e "${RED}Failed to create role '${DB_USER}' — you may need to run manually:${NC}"
         echo "  psql -h ${DB_HOST} -p ${DB_PORT} -U postgres -c \"CREATE ROLE ${DB_USER} WITH LOGIN PASSWORD 'yourpassword';\""
@@ -297,12 +316,16 @@ else
 fi
 
 # Create the database if it doesn't exist
-if psql ${PG_SUPER} -lqt 2>/dev/null | cut -d \| -f 1 | grep -qw "${DB_NAME}"; then
+DB_EXISTS=$(psql ${PG_SUPER} -tAc "SELECT 1 FROM pg_database WHERE datname='${DB_NAME}'" 2>/dev/null)
+if [ "$DB_EXISTS" = "1" ]; then
     echo -e "${GREEN}✓ Database '${DB_NAME}' already exists${NC}"
 else
     echo -e "${YELLOW}Creating database '${DB_NAME}' ...${NC}"
-    if psql ${PG_SUPER} -c "CREATE DATABASE \"${DB_NAME}\" OWNER \"${DB_USER}\";" 2>/dev/null; then
+    CREATE_RESULT=$(psql ${PG_SUPER} -c "CREATE DATABASE \"${DB_NAME}\" OWNER \"${DB_USER}\";" 2>&1)
+    if [ $? -eq 0 ]; then
         echo -e "${GREEN}✓ Database '${DB_NAME}' created${NC}"
+    elif echo "$CREATE_RESULT" | grep -q "already exists"; then
+        echo -e "${GREEN}✓ Database '${DB_NAME}' already exists${NC}"
     else
         echo -e "${RED}Failed to create database '${DB_NAME}'${NC}"
         echo "Try manually:"
@@ -323,19 +346,22 @@ else
 fi
 
 # ────────────────────────────────────────────────
+# 13. Start the server
+# ────────────────────────────────────────────────
+echo -e "${YELLOW}13. Starting the server ...${NC}"
+cd src
+echo -e "${GREEN}Server starting on http://localhost:8000${NC}"
+echo -e "${CYAN}Press Ctrl+C to stop the server${NC}"
+uvicorn main:app --reload --port 8000
+
+# ────────────────────────────────────────────────
 # Final instructions
 # ────────────────────────────────────────────────
 echo ""
 echo -e "${GREEN}=== Setup checks finished ===${NC}"
-echo "To start the server:"
-echo "  source .venv/bin/activate     # or .venv\\Scripts\\activate on Windows"
-echo "  cd src"
-echo "  uvicorn main:app --reload --port 8000"
 echo ""
 echo -e "${CYAN}Don't forget to:${NC}"
 echo "  • Edit .env (especially passwords & keys)"
 echo "  • Make sure Ollama is running + desired model is pulled"
 echo "  • Start PostgreSQL if not running"
 echo ""
-
-read -rp "Press Enter to close..."
