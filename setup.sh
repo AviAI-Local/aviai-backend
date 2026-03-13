@@ -248,17 +248,30 @@ if [ -f ".env" ]; then
     fi
 else
     echo -e "${YELLOW}→ .env not found — creating template ...${NC}"
-    cat > .env << 'EOF'
+
+    # Prompt user for SECRET_KEY
+    echo -e "${CYAN}Enter your SECRET_KEY (or press Enter to generate one automatically):${NC}"
+    read -r USER_SECRET_KEY
+
+    if [ -z "$USER_SECRET_KEY" ]; then
+        # Generate a random secret key
+        USER_SECRET_KEY=$(openssl rand -hex 32 2>/dev/null || python3 -c "import secrets; print(secrets.token_hex(32))")
+        echo -e "${GREEN}✓ Generated SECRET_KEY${NC}"
+    else
+        echo -e "${GREEN}✓ Using provided SECRET_KEY${NC}"
+    fi
+
+    cat > .env << EOF
 DB_USER=postgres1
 DB_PASSWORD=aviai
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=aviai1
-SECRET_KEY="09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+SECRET_KEY="${USER_SECRET_KEY}"
 ALGORITHM=HS256
 OLLAMA_MODEL_URL=http://localhost:11434
 EOF
-    echo -e "${CYAN}Please edit .env now (especially password, secret key)${NC}"
+    echo -e "${GREEN}✓ .env file created${NC}"
 fi
 
 # Load .env variables into the shell — parse manually to avoid CRLF issues on Windows
