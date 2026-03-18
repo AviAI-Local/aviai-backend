@@ -262,11 +262,11 @@ else
     fi
 
     cat > .env << EOF
-DB_USER=postgres1
+DB_USER=postgres
 DB_PASSWORD=aviai
 DB_HOST=localhost
 DB_PORT=5432
-DB_NAME=aviai1
+DB_NAME=aviai_db
 SECRET_KEY="${USER_SECRET_KEY}"
 ALGORITHM=HS256
 OLLAMA_MODEL_URL=http://localhost:11434
@@ -288,11 +288,11 @@ while IFS='=' read -r key value; do
 done < .env
 
 # Provide defaults in case .env is missing keys
-DB_USER="${DB_USER:-postgres1}"
+DB_USER="${DB_USER:-postgres}"
 DB_PASSWORD="${DB_PASSWORD:-}"
 DB_HOST="${DB_HOST:-localhost}"
 DB_PORT="${DB_PORT:-5432}"
-DB_NAME="${DB_NAME:-aviai1}"
+DB_NAME="${DB_NAME:-aviai}"
 
 # ────────────────────────────────────────────────
 # 11. Database role + database
