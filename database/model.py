@@ -14,11 +14,15 @@ def get_vietnam_timezone():
 def get_vietnam_time():
     """Get current time in Vietnam timezone."""
     vietnam_tz = get_vietnam_timezone()
-    return datetime.datetime.now(vietnam_tz)
+    return datetime.now(vietnam_tz)
 
 class RoleEnum(enum.Enum):
     ADMIN = "admin"
     STUDENT = "student"
+
+class GenderEnum(enum.Enum):
+    MALE = "male"
+    FEMALE = "female"
 
 class Account(Base):
     __tablename__ = "account"
@@ -55,7 +59,7 @@ class Scenario(Base):
     created_at = Column(DateTime, default=get_vietnam_time)
     times_chosen = Column(Integer, default=0)
     created_by = Column(String, ForeignKey("account.account_id", ondelete="RESTRICT"), nullable=False)
-    prompt_id = Column(String, ForeignKey("prompt_template.template_id", ondelete="SET NULL"), nullable=True)
+    prompt_id = Column(String, ForeignKey("prompt_template.template_id", ondelete="CASCADE"), nullable=True)
     scenario_text = Column(String)
     category = Column(String)
     # relationship ONE-TO-MANY with other tables
@@ -63,7 +67,7 @@ class Scenario(Base):
 
     # relationship MANY-TO-ONE with other tables
     creator = relationship("Account", back_populates="created_scenarios", foreign_keys=[created_by], passive_deletes=True)
-    prompt_template = relationship("PromptTemplate", backref="scenarios", foreign_keys=[prompt_id])
+    prompt_template = relationship("PromptTemplate", backref="scenarios", foreign_keys=[prompt_id], passive_deletes=True)
     
     def to_dict(self):
         return {

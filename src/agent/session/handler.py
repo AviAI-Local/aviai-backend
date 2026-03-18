@@ -76,9 +76,10 @@ class ConversationHandler:
             )
             # console.print(f"[green]✓ Using LM Studio with model: {model}[/green]")
         else:  # default to ollama
-            model = os.environ.get("OLLAMA_MODEL_NAME")
+            model = os.environ.get("OLLAMA_MODEL_NAME", "gemma3")
             base_url = os.environ.get("OLLAMA_MODEL_URL", "http://localhost:11434")
             llm = ChatOllama(model=model, base_url=base_url, format="json")
+            console.print(f"[green]Using Ollama model: {model}[/green]")
             # console.print(f"[green]✓ Using Ollama with model: {model}[/green]")
         
         chain = prompt | llm

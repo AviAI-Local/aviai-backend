@@ -1,0 +1,20 @@
+{
+    "conversation_history_id": "124596db-0518-4815-a175-091dd3f42bbb",
+    "session_id": "1cc5a578-c77a-4c7f-b8b2-88a40491c3f9",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1773850498.751671,
+            "datetime": "2026-03-18T23:14:58.751671+07:00",
+            "user_query": "Hello, can you introduce yourself?",
+            "response": "I'm Linh. I'm a flight engineer with VAECO.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 2.53,
+            "tts_time": 0.89
+        }
+    ],
+    "timestamp": "2026-03-18T23:14:48.423425+07:00"
+}

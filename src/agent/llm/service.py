@@ -45,6 +45,7 @@ class LLMService:
             content = content.replace('\u201c', '"').replace('\u201d', '"')
             content = content.replace('\u2018', "'").replace('\u2019', "'")
             content = content.replace('\u2026', '...')
+            content = content.replace("'", "'")  # Replace curly apostrophe
 
             # 3. Fix newlines inside JSON strings (invalid JSON)
             # Replace literal newlines with spaces, preserving escaped \n
@@ -56,11 +57,16 @@ class LLMService:
             if start == -1:
                 raise ValueError("No JSON object found")
 
-            # 5. Parse only the first JSON object, ignoring trailing garbage
-            decoder = json.JSONDecoder(strict=False)
-            data, _ = decoder.raw_decode(content, start)
+            # 5. Ensure JSON has closing brace (fix truncated responses)
+            json_content = content[start:]
+            if json_content.count('{') > json_content.count('}'):
+                json_content = json_content.rstrip() + '}'
 
-            # 6. Validate and return
+            # 6. Parse only the first JSON object, ignoring trailing garbage
+            decoder = json.JSONDecoder(strict=False)
+            data, _ = decoder.raw_decode(json_content, 0)
+
+            # 7. Validate and return
             if not isinstance(data, dict) or "response" not in data:
                 raise ValueError("Invalid JSON structure")
 
@@ -76,19 +82,25 @@ class LLMService:
             try:
                 content = response.content if hasattr(response, "content") else str(response)
 
-                # Extract response field
+                # Extract all three fields
                 resp_match = re.search(r'"response"\s*:\s*"((?:[^"\\]|\\.)*)"', content, re.DOTALL)
+                voice_match = re.search(r'"voice_instructions"\s*:\s*"((?:[^"\\]|\\.)*)"', content, re.DOTALL)
+                avatar_match = re.search(r'"avatar_instructions"\s*:\s*"((?:[^"\\]|\\.)*)"', content, re.DOTALL)
+
                 if resp_match:
                     resp_text = resp_match.group(1)
                     # Clean up escape sequences
                     resp_text = resp_text.replace('\\n', ' ').replace('\\r', ' ')
                     resp_text = re.sub(r'\s+', ' ', resp_text).strip()
 
+                    voice_text = voice_match.group(1) if voice_match else "neutral"
+                    avatar_text = avatar_match.group(1) if avatar_match else "default"
+
                     console.log(f"[green]Fallback extraction successful[/green]")
                     return LLMResponse(
                         response=resp_text,
-                        avatar_instructions="neutral",
-                        voice_instructions="neutral"
+                        avatar_instructions=avatar_text,
+                        voice_instructions=voice_text
                     )
             except Exception as fallback_error:
                 console.log(f"[red]Fallback failed: {fallback_error}[/red]")

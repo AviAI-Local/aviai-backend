@@ -1,8 +1,9 @@
 from typing import Dict, List
 import uuid
+from fastapi import HTTPException
 from rich.console import Console
 
-from database.model import PromptTemplate, Session as DBSession
+from database.model import Account, PromptTemplate, Session as DBSession
 
 console = Console()
 
@@ -74,6 +75,15 @@ class PromptService:
         return self.db.query(PromptTemplate).filter(
             PromptTemplate.category == category
         ).all()
+    
+    def get_prompt_by_account(self, account_id: str) -> List[PromptTemplate]:
+        account = self.db.query(Account).filter(Account.account_id == account_id).first()
+        if not account:
+            raise HTTPException(status_code=404, detail=f"Account with ID {account_id} does not exist")
+        
+        return self.db.query(PromptTemplate).filter(PromptTemplate.created_by == account_id)
+
+
 
     
     

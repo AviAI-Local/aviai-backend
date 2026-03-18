@@ -1,0 +1,20 @@
+{
+    "conversation_history_id": "3c974f07-4fc6-4a9a-bfa2-018d0ac105c1",
+    "session_id": "ecfb91b1-c897-404d-9c7a-a187e65399ac",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1773850516.828903,
+            "datetime": "2026-03-18T23:15:16.828903+07:00",
+            "user_query": "Hello, I have a headache. How can I know what medicine should I take?",
+            "response": "A headache can have many causes. For a mild headache, you can try rest, hydration, and over-the-counter pain relievers like acetaminophen or ibuprofen. However, if the headache is severe, persistent, or accompanied by other symptoms like fever or stiff neck, you should seek immediate medical attention. I need more information to assess this properly.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a professional, calm, and measured tone",
+            "avatar_instructions": "default",
+            "llm_time": 1.95,
+            "tts_time": 1.66
+        }
+    ],
+    "timestamp": "2026-03-18T23:15:06.351630+07:00"
+}

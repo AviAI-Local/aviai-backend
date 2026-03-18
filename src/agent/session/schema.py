@@ -5,6 +5,7 @@ from agent.history.schema import ConversationHistoryResponse, conversation_histo
 class SessionResponse(BaseModel):
     session_id: str
     scenario_name: str
+    scenario_id: str
     account_id: str
     created_at: str
     recording: Optional[str] = None
