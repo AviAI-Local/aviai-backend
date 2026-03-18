@@ -22,14 +22,12 @@ class ScenarioService:
     def validate_scenario_data(self, data: Dict) -> None:
         required = [
             "scenario_name",
-            "scenario_summary",
             "scenario_text",
             "created_by",
             "personal_characteristics",
             "attitude_in_interview",
-            "character_name",
-            "character_gender",
-            "industry",
+            "category",
+            "prompt_id"
         ]
 
         for field in required:
@@ -49,25 +47,6 @@ class ScenarioService:
                 detail="scenario_name must be at least 3 characters",
             )
 
-        if len(data["scenario_summary"]) < 10:
-            raise HTTPException(
-                status_code=400,
-                detail="scenario_summary must be at least 10 characters",
-            )
-
-        if len(data["character_name"]) < 2:
-            raise HTTPException(
-                status_code=400,
-                detail="character_name must be at least 2 characters",
-            )
-
-        gender = str(data["character_gender"]).lower().strip()
-        if gender not in ["male", "female", "other"]:
-            raise HTTPException(
-                status_code=400,
-                detail="character_gender must be 'male', 'female' or 'other'",
-            )
-
         creator = (
             self.db.query(Account)
             .filter(Account.account_id == data["created_by"])
@@ -83,16 +62,14 @@ class ScenarioService:
         scenario = Scenario(
             scenario_id=str(uuid.uuid4()),
             scenario_name=data["scenario_name"],
-            scenario_summary=data["scenario_summary"],
             scenario_text=data["scenario_text"],
             created_by=data["created_by"],
             created_at=get_vietnam_time(),
             personal_characteristics=data["personal_characteristics"],
             attitude_in_interview=data["attitude_in_interview"],
             rule_interview=data.get("rule_interview", ""),
-            character_name=data["character_name"],
-            character_gender=data["character_gender"].upper(),
-            industry=data["industry"],
+            category=data["category"],
+            prompt_id=data["prompt_id"]
         )
 
         self.db.add(scenario)
@@ -197,14 +174,11 @@ class ScenarioService:
 
         allowed = {
             "scenario_name",
-            "scenario_summary",
             "scenario_text",
             "personal_characteristics",
             "attitude_in_interview",
             "rule_interview",
-            "character_name",
-            "character_gender",
-            "industry",
+            "category",
             "times_chosen",
         }
 

@@ -5,13 +5,10 @@ from pydantic import BaseModel
 class ScenarioResponse(BaseModel):
     scenario_id: str
     scenario_name: str
-    scenario_summary: str
     personal_characteristics: str
     attitude_in_interview: str
     rule_interview: Optional[str] = ""
-    character_name: str
-    character_gender: str
-    industry: str
+    category: str
     scenario_text: str
     created_by: str
     created_at: datetime
@@ -24,7 +21,6 @@ class ScenarioResponse(BaseModel):
 scenario_example = {
     "scenario_id": "123e4567-e89b-12d3-a456-426614174000",
     "scenario_name": "Accident Interview",
-    "scenario_summary": "A scenario for interview questions.",
     "personal_characteristics": "You are Linh, a 38-year-old flight engineer from Hanoi living in Ho Chi Minh City. You have over 15 years of working as a flight engineer, and you are relatively satisfied with your job. You are a calm and gentle person. You are currently working as a flight engineer at VAECO with a company workforce of over 2800 people. You should create any other relevant information such as marital status, life, etc. in a way that is relevant to the character and scenario. When asked, you should be prepared to share your feelings, experiences, thoughts, and reactions to the chosen scenario.",
     "attitude_in_interview": "You are quite cooperative. You can restrain and control your emotions well. You should not invent anything you didn't actually see or hear during the incident.",
     "rule_interview": "If asked about the pilots' conversation, you can summarize the important lines rather than quoting them verbatim. Remember that this is an internal investigation into the accident. Therefore, it is important to make sure that your language and choice of words are appropriate for the character. Give direct answers that build on your personal characteristics. For example, if asked \"What did you do today?\" give a direct answer, shortly describing the activity in one sentence. When you've answered a question, don't ask us if we have any more questions or if you can assist because those are unrealistic responses. Remember to just wait for us to ask more and lead the conversation. At the same time, if the questions are not structured in a cognitive interview, your answers should be brief and not related to the incident, for example: if the interviewer doesn't introduce themselves and the purpose of the interview, you'll be reluctant to answer. Another example: if the tone of the question is accusatory, you'll be reluctant to answer.",
@@ -39,7 +35,6 @@ scenario_example = {
 
 create_request_example = {
     "scenario_name": "Accident Interview",
-    "scenario_summary": "A scenario for interview questions.",
     "personal_characteristics": "You are Linh, a 38-year-old flight engineer from Hanoi living in Ho Chi Minh City. You have over 15 years of working as a flight engineer, and you are relatively satisfied with your job. You are a calm and gentle person. You are currently working as a flight engineer at VAECO with a company workforce of over 2800 people. You should create any other relevant information such as marital status, life, etc. in a way that is relevant to the character and scenario. When asked, you should be prepared to share your feelings, experiences, thoughts, and reactions to the chosen scenario.",
     "attitude_in_interview": "You are quite cooperative. You can restrain and control your emotions well. You should not invent anything you didn't actually see or hear during the incident.",
     "rule_interview": "If asked about the pilots' conversation, you can summarize the important lines rather than quoting them verbatim. Remember that this is an internal investigation into the accident. Therefore, it is important to make sure that your language and choice of words are appropriate for the character. Give direct answers that build on your personal characteristics. For example, if asked \"What did you do today?\" give a direct answer, shortly describing the activity in one sentence. When you've answered a question, don't ask us if we have any more questions or if you can assist because those are unrealistic responses. Remember to just wait for us to ask more and lead the conversation. At the same time, if the questions are not structured in a cognitive interview, your answers should be brief and not related to the incident, for example: if the interviewer doesn't introduce themselves and the purpose of the interview, you'll be reluctant to answer. Another example: if the tone of the question is accusatory, you'll be reluctant to answer.",

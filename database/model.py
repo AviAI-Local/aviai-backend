@@ -53,40 +53,36 @@ class Scenario(Base):
     __tablename__ = "scenario"
     scenario_id = Column(String, primary_key=True, index=True)
     scenario_name = Column(String)
-    scenario_summary = Column(Text)
     personal_characteristics = Column(Text)
     attitude_in_interview = Column(Text)
     rule_interview = Column(Text)
-    character_name = Column(String)
-    character_gender = Column(Enum(GenderEnum))
     created_at = Column(DateTime, default=get_vietnam_time)
     times_chosen = Column(Integer, default=0)
-    created_by = Column(String, ForeignKey("account.account_id", ondelete="RESTRICT"), nullable=False)
-    industry = Column(String)
-    scenario_text = Column(String)  
+    created_by = Column(String, ForeignKey("account.account_id", ondelete="RESTRICT"), nullable=False) 
     is_deleted = Column(Boolean, default=False, nullable=False, index=True)
- 
+    prompt_id = Column(String, ForeignKey("prompt_template.template_id", ondelete="CASCADE"), nullable=True)
+    scenario_text = Column(String)
+    category = Column(String)
     # relationship ONE-TO-MANY with other tables
     sessions = relationship("Session", back_populates="scenario", passive_deletes=True)
 
     # relationship MANY-TO-ONE with other tables
     creator = relationship("Account", back_populates="created_scenarios", foreign_keys=[created_by], passive_deletes=True)
+    prompt_template = relationship("PromptTemplate", backref="scenarios", foreign_keys=[prompt_id], passive_deletes=True)
     
     def to_dict(self):
         return {
             "scenario_id": self.scenario_id,
             "scenario_name": self.scenario_name,
-            "scenario_summary": self.scenario_summary,
             "personal_characteristics": self.personal_characteristics,
             "attitude_in_interview": self.attitude_in_interview,
             "rule_interview": self.rule_interview,
-            "character_name": self.character_name,
-            "character_gender": self.character_gender.value if self.character_gender else None,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "times_chosen": self.times_chosen,
             "created_by": self.created_by,
-            "industry": self.industry,
-            "scenario_text": self.scenario_text  
+            "prompt_id": self.prompt_id,
+            "scenario_text": self.scenario_text,
+            "category": self.category
         }
     
 class Session(Base):
@@ -290,3 +286,31 @@ class CIPerformanceEvaluation(Base):
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "updated_at": self.updated_at.isoformat() if self.updated_at else None
         }
+    
+class PromptTemplate(Base):
+    __tablename__ = "prompt_template"
+
+    template_id = Column(String, primary_key=True, index=True)
+    template_name = Column(String, nullable=False, unique=True)
+    category = Column(String, nullable=True, default="general")  # "cognitive_interview", "general", "specific"
+    content = Column(Text, nullable=False)
+
+    # Audit fields
+    created_by = Column(String, ForeignKey("account.account_id", ondelete="RESTRICT"), nullable=False)
+    created_at = Column(DateTime, default=get_vietnam_time)
+    updated_at = Column(DateTime, default=get_vietnam_time, onupdate=get_vietnam_time)
+
+    # Relationships
+    # Note: scenarios relationship is auto-created via backref in Scenario model
+    creator = relationship("Account", backref="created_prompts", foreign_keys=[created_by])
+
+    def to_dict(self):
+        return {
+            "template_id": self.template_id,
+            "template_name": self.template_name,
+            "category": self.category,
+            "content": self.content,
+            "created_by": self.created_by,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None
+        }    
