@@ -1,0 +1,53 @@
+{
+    "conversation_history_id": "9dda9a72-0cbf-4721-b1ba-bac270580781",
+    "session_id": "d20ff1f1-39fb-4bf3-8498-179da4fcda5a",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1774100021.520992,
+            "datetime": "2026-03-21T20:33:41.520992+07:00",
+            "user_query": "Act happily.",
+            "response": "That's good to hear we're working through this together. I'm relieved that everything is progressing well.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with enthusiasm and confidence, clear and upbeat tone",
+            "avatar_instructions": "happy",
+            "llm_time": 4.34,
+            "tts_time": 3.31
+        },
+        {
+            "timestamp": 1774100038.217088,
+            "datetime": "2026-03-21T20:33:58.217088+07:00",
+            "user_query": "Act angry.",
+            "response": "I told you, I was focused on the engine diagnostics! It's frustrating to have to repeat myself.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with clear frustration and irritation, emphasizing key points with sharp intonation",
+            "avatar_instructions": "angry",
+            "llm_time": 3.87,
+            "tts_time": 2.38
+        },
+        {
+            "timestamp": 1774100055.714799,
+            "datetime": "2026-03-21T20:34:15.714799+07:00",
+            "user_query": "at Sam.",
+            "response": "I told you, I was focused on the engine diagnostics! It's frustrating to have to repeat myself *to Sam*.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with clear frustration and irritation, emphasizing key points with sharp intonation",
+            "avatar_instructions": "angry",
+            "llm_time": 3.8,
+            "tts_time": 2.3
+        },
+        {
+            "timestamp": 1774100079.102754,
+            "datetime": "2026-03-21T20:34:39.102754+07:00",
+            "user_query": "Be sad.",
+            "response": "I... I just wish there had been more time. It's difficult to process everything.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a somber tone, slightly slower pace, and softer volume",
+            "avatar_instructions": "sad",
+            "llm_time": 3.71,
+            "tts_time": 1.75
+        }
+    ],
+    "timestamp": "2026-03-21T20:33:26.130655+07:00"
+}

@@ -8,7 +8,7 @@ class ScenarioResponse(BaseModel):
     personal_characteristics: str
     attitude_in_interview: str
     rule_interview: Optional[str] = ""
-    category: str
+    category: Optional[str] = None
     scenario_text: str
     created_by: str
     created_at: datetime
