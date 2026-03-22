@@ -19,7 +19,7 @@ def init_models():
 
     console.print("[cyan]Loading TTS model...[/cyan]")
     from agent.io.tts.tts_pocket import TextToSpeechService
-    _tts_instance = TextToSpeechService(voice=TTS_VOICE)
+    _tts_instance = TextToSpeechService()
     console.print("[green]✓ TTS model loaded[/green]")
 
     console.print("[cyan]Loading STT model...[/cyan]")

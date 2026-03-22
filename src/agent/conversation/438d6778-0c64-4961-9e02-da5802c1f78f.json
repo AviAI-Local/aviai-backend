@@ -1,0 +1,75 @@
+{
+    "conversation_history_id": "77b7ba4f-6dd9-4833-9f27-f75a3c5155b7",
+    "session_id": "438d6778-0c64-4961-9e02-da5802c1f78f",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1774193365.3389,
+            "datetime": "2026-03-22T22:29:25.338900+07:00",
+            "user_query": "Hello",
+            "response": "Hello.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 12.86,
+            "tts_time": 2.72
+        },
+        {
+            "timestamp": 1774193379.136796,
+            "datetime": "2026-03-22T22:29:39.136796+07:00",
+            "user_query": "what's u[",
+            "response": "I'm doing okay, thank you for asking.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 3.33,
+            "tts_time": 1.13
+        },
+        {
+            "timestamp": 1774193391.991079,
+            "datetime": "2026-03-22T22:29:51.991079+07:00",
+            "user_query": "act sad now",
+            "response": "It's... it's difficult to talk about.",
+            "user_emotion": "default",
+            "voice_instructions": "sad",
+            "avatar_instructions": "sad",
+            "llm_time": 3.62,
+            "tts_time": 1.04
+        },
+        {
+            "timestamp": 1774193406.315349,
+            "datetime": "2026-03-22T22:30:06.315349+07:00",
+            "user_query": "be angry",
+            "response": "Why are you asking me these questions?",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "angry",
+            "llm_time": 3.31,
+            "tts_time": 1.18
+        },
+        {
+            "timestamp": 1774193422.614567,
+            "datetime": "2026-03-22T22:30:22.614567+07:00",
+            "user_query": "be happy",
+            "response": "It's good to be talking about it, actually. It's a relief to finally share my thoughts.",
+            "user_emotion": "default",
+            "voice_instructions": "happy",
+            "avatar_instructions": "happy",
+            "llm_time": 3.53,
+            "tts_time": 3.01
+        },
+        {
+            "timestamp": 1774193442.163587,
+            "datetime": "2026-03-22T22:30:42.163587+07:00",
+            "user_query": "be sad",
+            "response": "I keep replaying it in my head... it's not a good memory.",
+            "user_emotion": "default",
+            "voice_instructions": "sad",
+            "avatar_instructions": "sad",
+            "llm_time": 5.55,
+            "tts_time": 2.98
+        }
+    ],
+    "timestamp": "2026-03-22T22:28:56.870873+07:00"
+}

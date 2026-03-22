@@ -1,0 +1,42 @@
+{
+    "conversation_history_id": "6b0cced0-4eef-4ed2-abd0-f8f496526e50",
+    "session_id": "5e10dff4-5d4e-43aa-968f-87364ce0a650",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1774193772.738196,
+            "datetime": "2026-03-22T22:36:12.738196+07:00",
+            "user_query": "Hellp",
+            "response": "Hello.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 10.94,
+            "tts_time": 0.5
+        },
+        {
+            "timestamp": 1774193788.166219,
+            "datetime": "2026-03-22T22:36:28.166219+07:00",
+            "user_query": "How are you doing?",
+            "response": "I'm... alright. A bit concerned about the investigation, to be honest.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 3.6,
+            "tts_time": 4.75
+        },
+        {
+            "timestamp": 1774193816.170619,
+            "datetime": "2026-03-22T22:36:56.170619+07:00",
+            "user_query": "act angry",
+            "response": "Are you seriously asking me how I'm doing?! After what happened? It's infuriating that you're asking this right now!",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "angry",
+            "llm_time": 3.6,
+            "tts_time": 4.99
+        }
+    ],
+    "timestamp": "2026-03-22T22:35:37.961710+07:00"
+}
