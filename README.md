@@ -92,19 +92,21 @@ python -c "import nltk; nltk.download('punkt_tab')"
 
 ### 5. Setup PostgreSQL
 ```sql
-CREATE DATABASE aviai;
+CREATE DATABASE aviai_db;
 ```
 
 ### 6. Create `.env` file
 ```env
 DB_USER=postgres
 DB_PASSWORD=your_password
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=aviai
-SECRET_KEY=your_secret_key
-ALGORITHM=algroithm
-OLLAMA_MODEL_URL=url
+DB_NAME=aviai_db
+SECRET_KEY=your_secret_key_here
+ALGORITHM=HS256
+
+OLLAMA_MODEL_URL=http://localhost:11434
+OLLAMA_MODEL_NAME=gemma3
+
+RECORDING_DB_URL=/recordings
 ```
 
 ### 7. Run migrations
