@@ -1,7 +1,8 @@
-from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
 
+from agent.config import LLM_MODEL, LLM_BASE_URL, LLM_API_KEY
 from .model import LLMConversationSummary
 
 
@@ -31,11 +32,12 @@ Return ONLY the conversation summary in the specified JSON format.
 
 
 def get_conversation_summary_chain():
-    llm = ChatOllama(
-        base_url="http://localhost:11434",
-        model="gemma3",
+    llm = ChatOpenAI(
+        base_url=LLM_BASE_URL,
+        api_key=LLM_API_KEY,
+        model=LLM_MODEL,
         temperature=0.3,
-        format="json"
+        model_kwargs={"response_format": {"type": "json_object"}},
     )
 
     parser = PydanticOutputParser(

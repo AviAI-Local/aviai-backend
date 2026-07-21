@@ -6,10 +6,10 @@ import time
 import uuid
 from zoneinfo import ZoneInfo
 from fastapi import WebSocket, WebSocketDisconnect
-from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
 import numpy as np
 from rich.console import Console
+from agent.config import LLM_MODEL, LLM_BASE_URL, LLM_API_KEY
 from agent.history.schema import ConversationHistoryResponse
 from agent.history.service import ConversationHistoryService, get_session_history
 from agent.models import get_tts, get_stt
@@ -75,12 +75,14 @@ class ConversationHandler:
                 model=os.environ.get("MODEL_NAME"),
             )
             # console.print(f"[green]✓ Using LM Studio with model: {model}[/green]")
-        else:  # default to ollama
-            model = os.environ.get("OLLAMA_MODEL_NAME", "gemma3")
-            base_url = os.environ.get("OLLAMA_MODEL_URL", "http://localhost:11434")
-            llm = ChatOllama(model=model, base_url=base_url, format="json")
-            console.print(f"[green]Using Ollama model: {model}[/green]")
-            # console.print(f"[green]✓ Using Ollama with model: {model}[/green]")
+        else:  # default to openrouter
+            llm = ChatOpenAI(
+                model=LLM_MODEL,
+                base_url=LLM_BASE_URL,
+                api_key=LLM_API_KEY,
+                model_kwargs={"response_format": {"type": "json_object"}},
+            )
+            console.print(f"[green]Using OpenRouter model: {LLM_MODEL}[/green]")
         
         chain = prompt | llm
         chat = RunnableWithMessageHistory(

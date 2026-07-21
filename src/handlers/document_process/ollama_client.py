@@ -3,9 +3,10 @@ import httpx
 import re
 from .schema import DocumentLLMResp
 
-OLLAMA_BASE_URL = os.environ.get("OLLAMA_MODEL_URL")
-OLLAMA_URL = f"{OLLAMA_BASE_URL}/api/generate"
-MODEL = os.environ.get("OLLAMA_MODEL_NAME")
+OPENROUTER_BASE_URL = os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
+OPENROUTER_URL = f"{OPENROUTER_BASE_URL}/chat/completions"
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
+MODEL = os.environ.get("OPENROUTER_MODEL_NAME", "openai/gpt-4o-mini")
 
 SYSTEM_PROMPT = """You are scenario-DocExtractor. You extract metadata from documents.
 You MUST return a JSON object with exactly these fields:
@@ -33,20 +34,22 @@ def _strip_markdown_json(text: str) -> str:
 async def extract_metadata(text: str) -> DocumentLLMResp:
     payload = {
         "model": MODEL,
-        "system": SYSTEM_PROMPT,
-        "prompt": f"Extract metadata from the following document:\n\n{text}",
+        "messages": [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": f"Extract metadata from the following document:\n\n{text}"},
+        ],
         "stream": False,
-        "format": "json",
+        "response_format": {"type": "json_object"},
     }
+    headers = {"Authorization": f"Bearer {OPENROUTER_API_KEY}"}
 
     async with httpx.AsyncClient(timeout=120) as client:
-        r = await client.post(OLLAMA_URL, json=payload)
+        r = await client.post(OPENROUTER_URL, json=payload, headers=headers)
         r.raise_for_status()
 
     data = r.json()
 
-    # Ollama returns the full response here
-    raw_content = data["response"]
+    raw_content = data["choices"][0]["message"]["content"]
 
     # ✅ CRITICAL FIX
     clean_json = _strip_markdown_json(raw_content)

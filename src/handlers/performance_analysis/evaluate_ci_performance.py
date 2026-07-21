@@ -20,7 +20,7 @@ Notes
 """
 
 from __future__ import annotations
-from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 import os
 
 import json
@@ -309,11 +309,12 @@ Focus on evidence-based evaluation. If something is not clearly demonstrated, ma
 def run_llm(
     transcript: List[Dict[str, Any]],
     emotions: List[Dict[str, Any]],
-    model: str = "gemma3"
+    model: str = "openai/gpt-4o-mini"
 ) -> LLMJudgement:
-    chat = ChatOllama(
-        model=os.getenv("OLLAMA_MODEL_NAME", model),
-        base_url=os.getenv("OLLAMA_MODEL_URL", "http://localhost:11434"),
+    chat = ChatOpenAI(
+        model=os.getenv("OPENROUTER_MODEL_NAME", model),
+        base_url=os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
+        api_key=os.getenv("OPENROUTER_API_KEY"),
         temperature=0.0
     )
 

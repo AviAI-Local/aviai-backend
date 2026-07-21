@@ -1,6 +1,7 @@
-from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 import json
+from agent.config import LLM_MODEL, LLM_BASE_URL, LLM_API_KEY
 from .model import LLMEmotionAnalysisOutput
 
 SYSTEM_PROMPT = """
@@ -31,11 +32,12 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
-llm = ChatOllama(
-    model="gemma3",
-    base_url="http://localhost:11434",
+llm = ChatOpenAI(
+    model=LLM_MODEL,
+    base_url=LLM_BASE_URL,
+    api_key=LLM_API_KEY,
     temperature=0.3,
-    format="json"
+    model_kwargs={"response_format": {"type": "json_object"}},
 )
 
 async def analyze_conversation(inputs: dict) -> LLMEmotionAnalysisOutput:

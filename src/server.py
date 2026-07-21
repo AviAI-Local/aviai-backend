@@ -5,9 +5,10 @@ import asyncio
 import json
 from rich.console import Console
 
-from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 from langchain_core.runnables.history import RunnableWithMessageHistory
 
+from agent.config import LLM_MODEL, LLM_BASE_URL, LLM_API_KEY
 from agent.prompt.builder import PromptBuilder
 from agent.memory.history import get_session_history
 from agent.llm.service import LLMService
@@ -43,7 +44,7 @@ tts = TextToSpeechService()
 
 console.print("[yellow]Initializing LLM...[/yellow]")
 prompt = PromptBuilder().build()
-llm = ChatOllama(model="gemma3")
+llm = ChatOpenAI(model=LLM_MODEL, base_url=LLM_BASE_URL, api_key=LLM_API_KEY)
 chain = prompt | llm
 
 chat = RunnableWithMessageHistory(
