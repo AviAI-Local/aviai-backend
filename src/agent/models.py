@@ -14,22 +14,23 @@ _stt_instance = None
 
 
 def init_models():
-    """Initialize TTS and STT models. Call this at app startup."""
+    """Initialize TTS and STT clients. Call this at app startup.
+
+    Uses OpenRouter's hosted audio endpoints rather than loading local
+    torch/faster-whisper models in-process — Render's free tier caps
+    instances at 512MB, which local model weights alone exceed.
+    """
     global _tts_instance, _stt_instance
 
-    console.print("[cyan]Loading TTS model...[/cyan]")
-    from agent.io.tts.tts_pocket import TextToSpeechService
+    console.print("[cyan]Loading TTS client...[/cyan]")
+    from agent.io.tts.tts_openrouter import TextToSpeechService
     _tts_instance = TextToSpeechService(voice=TTS_VOICE)
-    console.print("[green]✓ TTS model loaded[/green]")
+    console.print("[green]✓ TTS client ready[/green]")
 
-    console.print("[cyan]Loading STT model...[/cyan]")
-    from agent.io.stt.faster_whisper import FasterWhisperSTT
-    _stt_instance = FasterWhisperSTT(
-        model_size="small",
-        silence_db=-45,
-        end_silence_sec=1.2,
-    )
-    console.print("[green]✓ STT model loaded[/green]")
+    console.print("[cyan]Loading STT client...[/cyan]")
+    from agent.io.stt.openrouter_stt import OpenRouterSTT
+    _stt_instance = OpenRouterSTT()
+    console.print("[green]✓ STT client ready[/green]")
 
 
 def get_tts():
