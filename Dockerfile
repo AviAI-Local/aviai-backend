@@ -1,7 +1,6 @@
 # Build stage
 FROM python:3.12-slim AS builder
 
-# Set working directory
 WORKDIR /app
 
 # Install system dependencies for building
@@ -14,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv for faster dependency management
+# Install uv
 RUN pip install uv
 
 # Copy dependency files
@@ -28,10 +27,10 @@ RUN uv pip install .
 # Download NLTK data
 RUN python -c "import nltk; nltk.download('punkt_tab', download_dir='/app/nltk_data')"
 
+
 # Production stage
 FROM python:3.12-slim
 
-# Set working directory
 WORKDIR /app
 
 # Install runtime dependencies
@@ -43,32 +42,34 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libportaudio2 \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy virtual environment from builder
+# Copy virtual environment and NLTK data
 COPY --from=builder /app/.venv /app/.venv
 COPY --from=builder /app/nltk_data /app/nltk_data
 
-# Set environment variables
+# Environment
 ENV PATH="/app/.venv/bin:$PATH"
 ENV PYTHONPATH="/app/src"
 ENV NLTK_DATA="/app/nltk_data"
 ENV PYTHONUNBUFFERED=1
 
-# Copy application code
+# Copy application
 COPY src/ ./src/
 COPY database/ ./database/
 COPY scenario/ ./scenario/
 COPY alembic/ ./alembic/
 COPY alembic.ini ./
 
-# Expose port
-EXPOSE 8000
+# Render uses the PORT environment variable
+EXPOSE 10000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/docs')" || exit 1
+# Container health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD python -c "import os, urllib.request; urllib.request.urlopen(f'http://localhost:{os.environ.get(\"PORT\", \"10000\")}/docs')" || exit 1
 
-# Set working directory to src for running the app
+# Run from src
 WORKDIR /app/src
 
-# Run migrations and start the application
-CMD ["sh", "-c", "cd /app && alembic upgrade head && cd /app/src && uvicorn main:app --host 0.0.0.0 --port 8000 --workers 1"]
+# Migrations run inside main.py's lifespan startup, not here — running them
+# before uvicorn starts would delay port binding and trip Render's port-scan
+# timeout (no separate pre-deploy step on the free tier).
+CMD ["sh", "-c", "exec uvicorn main:app --host 0.0.0.0 --port ${PORT:-10000} --workers 1"]

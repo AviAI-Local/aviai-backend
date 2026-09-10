@@ -1,4 +1,5 @@
 import os
+import subprocess
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,7 +21,13 @@ from agent.models import init_models
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: Load ML models
+    # Startup: run pending DB migrations. Done here rather than before
+    # uvicorn starts, so the server socket opens immediately — Render's
+    # free tier has no pre-deploy step, and it fails deploys that don't
+    # bind a port quickly.
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    subprocess.run(["alembic", "upgrade", "head"], cwd=project_root, check=True)
+
     init_models()
     yield
     # Shutdown: cleanup if needed

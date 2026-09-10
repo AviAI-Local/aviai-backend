@@ -20,8 +20,9 @@ Notes
 """
 
 from __future__ import annotations
-from langchain_ollama import ChatOllama
-import os
+from langchain_openai import ChatOpenAI
+
+from agent.config import LLM_MODEL, LLM_BASE_URL, LLM_API_KEY
 
 import json
 from dataclasses import dataclass
@@ -309,11 +310,12 @@ Focus on evidence-based evaluation. If something is not clearly demonstrated, ma
 def run_llm(
     transcript: List[Dict[str, Any]],
     emotions: List[Dict[str, Any]],
-    model: str = "gemma3"
+    model: str = LLM_MODEL
 ) -> LLMJudgement:
-    chat = ChatOllama(
-        model=os.getenv("OLLAMA_MODEL_NAME", model),
-        base_url=os.getenv("OLLAMA_MODEL_URL", "http://localhost:11434"),
+    chat = ChatOpenAI(
+        model=model,
+        base_url=LLM_BASE_URL,
+        api_key=LLM_API_KEY,
         temperature=0.0
     )
 
@@ -591,7 +593,7 @@ def make_coaching(j: LLMJudgement) -> List[Dict[str, str]]:
 
 def evaluate_ci_performance(transcript: List[Dict[str, Any]],
                             emotions: List[Dict[str, Any]],
-                            model: str = "gpt-4o-mini") -> EvaluationResult:
+                            model: str = LLM_MODEL) -> EvaluationResult:
     llm_out = run_llm(transcript, emotions, model=model)
     scoring = compute_scores(llm_out)
     coaching = make_coaching(llm_out)
@@ -637,7 +639,7 @@ SAMPLE_EMOTIONS = [
 
 def main():
     print("Running CI scoring demo...")
-    result = evaluate_ci_performance(SAMPLE_TRANSCRIPT, SAMPLE_EMOTIONS, model="gpt-4o-mini")
+    result = evaluate_ci_performance(SAMPLE_TRANSCRIPT, SAMPLE_EMOTIONS)
     print("\n=== LLM Judgement ===")
     print(json.dumps(result.llm.model_dump(), ensure_ascii=False, indent=2))
     print("\n=== Scores ===")

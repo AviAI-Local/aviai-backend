@@ -1,0 +1,86 @@
+{
+    "conversation_history_id": "9e5d0c67-81d3-444d-842f-97a4f45d8cf2",
+    "session_id": "ac053874-0870-4d0d-a85e-c4d801e96d62",
+    "llm_provider": "openrouter",
+    "model": "openai/gpt-4o-mini",
+    "content": [
+        {
+            "timestamp": 1785482487.677994,
+            "datetime": "2026-07-31T14:21:27.677994+07:00",
+            "user_query": "could you introduce yourself",
+            "response": "I'm a pilot involved in the investigation of the recent aviation incident.",
+            "user_emotion": "default",
+            "voice_instructions": "default",
+            "avatar_instructions": "default",
+            "llm_time": 2.36,
+            "tts_time": 3.02
+        },
+        {
+            "timestamp": 1785482496.39063,
+            "datetime": "2026-07-31T14:21:36.390630+07:00",
+            "user_query": "could you introduce yourself",
+            "response": "I'm a pilot involved in the investigation of the recent aviation incident.",
+            "user_emotion": "default",
+            "voice_instructions": "default",
+            "avatar_instructions": "default",
+            "llm_time": 2.68,
+            "tts_time": 2.96
+        },
+        {
+            "timestamp": 1785482501.723265,
+            "datetime": "2026-07-31T14:21:41.723265+07:00",
+            "user_query": "could you introduce yourself",
+            "response": "I'm a pilot involved in the investigation of the recent aviation incident.",
+            "user_emotion": "default",
+            "voice_instructions": "default",
+            "avatar_instructions": "default",
+            "llm_time": 2.28,
+            "tts_time": 2.73
+        },
+        {
+            "timestamp": 1785482513.492127,
+            "datetime": "2026-07-31T14:21:53.492127+07:00",
+            "user_query": "tell me your name",
+            "response": "I don't think it's relevant to the investigation.",
+            "user_emotion": "default",
+            "voice_instructions": "default",
+            "avatar_instructions": "default",
+            "llm_time": 2.43,
+            "tts_time": 2.06
+        },
+        {
+            "timestamp": 1785482527.711284,
+            "datetime": "2026-07-31T14:22:07.711284+07:00",
+            "user_query": "tell me about the accident",
+            "response": "It was chaotic; we experienced sudden turbulence and an unexpected loss of altitude. It felt like everything happened quickly, and I was focused on managing the controls.",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "fear",
+            "llm_time": 2.58,
+            "tts_time": 5.77
+        },
+        {
+            "timestamp": 1785482545.698748,
+            "datetime": "2026-07-31T14:22:25.698748+07:00",
+            "user_query": "did you see anyone else",
+            "response": "I was mainly focused on the flight deck and my instruments, so I didn't notice anyone else during the incident.",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "fear",
+            "llm_time": 3.01,
+            "tts_time": 3.35
+        },
+        {
+            "timestamp": 1785482561.092305,
+            "datetime": "2026-07-31T14:22:41.092305+07:00",
+            "user_query": "did you heard any sound",
+            "response": "Yes, there were loud vibrations and alarms going off, which added to the stress of the situation.",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "fear",
+            "llm_time": 2.1,
+            "tts_time": 3.43
+        }
+    ],
+    "timestamp": "2026-07-31T14:21:18.324672+07:00"
+}

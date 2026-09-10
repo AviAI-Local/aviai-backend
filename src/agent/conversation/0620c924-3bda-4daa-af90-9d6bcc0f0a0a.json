@@ -1,0 +1,42 @@
+{
+    "conversation_history_id": "6a0fd96c-073b-4a4a-a2b3-0b52c561f439",
+    "session_id": "0620c924-3bda-4daa-af90-9d6bcc0f0a0a",
+    "llm_provider": "openrouter",
+    "model": "openai/gpt-4o-mini",
+    "content": [
+        {
+            "timestamp": 1785482445.305665,
+            "datetime": "2026-07-31T14:20:45.305665+07:00",
+            "user_query": "could you introduce yourself",
+            "response": "I prefer not to share personal details at this moment.",
+            "user_emotion": "default",
+            "voice_instructions": "default",
+            "avatar_instructions": "default",
+            "llm_time": 2.76,
+            "tts_time": 2.28
+        },
+        {
+            "timestamp": 1785482456.67698,
+            "datetime": "2026-07-31T14:20:56.676980+07:00",
+            "user_query": "can you tell me about the accident",
+            "response": "I remember there was a sudden loss of control, and I felt a lot of tension and urgency. The vibrations were intense, and it all happened quickly.",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "fear",
+            "llm_time": 1.72,
+            "tts_time": 4.55
+        },
+        {
+            "timestamp": 1785482471.684088,
+            "datetime": "2026-07-31T14:21:11.684088+07:00",
+            "user_query": "did you see anyone else",
+            "response": "I don't recall seeing anyone else at that moment.",
+            "user_emotion": "default",
+            "voice_instructions": "default",
+            "avatar_instructions": "default",
+            "llm_time": 2.18,
+            "tts_time": 2.27
+        }
+    ],
+    "timestamp": "2026-07-31T14:20:33.200228+07:00"
+}

@@ -1,0 +1,42 @@
+{
+    "conversation_history_id": "a020c7f8-62c6-455f-8814-06826a29530e",
+    "session_id": "6944a249-3b3a-4ea5-9d76-7df2aec3877f",
+    "llm_provider": "openrouter",
+    "model": "openai/gpt-4o-mini",
+    "content": [
+        {
+            "timestamp": 1785485155.472384,
+            "datetime": "2026-07-31T15:05:55.472384+07:00",
+            "user_query": "Hello, could you introduce yourself?",
+            "response": "I'm not sure how to respond without knowing the purpose of the interview.",
+            "user_emotion": "default",
+            "voice_instructions": "default",
+            "avatar_instructions": "default",
+            "llm_time": 2.31,
+            "tts_time": 2.83
+        },
+        {
+            "timestamp": 1785485251.417086,
+            "datetime": "2026-07-31T15:07:31.417086+07:00",
+            "user_query": "can you tell me about the accident",
+            "response": "I was focused on my instruments when the situation escalated quickly. It felt chaotic, and there was a lot of stress in the cockpit.",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "fear",
+            "llm_time": 2.72,
+            "tts_time": 4.48
+        },
+        {
+            "timestamp": 1785486036.448842,
+            "datetime": "2026-07-31T15:20:36.448842+07:00",
+            "user_query": "are you nervous at that time",
+            "response": "Yes, I felt nervous and anxious during that time; it was a tense situation.",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "fear",
+            "llm_time": 1.67,
+            "tts_time": 3.39
+        }
+    ],
+    "timestamp": "2026-07-31T15:05:32.540822+07:00"
+}

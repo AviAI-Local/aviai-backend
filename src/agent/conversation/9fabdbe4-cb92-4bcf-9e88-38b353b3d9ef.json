@@ -1,0 +1,8 @@
+{
+    "conversation_history_id": "4d4bc678-1962-4266-a613-bdb107ad0665",
+    "session_id": "9fabdbe4-cb92-4bcf-9e88-38b353b3d9ef",
+    "llm_provider": "openrouter",
+    "model": "openai/gpt-4o-mini",
+    "content": [],
+    "timestamp": "2026-07-31T14:24:03.631857+07:00"
+}
