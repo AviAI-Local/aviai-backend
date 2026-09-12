@@ -35,10 +35,19 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Cognitive Interview API", lifespan=lifespan)
 
-# CORS for frontend
+# CORS for frontend. Defaults cover local dev; set CORS_ALLOWED_ORIGINS
+# (comma-separated) in the deploy environment to add the deployed frontend
+# origin(s) without a code change.
+_default_origins = "http://localhost:3000,https://aviai-frontend.onrender.com"
+allowed_origins = [
+    origin.strip()
+    for origin in os.getenv("CORS_ALLOWED_ORIGINS", _default_origins).split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Vite dev server
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
