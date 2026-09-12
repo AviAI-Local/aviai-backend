@@ -27,7 +27,6 @@ services:
       RMIT_VAL_MODEL: ${RMIT_VAL_MODEL}
       TTS_VOICE: ${TTS_VOICE}
     volumes:
-      - ./src/agent/conversation:/app/src/agent/conversation
       - ./recordings:/recordings
     restart: unless-stopped
     extra_hosts:

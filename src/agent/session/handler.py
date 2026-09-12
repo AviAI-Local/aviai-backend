@@ -286,21 +286,11 @@ class ConversationHandler:
 
     def cleanup(self):
         """Cleanup resources on disconnect"""
-        from database.config import SessionLocal
-
         try:
             self.buffer.clear()
-            console.print(f"[dim]Cleaning up session: {self.session.session_id}[/dim]")
-
-            # Create a fresh DB session for cleanup (original might be closed)
-            db = SessionLocal()
-            try:
-                self.service.db = db  # Update the service's db reference
-                self.service.save_conversation_history()
-                db.commit()
-            finally:
-                db.close()
-
+            # Conversation history is already persisted to the DB after every
+            # message (see ConversationHistoryService.add_conversation_entry),
+            # so there's nothing left to flush here.
             console.print(f"[yellow]Session {self.session.session_id} cleaned up[/yellow]")
 
         except Exception as e:
