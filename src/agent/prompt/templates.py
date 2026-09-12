@@ -152,6 +152,18 @@ Rules:
 - response answers ONLY the question, concise
 """
 
+SPEECH_NATURALNESS_RULES = """
+SPOKEN DELIVERY:
+Your "response" text is fed directly to a text-to-speech engine and read aloud verbatim —
+it cannot add hesitation or pauses on its own, so write it exactly as you would actually say it.
+- Where a real person recalling a stressful event would naturally hesitate, write that hesitation
+  as a literal filler word: "um", "uh", "hmm", "well,", "I mean,"
+- Use fillers sparingly — most sentences need none. Never add one to a short acknowledgment
+  (e.g., "Good morning.", "Yes.", "No.") or to a fully confident, factual statement.
+- Write fillers as plain words in the sentence, not stage directions or markup
+  (no "*pauses*", no "[hesitates]", no emojis) — the TTS engine reads text literally.
+"""
+
 create_prompt_example = {
   "template_name": "aviation_cognitive_interview_v1",
   "category": "cognitive_interview",

@@ -1,0 +1,20 @@
+{
+    "conversation_history_id": "150143c3-aa3a-4627-acf1-3f6876d03677",
+    "session_id": "f6756534-debb-4986-b6fd-0079fa0a9744",
+    "llm_provider": "val",
+    "model": "openai-gpt-5.2",
+    "content": [
+        {
+            "timestamp": 1788930738.300759,
+            "datetime": "2026-09-09T12:12:18.300759+07:00",
+            "user_query": "Before we discuss the aircraft, could you tell me a little about yourself and what brought you to the area that afternoon?”",
+            "response": "I'm Sarah Bellamy, 47, and I work as a regional sales manager for an agricultural equipment supplier based in Bundaberg. That afternoon I was driving from Bundaberg down toward Brisbane for a client meeting the next morning, and I stopped near Gympie around mid‑afternoon and took a quick detour to the aerodrome to stretch my legs and have a look.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a slightly tense, anxious tone and a measured pace, as if still a bit shaken but trying to be professional.",
+            "avatar_instructions": "fear",
+            "llm_time": 5.25,
+            "tts_time": 7.29
+        }
+    ],
+    "timestamp": "2026-09-09T12:11:34.084868+07:00"
+}

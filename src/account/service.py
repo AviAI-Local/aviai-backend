@@ -114,7 +114,7 @@ class AccountService:
             return False
 
         # RESTRICT: block delete if there are dependent records
-        if account.sessions or account.notes or account.created_usecases:
+        if account.sessions or account.notes or account.created_scenarios:
             raise HTTPException(
                 status_code=409,
                 detail="Cannot delete account. It has sessions, notes, or usecases. Delete or reassign them first."

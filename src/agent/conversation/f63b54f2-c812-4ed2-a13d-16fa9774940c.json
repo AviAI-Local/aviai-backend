@@ -1,0 +1,64 @@
+{
+    "conversation_history_id": "2bcfb892-8739-4f32-9a18-8e6fa5160df3",
+    "session_id": "f63b54f2-c812-4ed2-a13d-16fa9774940c",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1783668834.911177,
+            "datetime": "2026-07-10T14:33:54.911177+07:00",
+            "user_query": "Hello.",
+            "response": "I'm here.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 12.76,
+            "tts_time": 1.92
+        },
+        {
+            "timestamp": 1783668884.610967,
+            "datetime": "2026-07-10T14:34:44.610967+07:00",
+            "user_query": "What is your name?",
+            "response": "My name is Linh.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 2.43,
+            "tts_time": 1.36
+        },
+        {
+            "timestamp": 1783668916.790187,
+            "datetime": "2026-07-10T14:35:16.790187+07:00",
+            "user_query": "Can you tell me what happened?",
+            "response": "I… I heard a noise. A vibration. It was sudden.” “I don’t recall the exact timing, but it happened during approach.” “The captain immediately checked the engines.” “I focused on my instruments, of course.” “It felt… unsettling.” “We landed safely though.”",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "fear",
+            "llm_time": 7.27,
+            "tts_time": 17.15
+        },
+        {
+            "timestamp": 1783668953.633745,
+            "datetime": "2026-07-10T14:35:53.633745+07:00",
+            "user_query": "Slow down. Tell me one thing at a time. What happened? What kind of incident happened?",
+            "response": "I'm sorry, I didn't quite understand that. Could you please repeat?",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "neutral",
+            "llm_time": 6.88,
+            "tts_time": 2.4
+        },
+        {
+            "timestamp": 1783668970.911558,
+            "datetime": "2026-07-10T14:36:10.911558+07:00",
+            "user_query": "Can you tell me what is the incident?",
+            "response": "I'm sorry, I didn't quite understand that. Could you please repeat?",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "neutral",
+            "llm_time": 6.13,
+            "tts_time": 1.98
+        }
+    ],
+    "timestamp": "2026-07-10T14:32:54.208385+07:00"
+}
