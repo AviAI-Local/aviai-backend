@@ -4,7 +4,7 @@ Models are loaded once at app startup to avoid delays during WebSocket connectio
 """
 
 from rich.console import Console
-from agent.config import TTS_VOICE, TTS_STT_PROVIDER
+from agent.config import TTS_VOICE, TTS_STT_PROVIDER, OPENROUTER_AUDIO_MODEL
 
 console = Console()
 
@@ -13,22 +13,39 @@ _tts_instance = None
 _stt_instance = None
 
 
+def get_tts_style_instructions(voice_instructions: str) -> str | None:
+    """Pass the LLM's free-form voice_instructions through as delivery style, if the
+    active TTS provider actually follows style instructions (openrouter-audio).
+    Other providers (aura-2, pocket) only accept a fixed voice name here, so a
+    free-text string would break them.
+    """
+    if TTS_STT_PROVIDER != "openrouter-audio":
+        return None
+    return voice_instructions
+
+
 def init_models():
     """Initialize TTS and STT clients. Call this at app startup.
 
     Provider is chosen by TTS_STT_PROVIDER (see agent/config.py):
     "local" loads torch/faster-whisper models in-process (needs real
-    RAM/CPU); "openrouter" calls OpenRouter's hosted audio endpoints
-    instead, which is what Render's free tier (512MB cap) needs.
+    RAM/CPU); "openrouter" calls OpenRouter's hosted aura-2 TTS + whisper
+    STT instead, which is what Render's free tier (512MB cap) needs;
+    "openrouter-audio" swaps just the TTS half for gpt-audio-mini (one
+    fixed speaker voice with real emotion/style instructions).
     """
     global _tts_instance, _stt_instance
 
     console.print(f"[cyan]Loading TTS client ({TTS_STT_PROVIDER})...[/cyan]")
     if TTS_STT_PROVIDER == "local":
         from agent.io.tts.tts_pocket import TextToSpeechService
+        _tts_instance = TextToSpeechService(voice=TTS_VOICE)
+    elif TTS_STT_PROVIDER == "openrouter-audio":
+        from agent.io.tts.tts_openrouter_audio import TextToSpeechService
+        _tts_instance = TextToSpeechService(voice=TTS_VOICE, model=OPENROUTER_AUDIO_MODEL)
     else:
         from agent.io.tts.tts_openrouter import TextToSpeechService
-    _tts_instance = TextToSpeechService(voice=TTS_VOICE)
+        _tts_instance = TextToSpeechService(voice=TTS_VOICE)
     console.print("[green]✓ TTS client ready[/green]")
 
     console.print(f"[cyan]Loading STT client ({TTS_STT_PROVIDER})...[/cyan]")

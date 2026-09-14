@@ -12,7 +12,7 @@ from rich.console import Console
 from agent.config import LLM_MODEL, LLM_BASE_URL, LLM_API_KEY
 from agent.history.schema import ConversationHistoryResponse
 from agent.history.service import ConversationHistoryService, get_session_history
-from agent.models import get_tts, get_stt
+from agent.models import get_tts, get_stt, get_tts_style_instructions
 from agent.llm.service import LLMService
 from agent.prompt.builder import PromptBuilder
 from agent.session.service import SessionService, load_usecase_from_api_local, load_scenario_from_api
@@ -179,10 +179,11 @@ class ConversationHandler:
         console.print(f"[cyan]{self.session.session_id} - Assistant:[/cyan] {content}")
 
         start = time.perf_counter()
+        style_instructions = get_tts_style_instructions(response.voice_instructions)
         sr, audio_out = await asyncio.to_thread(
             self.tts.long_form_synthesize,
             content,
-            None,
+            style_instructions,
             0.5,
             0.5
         )

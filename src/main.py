@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -26,7 +27,7 @@ async def lifespan(app: FastAPI):
     # free tier has no pre-deploy step, and it fails deploys that don't
     # bind a port quickly.
     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    subprocess.run(["alembic", "upgrade", "head"], cwd=project_root, check=True)
+    subprocess.run([sys.executable, "-m", "alembic", "upgrade", "head"], cwd=project_root, check=True)
 
     init_models()
     yield
