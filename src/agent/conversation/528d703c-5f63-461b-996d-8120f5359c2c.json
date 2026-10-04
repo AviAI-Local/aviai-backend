@@ -1,0 +1,75 @@
+{
+    "conversation_history_id": "2820ba24-216a-4a5f-abdb-8c7f5fe65096",
+    "session_id": "528d703c-5f63-461b-996d-8120f5359c2c",
+    "llm_provider": "val",
+    "model": "openai-gpt-5.2",
+    "content": [
+        {
+            "timestamp": 1789388722.189134,
+            "datetime": "2026-09-14T19:25:22.189134+07:00",
+            "user_query": "Hello, and thank you for speaking with me today. My name is Anh, and I’m part of the investigation team looking into an aircraft occurrence at Gympie.”",
+            "response": "Alright, Anh. Yes, I understand—I'm happy to speak with you about what I saw at Gympie Aerodrome.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a slightly tense, anxious tone but cooperative; clear and measured pace.",
+            "avatar_instructions": "fear",
+            "llm_time": 4.27,
+            "tts_time": 4.41
+        },
+        {
+            "timestamp": 1789388758.01569,
+            "datetime": "2026-09-14T19:25:58.015690+07:00",
+            "user_query": "We’re trying to establish what happened and understand the sequence of events. This interview is for safety-investigation purposes. It is not about assigning blame or asking you to make judgements about anyone’s actions",
+            "response": "Okay, thank you for explaining that.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a slightly nervous but relieved tone; steady pace and clear articulation.",
+            "avatar_instructions": "happy",
+            "llm_time": 3.24,
+            "tts_time": 1.18
+        },
+        {
+            "timestamp": 1789388771.70073,
+            "datetime": "2026-09-14T19:26:11.700730+07:00",
+            "user_query": "You were identified as someone who saw the event and contacted emergency services. Anything you remember may be useful, even if it seems minor or incomplete",
+            "response": "Understood. I'll tell you what I remember, and I'll say if I'm not sure on any parts.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with mild anxiety but cooperative, clear and measured pace.",
+            "avatar_instructions": "fear",
+            "llm_time": 2.95,
+            "tts_time": 2.2
+        },
+        {
+            "timestamp": 1789388787.152924,
+            "datetime": "2026-09-14T19:26:27.152924+07:00",
+            "user_query": "If you are unsure about something, please say so. It is completely acceptable to say that you do not remember, or that you are making an estimate. Please don’t guess",
+            "response": "Alright. I won't guess—if I'm unsure, I'll tell you.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak calmly but with a slight nervous edge; measured pace.",
+            "avatar_instructions": "fear",
+            "llm_time": 2.98,
+            "tts_time": 1.89
+        },
+        {
+            "timestamp": 1789388801.743008,
+            "datetime": "2026-09-14T19:26:41.743008+07:00",
+            "user_query": "Your recollection may come back out of order, and you may remember additional details later. That’s fine — we can return to anything that needs clarification.”",
+            "response": "Okay, that makes sense.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a steady, cooperative tone, slight residual anxiety; clear pace.",
+            "avatar_instructions": "fear",
+            "llm_time": 3.29,
+            "tts_time": 1.13
+        },
+        {
+            "timestamp": 1789388817.336664,
+            "datetime": "2026-09-14T19:26:57.336664+07:00",
+            "user_query": "Before we discuss the aircraft, could you tell me a little about yourself and what brought you to the area that afternoon?”",
+            "response": "I'm Sarah Bellamy, 47, and I work as a regional sales manager for an agricultural equipment supplier based in Bundaberg. I was driving from Bundaberg toward Brisbane for a client meeting the next morning, and I stopped near Gympie in the mid‑afternoon to take a short break.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a slightly anxious but cooperative tone; clear and measured pace.",
+            "avatar_instructions": "fear",
+            "llm_time": 2.62,
+            "tts_time": 10.1
+        }
+    ],
+    "timestamp": "2026-09-14T19:24:46.122100+07:00"
+}

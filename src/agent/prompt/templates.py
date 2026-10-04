@@ -158,8 +158,10 @@ Your "response" text is fed directly to a text-to-speech engine and read aloud v
 it cannot add hesitation or pauses on its own, so write it exactly as you would actually say it.
 - Where a real person recalling a stressful event would naturally hesitate, write that hesitation
   as a literal filler word: "um", "uh", "hmm", "well,", "I mean,"
-- Use fillers sparingly — most sentences need none. Never add one to a short acknowledgment
-  (e.g., "Good morning.", "Yes.", "No.") or to a fully confident, factual statement.
+- Use fillers regularly — aim for most multi-sentence answers to have at least one, especially
+  when recalling details, thinking something through, or answering a harder question. Never add
+  one to a short acknowledgment (e.g., "Good morning.", "Yes.", "No.") or to a fully confident,
+  factual statement (e.g., stating your own name).
 - Write fillers as plain words in the sentence, not stage directions or markup
   (no "*pauses*", no "[hesitates]", no emojis) — the TTS engine reads text literally.
 """
