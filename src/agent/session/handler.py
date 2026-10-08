@@ -9,7 +9,7 @@ from fastapi import WebSocket, WebSocketDisconnect
 from langchain_openai import ChatOpenAI
 import numpy as np
 from rich.console import Console
-from agent.config import LLM_MODEL, LLM_BASE_URL, LLM_API_KEY
+from agent.config import LLM_MODEL, LLM_BASE_URL, LLM_API_KEY, LLM_PROVIDER
 from agent.history.schema import ConversationHistoryResponse
 from agent.history.service import ConversationHistoryService, get_session_history
 from agent.models import get_tts, get_stt
@@ -79,16 +79,16 @@ class ConversationHandler:
                 model=os.environ.get("MODEL_NAME"),
             )
             # console.print(f"[green]✓ Using LM Studio with model: {model}[/green]")
-        else:  # default to RMIT Val
-            # Val silently ignores response_format={"type":"json_object"} (returns
-            # markdown-fenced prose instead of erroring), so it isn't set here —
-            # LLMService.parse_response already tolerates fenced/loose JSON output.
+        else:  # default to OpenRouter (Val is blocked from Render's network)
+            # response_format={"type":"json_object"} isn't set here — it isn't
+            # reliably honoured across providers/models — LLMService.parse_response
+            # already tolerates fenced/loose JSON output instead.
             llm = ChatOpenAI(
                 model=LLM_MODEL,
                 base_url=LLM_BASE_URL,
                 api_key=LLM_API_KEY,
             )
-            console.print(f"[green]Using Val model: {LLM_MODEL}[/green]")
+            console.print(f"[green]Using {LLM_PROVIDER} model: {LLM_MODEL}[/green]")
         
         chain = prompt | llm
         chat = RunnableWithMessageHistory(

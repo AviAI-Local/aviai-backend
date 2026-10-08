@@ -21,13 +21,16 @@ services:
       OLLAMA_MODEL_NAME: gemma3
       RECORDING_DB_URL: /recordings
       LLM_PROVIDER: ${LLM_PROVIDER}
-      # Chat/text LLM — routed through the RMIT Val gateway.
+      # RMIT Val gateway is unreachable from Render (blocked at RMIT's network
+      # edge) — left here, unused, in case access is restored later.
       RMIT_VAL_API_KEY: ${RMIT_VAL_API_KEY}
       RMIT_VAL_BASE_URL: ${RMIT_VAL_BASE_URL}
       RMIT_VAL_MODEL: ${RMIT_VAL_MODEL}
       # TTS/STT provider ("local" | "openrouter" | "openrouter-audio")
       TTS_STT_PROVIDER: ${TTS_STT_PROVIDER}
       TTS_VOICE: ${TTS_VOICE}
+      # Chat/text LLM — routed through OpenRouter, plus OpenRouter's TTS/STT.
+      OPENROUTER_MODEL_NAME: ${OPENROUTER_MODEL_NAME}
       OPENROUTER_AUDIO_MODEL: ${OPENROUTER_AUDIO_MODEL}
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
       OPENROUTER_BASE_URL: ${OPENROUTER_BASE_URL}
