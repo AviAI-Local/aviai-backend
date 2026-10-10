@@ -1,0 +1,53 @@
+{
+    "conversation_history_id": "8a288bc8-9c02-401c-b583-e5f59cbde3d2",
+    "session_id": "1ac2f79f-4819-4a18-87c4-7f8cf2e27d2d",
+    "llm_provider": "openrouter",
+    "model": "openai/gpt-4o-mini",
+    "content": [
+        {
+            "timestamp": 1785428334.986305,
+            "datetime": "2026-07-30T23:18:54.986305+07:00",
+            "user_query": "Hello?",
+            "response": "I'm here.",
+            "user_emotion": "default",
+            "voice_instructions": "default",
+            "avatar_instructions": "default",
+            "llm_time": 2.2,
+            "tts_time": 2.18
+        },
+        {
+            "timestamp": 1785428345.914295,
+            "datetime": "2026-07-30T23:19:05.914295+07:00",
+            "user_query": "Can you introduce yourself?",
+            "response": "I'm Linh, a flight engineer with over 15 years of experience, currently working at VAECO.",
+            "user_emotion": "default",
+            "voice_instructions": "default",
+            "avatar_instructions": "default",
+            "llm_time": 1.63,
+            "tts_time": 4.19
+        },
+        {
+            "timestamp": 1785428429.905877,
+            "datetime": "2026-07-30T23:20:29.905877+07:00",
+            "user_query": "Can you tell me about the accident?",
+            "response": "During our approach to land, there was a sudden noise and strong vibrations. The captain quickly checked for any damage to the engine, while the co-pilot continued the flight. We remained calm and managed to land safely, but it was a tense moment.",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "fear",
+            "llm_time": 1.66,
+            "tts_time": 7.27
+        },
+        {
+            "timestamp": 1785428639.223619,
+            "datetime": "2026-07-30T23:23:59.223619+07:00",
+            "user_query": "Do you see anyone else?",
+            "response": "In the cockpit, it was just me, the captain, and the co-pilot.",
+            "user_emotion": "default",
+            "voice_instructions": "default",
+            "avatar_instructions": "default",
+            "llm_time": 1.72,
+            "tts_time": 3.01
+        }
+    ],
+    "timestamp": "2026-07-30T23:18:38.030057+07:00"
+}

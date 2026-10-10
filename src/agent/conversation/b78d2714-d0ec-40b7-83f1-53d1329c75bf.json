@@ -1,0 +1,31 @@
+{
+    "conversation_history_id": "d53ab7cc-8e86-40f8-919d-32fcaa11248b",
+    "session_id": "b78d2714-d0ec-40b7-83f1-53d1329c75bf",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1783602543.26625,
+            "datetime": "2026-07-09T20:09:03.266250+07:00",
+            "user_query": "Hello, can you hear me?",
+            "response": "Yes, I can hear you.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 8.98,
+            "tts_time": 3.71
+        },
+        {
+            "timestamp": 1783602554.457376,
+            "datetime": "2026-07-09T20:09:14.457376+07:00",
+            "user_query": "could you introduce yourself",
+            "response": "I'm Linh. I'm a flight engineer based here in Ho Chi Minh City, working with VAECO.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 3.29,
+            "tts_time": 4.38
+        }
+    ],
+    "timestamp": "2026-07-09T20:08:36.996855+07:00"
+}

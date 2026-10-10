@@ -33,8 +33,10 @@ target_metadata = Base.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
-# Use the same DATABASE_URL from config.py
-context.config.set_main_option("sqlalchemy.url", DATABASE_URL)
+# Use the same DATABASE_URL from config.py.
+# "%" must be escaped as "%%" here since configparser treats it as
+# interpolation syntax otherwise (e.g. a percent-encoded password).
+context.config.set_main_option("sqlalchemy.url", DATABASE_URL.replace("%", "%%"))
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.

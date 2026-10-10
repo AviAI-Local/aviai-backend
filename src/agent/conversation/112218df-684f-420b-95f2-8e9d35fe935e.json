@@ -1,0 +1,31 @@
+{
+    "conversation_history_id": "d7d5a0f9-207d-43d2-94c3-98dcbb393baa",
+    "session_id": "112218df-684f-420b-95f2-8e9d35fe935e",
+    "llm_provider": "openrouter",
+    "model": "openai/gpt-4o-mini",
+    "content": [
+        {
+            "timestamp": 1784631796.721864,
+            "datetime": "2026-07-21T18:03:16.721864+07:00",
+            "user_query": "Hello.",
+            "response": "Hello.",
+            "user_emotion": "default",
+            "voice_instructions": "default",
+            "avatar_instructions": "default",
+            "llm_time": 2.77,
+            "tts_time": 1.13
+        },
+        {
+            "timestamp": 1784631807.293375,
+            "datetime": "2026-07-21T18:03:27.293375+07:00",
+            "user_query": "How are you doing?",
+            "response": "Honestly, I'm still a bit shaken after what happened.",
+            "user_emotion": "default",
+            "voice_instructions": "sad",
+            "avatar_instructions": "sad",
+            "llm_time": 1.76,
+            "tts_time": 2.45
+        }
+    ],
+    "timestamp": "2026-07-21T18:03:07.637459+07:00"
+}

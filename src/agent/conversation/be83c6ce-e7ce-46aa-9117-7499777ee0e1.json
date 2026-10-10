@@ -1,0 +1,86 @@
+{
+    "conversation_history_id": "c4abbf98-0920-47b2-88d1-7de9d3f390ea",
+    "session_id": "be83c6ce-e7ce-46aa-9117-7499777ee0e1",
+    "llm_provider": "val",
+    "model": "openai-gpt-5.2",
+    "content": [
+        {
+            "timestamp": 1788890538.560859,
+            "datetime": "2026-09-09T01:02:18.560859+07:00",
+            "user_query": "good morning",
+            "response": "Good morning.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a calm, professional tone, clear and measured pace.",
+            "avatar_instructions": "default",
+            "llm_time": 4.47,
+            "tts_time": 1.62
+        },
+        {
+            "timestamp": 1788890568.899228,
+            "datetime": "2026-09-09T01:02:48.899228+07:00",
+            "user_query": "Hello, and thank you for speaking with me today. My name is Anh, and I’m part of the investigation team looking into an aircraft occurrence at Gympie.",
+            "response": "Hello. I understand—I'm willing to answer what I can about what I experienced.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with mild tension and a slightly unsteady pace, but keep it professional.",
+            "avatar_instructions": "fear",
+            "llm_time": 4.29,
+            "tts_time": 3.3
+        },
+        {
+            "timestamp": 1788890590.526381,
+            "datetime": "2026-09-09T01:03:10.526381+07:00",
+            "user_query": "We’re trying to establish what happened and understand the sequence of events. This interview is for safety-investigation purposes. It is not about assigning blame or asking you to make judgements about anyone’s actions",
+            "response": "Understood.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a slightly anxious but cooperative tone, steadying your pace as you talk.",
+            "avatar_instructions": "fear",
+            "llm_time": 3.42,
+            "tts_time": 1.34
+        },
+        {
+            "timestamp": 1788890604.970618,
+            "datetime": "2026-09-09T01:03:24.970618+07:00",
+            "user_query": "You were identified as someone who saw the event and contacted emergency services. Anything you remember may be useful, even if it seems minor or incomplete",
+            "response": "Okay.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with tension and a slightly higher pitch, but keep your words controlled and professional.",
+            "avatar_instructions": "fear",
+            "llm_time": 2.83,
+            "tts_time": 1.1
+        },
+        {
+            "timestamp": 1788890615.786775,
+            "datetime": "2026-09-09T01:03:35.786775+07:00",
+            "user_query": "If you are unsure about something, please say so. It is completely acceptable to say that you do not remember, or that you are making an estimate. Please don’t guess",
+            "response": "Understood—I'll stick to what I remember and say when I'm not sure.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a quiet, slightly shaky tone, controlled pace.",
+            "avatar_instructions": "fear",
+            "llm_time": 2.72,
+            "tts_time": 2.8
+        },
+        {
+            "timestamp": 1788890626.805849,
+            "datetime": "2026-09-09T01:03:46.805849+07:00",
+            "user_query": "Your recollection may come back out of order, and you may remember additional details later. That’s fine — we can return to anything that needs clarification.”",
+            "response": "Alright.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with restrained anxiety, clear and cooperative.",
+            "avatar_instructions": "fear",
+            "llm_time": 3.42,
+            "tts_time": 1.29
+        },
+        {
+            "timestamp": 1788890642.96738,
+            "datetime": "2026-09-09T01:04:02.967380+07:00",
+            "user_query": "Before we discuss the aircraft, could you tell me a little about yourself and what brought you to the area that afternoon",
+            "response": "I can't really answer that properly—I don't have the scenario details in front of me, so I'm not sure what I'm supposed to say about why I was there.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with mild tension and uncertainty, measured pace.",
+            "avatar_instructions": "fear",
+            "llm_time": 4.32,
+            "tts_time": 4.67
+        }
+    ],
+    "timestamp": "2026-09-09T01:02:01.629974+07:00"
+}

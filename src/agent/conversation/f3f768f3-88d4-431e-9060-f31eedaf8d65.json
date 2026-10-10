@@ -1,0 +1,42 @@
+{
+    "conversation_history_id": "ce7275cb-604f-49b7-9a83-1a280867a463",
+    "session_id": "f3f768f3-88d4-431e-9060-f31eedaf8d65",
+    "llm_provider": "openrouter",
+    "model": "openai/gpt-4o-mini",
+    "content": [
+        {
+            "timestamp": 1785482792.785772,
+            "datetime": "2026-07-31T14:26:32.785772+07:00",
+            "user_query": "could you introduce yourself",
+            "response": "I'm a pilot involved in the incident you are investigating.",
+            "user_emotion": "default",
+            "voice_instructions": "default",
+            "avatar_instructions": "default",
+            "llm_time": 2.38,
+            "tts_time": 2.28
+        },
+        {
+            "timestamp": 1785482804.760349,
+            "datetime": "2026-07-31T14:26:44.760349+07:00",
+            "user_query": "are you nervous at that time",
+            "response": "Yes, I was definitely feeling nervous; it was a stressful situation.",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "fear",
+            "llm_time": 3.52,
+            "tts_time": 2.86
+        },
+        {
+            "timestamp": 1785482950.236832,
+            "datetime": "2026-07-31T14:29:10.236832+07:00",
+            "user_query": "tell me your name",
+            "response": "I don't think it's relevant to the investigation.",
+            "user_emotion": "default",
+            "voice_instructions": "default",
+            "avatar_instructions": "default",
+            "llm_time": 2.81,
+            "tts_time": 1.86
+        }
+    ],
+    "timestamp": "2026-07-31T14:26:10.282919+07:00"
+}

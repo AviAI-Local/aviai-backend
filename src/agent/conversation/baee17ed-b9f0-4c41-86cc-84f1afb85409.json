@@ -1,0 +1,64 @@
+{
+    "conversation_history_id": "8e71aea8-3ec8-4efa-ac41-10eebd5d814e",
+    "session_id": "baee17ed-b9f0-4c41-86cc-84f1afb85409",
+    "llm_provider": "openrouter",
+    "model": "openai/gpt-4o-mini",
+    "content": [
+        {
+            "timestamp": 1784632289.865805,
+            "datetime": "2026-07-21T18:11:29.865805+07:00",
+            "user_query": "Hello, how are you doing?",
+            "response": "I'm okay, just a bit shaken after the incident.",
+            "user_emotion": "default",
+            "voice_instructions": "default",
+            "avatar_instructions": "default",
+            "llm_time": 1.94,
+            "tts_time": 2.33
+        },
+        {
+            "timestamp": 1784632302.124614,
+            "datetime": "2026-07-21T18:11:42.124614+07:00",
+            "user_query": "Can you begin by introducing yourself?",
+            "response": "I'm the pilot involved in the recent aviation incident.",
+            "user_emotion": "default",
+            "voice_instructions": "default",
+            "avatar_instructions": "default",
+            "llm_time": 2.77,
+            "tts_time": 2.21
+        },
+        {
+            "timestamp": 1784632331.998781,
+            "datetime": "2026-07-21T18:12:11.998781+07:00",
+            "user_query": "Can you tell me your name?",
+            "response": "I don't recall that right now.",
+            "user_emotion": "default",
+            "voice_instructions": "default",
+            "avatar_instructions": "default",
+            "llm_time": 1.96,
+            "tts_time": 2.01
+        },
+        {
+            "timestamp": 1784632384.666087,
+            "datetime": "2026-07-21T18:13:04.666087+07:00",
+            "user_query": "sure it's fine we are you are understandably shaken after that incident",
+            "response": "Honestly, I'm relieved it's over, but it was stressful.",
+            "user_emotion": "default",
+            "voice_instructions": "sad",
+            "avatar_instructions": "sad",
+            "llm_time": 1.99,
+            "tts_time": 2.62
+        },
+        {
+            "timestamp": 1784632404.867591,
+            "datetime": "2026-07-21T18:13:24.867591+07:00",
+            "user_query": "Can you help me by recalling what happened on that day?",
+            "response": "I remember being focused on my instruments. It felt chaotic, and I was definitely concerned.",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "fear",
+            "llm_time": 2.28,
+            "tts_time": 3.15
+        }
+    ],
+    "timestamp": "2026-07-21T18:11:16.474508+07:00"
+}

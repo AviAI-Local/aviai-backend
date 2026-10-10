@@ -1,0 +1,42 @@
+{
+    "conversation_history_id": "fc5b18dc-2821-4def-9f92-97d6f8e86e3a",
+    "session_id": "b453021e-db78-495c-b611-b3b58bde3fed",
+    "llm_provider": "openrouter",
+    "model": "openai/gpt-4o-mini",
+    "content": [
+        {
+            "timestamp": 1784632123.278627,
+            "datetime": "2026-07-21T18:08:43.278627+07:00",
+            "user_query": "Hello, how are you doing?",
+            "response": "I'm focused on the interview right now.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 2.22,
+            "tts_time": 1.95
+        },
+        {
+            "timestamp": 1784632139.089508,
+            "datetime": "2026-07-21T18:08:59.089508+07:00",
+            "user_query": "My name is Captain Raymond. I am the investigator for this case.",
+            "response": "Nice to meet you, Captain Raymond.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 2.19,
+            "tts_time": 1.6
+        },
+        {
+            "timestamp": 1784632154.778761,
+            "datetime": "2026-07-21T18:09:14.778761+07:00",
+            "user_query": "So can you begin by describing what were you doing on that day?",
+            "response": "I was preparing for a routine flight, conducting pre-flight checks and reviewing the flight plan.",
+            "user_emotion": "default",
+            "voice_instructions": "neutral",
+            "avatar_instructions": "default",
+            "llm_time": 2.23,
+            "tts_time": 3.18
+        }
+    ],
+    "timestamp": "2026-07-21T18:08:34.635082+07:00"
+}

@@ -1,0 +1,42 @@
+{
+    "conversation_history_id": "12f261cb-c420-49e7-9e7c-e52ef61992cf",
+    "session_id": "1b945d6f-6fdd-489e-a696-54ff66c910b5",
+    "llm_provider": "openrouter",
+    "model": "openai/gpt-4o-mini",
+    "content": [
+        {
+            "timestamp": 1784629430.3654,
+            "datetime": "2026-07-21T17:23:50.365400+07:00",
+            "user_query": "Hey, how are you feeling?",
+            "response": "I'm still a bit shaken after what happened.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with tension and urgency, slightly higher pitch, and faster pace",
+            "avatar_instructions": "fear",
+            "llm_time": 2.5,
+            "tts_time": 5.48
+        },
+        {
+            "timestamp": 1784629449.058303,
+            "datetime": "2026-07-21T17:24:09.058303+07:00",
+            "user_query": "Are you comfortable speaking today?",
+            "response": "Honestly, I'm a bit anxious about it.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with tension and urgency, slightly higher pitch, and faster pace",
+            "avatar_instructions": "fear",
+            "llm_time": 2.23,
+            "tts_time": 2.61
+        },
+        {
+            "timestamp": 1784629477.09112,
+            "datetime": "2026-07-21T17:24:37.091120+07:00",
+            "user_query": "We can continue this conversation another time if you want.",
+            "response": "I appreciate that, but I think I need to get through this now.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with tension and urgency, slightly higher pitch, and faster pace",
+            "avatar_instructions": "fear",
+            "llm_time": 2.0,
+            "tts_time": 2.98
+        }
+    ],
+    "timestamp": "2026-07-21T17:23:26.062545+07:00"
+}

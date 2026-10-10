@@ -1,0 +1,31 @@
+{
+    "conversation_history_id": "458a11d8-48cb-42b4-a55d-f1b9de078398",
+    "session_id": "78389ede-2b8e-4299-bba5-6af38194153d",
+    "llm_provider": "ollama",
+    "model": "gemma3",
+    "content": [
+        {
+            "timestamp": 1784628710.876147,
+            "datetime": "2026-07-21T17:11:50.876147+07:00",
+            "user_query": "Hello, John.",
+            "response": "I'm sorry, could you please repeat your question?",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a calm, professional tone",
+            "avatar_instructions": "default",
+            "llm_time": 14.7,
+            "tts_time": 24.64
+        },
+        {
+            "timestamp": 1784628822.327708,
+            "datetime": "2026-07-21T17:13:42.327708+07:00",
+            "user_query": "I said What's up",
+            "response": "I'm... I'm focused on the situation.",
+            "user_emotion": "default",
+            "voice_instructions": "fear",
+            "avatar_instructions": "fear",
+            "llm_time": 79.08,
+            "tts_time": 1.85
+        }
+    ],
+    "timestamp": "2026-07-21T17:11:00.083291+07:00"
+}

@@ -1,0 +1,42 @@
+{
+    "conversation_history_id": "c64c9ea3-158a-41cf-ac31-fa9db284d592",
+    "session_id": "6ec6e04f-329c-4f52-94d0-dcdff8cdc4d5",
+    "llm_provider": "val",
+    "model": "openai-gpt-5.2",
+    "content": [
+        {
+            "timestamp": 1788930186.650236,
+            "datetime": "2026-09-09T12:03:06.650236+07:00",
+            "user_query": "Before we discuss the aircraft, could you tell me a little about yourself and what brought you to the area that afternoon?",
+            "response": "I was on a business trip, driving from Bundaberg down to Brisbane for a meeting, and I stopped near Gympie around mid‑afternoon to stretch my legs when I noticed a sign for the local airport.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a slightly tense, anxious tone, but still professional and steady; moderate pace.",
+            "avatar_instructions": "fear",
+            "llm_time": 7.94,
+            "tts_time": 5.83
+        },
+        {
+            "timestamp": 1788930226.319298,
+            "datetime": "2026-09-09T12:03:46.319298+07:00",
+            "user_query": "Were you familiar with the aerodrome or the surrounding area?",
+            "response": "No, I wasn't familiar with the aerodrome or the area around it.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with a slightly tense, anxious tone; keep it professional and measured.",
+            "avatar_instructions": "fear",
+            "llm_time": 2.51,
+            "tts_time": 2.71
+        },
+        {
+            "timestamp": 1788930241.434494,
+            "datetime": "2026-09-09T12:04:01.434494+07:00",
+            "user_query": "Before we talk through the occurrence, I’d like you to think back to the afternoon of 4 September. Picture yourself in the place where you were when you first became aware of the aircraft.",
+            "response": "I was standing by my car in the parking area near the runway, having just gotten out to stretch my legs, and I first noticed the aircraft approaching from my right, coming from the south.",
+            "user_emotion": "default",
+            "voice_instructions": "Speak with tension and a slightly quicker pace, as if recalling something stressful; keep it controlled and professional.",
+            "avatar_instructions": "fear",
+            "llm_time": 2.96,
+            "tts_time": 6.54
+        }
+    ],
+    "timestamp": "2026-09-09T12:02:36.867417+07:00"
+}

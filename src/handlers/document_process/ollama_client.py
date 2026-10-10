@@ -1,11 +1,9 @@
-import os
 import httpx
 import re
+from agent.config import LLM_MODEL, LLM_BASE_URL, LLM_API_KEY
 from .schema import DocumentLLMResp
 
-OLLAMA_BASE_URL = os.environ.get("OLLAMA_MODEL_URL")
-OLLAMA_URL = f"{OLLAMA_BASE_URL}/api/generate"
-MODEL = os.environ.get("OLLAMA_MODEL_NAME")
+VAL_CHAT_URL = f"{LLM_BASE_URL.rstrip('/')}/chat/completions"
 
 SYSTEM_PROMPT = """You are scenario-DocExtractor. You extract metadata from documents.
 You MUST return a JSON object with exactly these fields:
@@ -32,21 +30,25 @@ def _strip_markdown_json(text: str) -> str:
 
 async def extract_metadata(text: str) -> DocumentLLMResp:
     payload = {
-        "model": MODEL,
-        "system": SYSTEM_PROMPT,
-        "prompt": f"Extract metadata from the following document:\n\n{text}",
+        "model": LLM_MODEL,
+        "messages": [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": f"Extract metadata from the following document:\n\n{text}"},
+        ],
         "stream": False,
-        "format": "json",
+        # response_format=json_object is silently ignored on Val; _strip_markdown_json
+        # below handles the fenced prose it returns instead.
+        "response_format": {"type": "json_object"},
     }
+    headers = {"Authorization": f"Bearer {LLM_API_KEY}"}
 
     async with httpx.AsyncClient(timeout=120) as client:
-        r = await client.post(OLLAMA_URL, json=payload)
+        r = await client.post(VAL_CHAT_URL, json=payload, headers=headers)
         r.raise_for_status()
 
     data = r.json()
 
-    # Ollama returns the full response here
-    raw_content = data["response"]
+    raw_content = data["choices"][0]["message"]["content"]
 
     # ✅ CRITICAL FIX
     clean_json = _strip_markdown_json(raw_content)

@@ -1,4 +1,5 @@
 import os
+import subprocess
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,7 +21,13 @@ from agent.models import init_models
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: Load ML models
+    # Startup: run pending DB migrations. Done here rather than before
+    # uvicorn starts, so the server socket opens immediately — Render's
+    # free tier has no pre-deploy step, and it fails deploys that don't
+    # bind a port quickly.
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    subprocess.run(["alembic", "upgrade", "head"], cwd=project_root, check=True)
+
     init_models()
     yield
     # Shutdown: cleanup if needed
@@ -28,10 +35,19 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Cognitive Interview API", lifespan=lifespan)
 
-# CORS for frontend
+# CORS for frontend. Defaults cover local dev; set CORS_ALLOWED_ORIGINS
+# (comma-separated) in the deploy environment to add the deployed frontend
+# origin(s) without a code change.
+_default_origins = "http://localhost:3000,https://aviai-frontend.onrender.com"
+allowed_origins = [
+    origin.strip()
+    for origin in os.getenv("CORS_ALLOWED_ORIGINS", _default_origins).split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Vite dev server
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -1,7 +1,5 @@
 from datetime import datetime
 from io import BytesIO
-import json
-import os
 from typing import Dict, List, Optional
 from zoneinfo import ZoneInfo
 from fastapi import HTTPException
@@ -11,6 +9,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.lib import colors
 from langchain_core.chat_history import InMemoryChatMessageHistory
+from sqlalchemy.orm.attributes import flag_modified
 from agent.history.schema import ConversationHistoryResponse, ConversationHistoryContent
 from agent.llm.schema import LLMResponse
 from rich.console import Console
@@ -24,8 +23,6 @@ class ConversationHistoryService:
     def __init__(self, db: DBSession, history_response: Optional[ConversationHistoryResponse] = None):
         self.history_response = history_response
         self.db = db
-        self.history_dir = os.path.join(os.path.dirname(__file__), "..", "conversation")
-        os.makedirs(self.history_dir, exist_ok=True)
 
     def get_by_id(self, conversation_id: str) -> Optional[ConversationHistory]:
         return self.db.query(ConversationHistory).filter(ConversationHistory.conversation_history_id == conversation_id).first()
@@ -79,27 +76,24 @@ class ConversationHistoryService:
         return result
 
     def create_conversation_history(self) -> bool:
-        """Save conversation history to a JSON file"""
+        """Create the conversation history row in the DB at session start"""
         try:
-            history_data = {
-                "conversation_history_id": self.history_response.conversation_history_id,
-                "session_id": self.history_response.session_id,
-                "llm_provider": self.history_response.llm_provider,
-                "model": self.history_response.model,
-                "content": self.history_response.content,
-                "timestamp": self.history_response.timestamp
-            }
-
-            file_path = os.path.join(self.history_dir, f"{self.history_response.session_id}.json")
-            with open(file_path, 'w', encoding='utf-8') as f:
-                json.dump(history_data, f, indent=4, ensure_ascii=False)
+            conversation = ConversationHistory(
+                conversation_history_id=self.history_response.conversation_history_id,
+                session_id=self.history_response.session_id,
+                content=self.history_response.content,
+                timestamp=self.history_response.timestamp
+            )
+            self.db.add(conversation)
+            self.db.commit()
             return True
         except Exception as e:
-            console.print(f"[red]✗ Failed to create conversation history JSON: {e}[/red]")
-            return False 
+            self.db.rollback()
+            console.print(f"[red]✗ Failed to create conversation history: {e}[/red]")
+            return False
 
     def add_conversation_entry(self, user_query: str, response_data: LLMResponse, llm_time: float, tts_time: float) -> bool:
-        """Add a conversation entry to the history"""
+        """Append a conversation entry and persist it to the DB immediately"""
         try:
             now = datetime.now(ZoneInfo("Asia/Ho_Chi_Minh"))
 
@@ -118,69 +112,30 @@ class ConversationHistoryService:
             # Append to history_response.content (the source of truth)
             self.history_response.content.append(entry.model_dump())
 
-            success = self.create_conversation_history()
-            if success:
-                console.print(f"[dim]✓ Conversation entry saved to {self.history_response.session_id}.json[/dim]")
-            return success
+            conversation = self.get_by_id(self.history_response.conversation_history_id)
+            if conversation is None:
+                # Session-start row is missing (e.g. it failed to create) — create it now
+                conversation = ConversationHistory(
+                    conversation_history_id=self.history_response.conversation_history_id,
+                    session_id=self.history_response.session_id,
+                    timestamp=self.history_response.timestamp
+                )
+                self.db.add(conversation)
+
+            conversation.content = self.history_response.content
+            # JSON columns aren't change-tracked by mutation, only by attribute
+            # assignment identity — flag explicitly so the UPDATE isn't skipped.
+            flag_modified(conversation, "content")
+            self.db.commit()
+
+            console.print(f"[dim]✓ Conversation entry saved to DB for session {self.history_response.session_id}[/dim]")
+            return True
         except Exception as e:
+            self.db.rollback()
             console.print(f"[red]✗ Failed to add conversation entry: {e}[/red]")
             return False
 
-    def load_json_file(self) -> ConversationHistoryResponse:
-        """Load conversation history from JSON file"""
-        file_path = os.path.join(self.history_dir, f"{self.history_response.session_id}.json")
-        console.print(f"[dim]Loading JSON from: {file_path}[/dim]")
 
-        if not os.path.exists(file_path):
-            console.print(f"[red]✗ File not found: {file_path}[/red]")
-            raise FileNotFoundError(f"File not found: {file_path}")
-
-        with open(file_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-
-        console.print(f"[dim]✓ JSON loaded, entries count: {len(data.get('content', []))}[/dim]")
-        # Pydantic validates structure automatically
-        # Raises ValidationError if data doesn't match schema
-        return ConversationHistoryResponse(**data)
-
-    def save_conversation_history(self) -> ConversationHistory | None:
-        try:
-            data = self.load_json_file()
-            console.print(f"[dim]Loaded JSON file for session {data.session_id}[/dim]")
-
-            content_as_dicts = [item.model_dump() if hasattr(item, 'model_dump') else item for item in data.content]
-
-            if content_as_dicts == []:
-                console.print(f"[red]✗ Conversation history did not save to DB[/red]")
-                return
-
-            conversation = ConversationHistory(
-                conversation_history_id=data.conversation_history_id,
-                session_id=data.session_id,
-                content=content_as_dicts,
-                timestamp=data.timestamp
-            )
-
-            self.db.add(conversation)
-            self.db.commit()
-            # Don't refresh - session might be closed during cleanup
-
-            console.print(f"[green]✓ Conversation history saved to DB successfully (ID: {conversation.conversation_history_id})[/green]")
-            return conversation
-
-        except FileNotFoundError as e:
-            console.print(f"[red]✗ Failed to save: JSON file not found - {e}[/red]")
-            return None
-        except Exception as e:
-            try:
-                self.db.rollback()
-            except:
-                pass  # Session might already be closed
-            console.print(f"[red]✗ Failed to save conversation history to DB: {e}[/red]")
-            console.print(f"[yellow]Error type: {type(e).__name__}[/yellow]")
-            return None
-        
-    
     def create_pdf_from_conversation(self, conversation_data: Dict, conversation_id: str) -> bytes:
         """Create a PDF from conversation data with improved layout."""
         buffer = BytesIO()
